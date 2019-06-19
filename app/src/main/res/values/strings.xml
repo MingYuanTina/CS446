@@ -3,4 +3,6 @@
     <string name="title_activity_add_transaction">AddTransactionActivity</string>
     <string name="label_cost">Cost</string>
     <string name="label_date">Date</string>
+    <string name="label_add_an_optional_note">Add an optional note...</string>
+    <string name="label_add_expense">Add Expense</string>
 </resources>

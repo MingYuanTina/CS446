@@ -38,15 +38,6 @@ public class AddTransactionActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         // Initialize Cost EditText
         mCostEdit = findViewById(R.id.add_transaction_cost);
         mCostEdit.setRawInputType(Configuration.KEYBOARD_12KEY);
@@ -109,7 +100,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         transactionCategories.add(new TransactionCategory("Gas"));
         transactionCategories.add(new TransactionCategory("Self-Indulgence"));
 
-        ArrayAdapter<TransactionCategory> adapter = new ArrayAdapter<TransactionCategory>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, transactionCategories);
+        ArrayAdapter<TransactionCategory> adapter = new ArrayAdapter<TransactionCategory>(getApplicationContext(), android.R.layout.simple_spinner_item, transactionCategories);
         adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item);
         //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
