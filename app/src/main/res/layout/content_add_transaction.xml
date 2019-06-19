@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="32dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".AddTransactionActivity"
     tools:showIn="@layout/activity_add_transaction">
-
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/add_transaction_cost_layout"
@@ -16,13 +16,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingTop="16dp">
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <cs446.budgetme.EndOnlyEditText
             android:id="@+id/add_transaction_cost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity = "center_horizontal"
             android:hint="@string/label_cost"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -31,44 +30,60 @@
         android:id="@+id/add_transaction_date_layout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:layout_constraintTop_toBottomOf="@id/add_transaction_cost_layout">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/add_transaction_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="false"
-            android:gravity="center_horizontal"
             android:hint="@string/label_date" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Spinner
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/add_transaction_category_layout"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/add_transaction_date_layout"
+        android:hint="@string/label_category"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+        <AutoCompleteTextView
+            android:id="@+id/add_transaction_category"
+            android:editable="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--<Spinner
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/add_transaction_category"
         android:layout_marginTop = "16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_transaction_date_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/add_transaction_date_layout"/>-->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/add_transaction_note_layout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_transaction_category">
+        app:layout_constraintTop_toBottomOf="@id/add_transaction_category_layout">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/add_transaction_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:hint="@string/label_add_an_optional_note" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -80,9 +95,9 @@
         android:text="@string/label_add_expense"
         android:textColor="#FFFFFF"
         android:textAllCaps="false"
-        android:layout_margin="48dp"
+        android:layout_marginTop="32dp"
         android:padding="8dp"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toRightOf="@id/add_transaction_note_layout"
         app:layout_constraintTop_toBottomOf="@id/add_transaction_note_layout"/>
 
 

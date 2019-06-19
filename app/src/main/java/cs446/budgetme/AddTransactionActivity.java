@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -26,7 +27,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     private EditText mCostEdit;
     private EditText mDateEdit;
     private final Calendar mCalendar = Calendar.getInstance();
-    private Spinner mSpinner;
+    private AutoCompleteTextView mDropdown;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,26 +90,15 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
 
         // Initialize Category spinner
-        Spinner spinner = findViewById(R.id.add_transaction_category);
+        mDropdown = findViewById(R.id.add_transaction_category);
         List<TransactionCategory> transactionCategories = new ArrayList<>();
         transactionCategories.add(new TransactionCategory("Groceries"));
         transactionCategories.add(new TransactionCategory("Entertainment"));
         transactionCategories.add(new TransactionCategory("Gas"));
         transactionCategories.add(new TransactionCategory("Self-Indulgence"));
 
-        ArrayAdapter<TransactionCategory> adapter = new ArrayAdapter<TransactionCategory>(getApplicationContext(), android.R.layout.simple_spinner_item, transactionCategories);
-        adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item);
-        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setPrompt("Select a Category...");
-        spinner.setAdapter(adapter);
-
-        spinner.setAdapter(
-                new NothingSelectedSpinnerAdapter(
-                        adapter,
-                        R.layout.content_spinner_row_nothing_selected,
-                        this));
-
+        ArrayAdapter<TransactionCategory> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_menu_popup_item, transactionCategories);
+        mDropdown.setAdapter(adapter);
     }
 
     private void updateLabel() {
