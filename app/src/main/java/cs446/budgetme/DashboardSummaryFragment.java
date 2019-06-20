@@ -11,11 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.DataEntry;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.charts.Pie;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class DashboardSummaryFragment extends Fragment {
     private String mParam2;
 
     private List<Transaction> mTransactions;
-    private AnyChartView mPieView;
+    private PieChart mPieView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -136,9 +136,7 @@ public class DashboardSummaryFragment extends Fragment {
     }
 
     private void updateCharts() {
-        Pie pie = AnyChart.pie();
-       // mPieView.clear();
-        List<DataEntry> data = new ArrayList<>();
+        List<PieEntry> data = new ArrayList<>();
         HashMap<String, Double> map = new HashMap<>();
         for (Transaction t : mTransactions) {
             if (map.containsKey(t.getCategoryName())) {
@@ -148,11 +146,13 @@ public class DashboardSummaryFragment extends Fragment {
             }
         }
         for (Map.Entry<String, Double> entry : map.entrySet()) {
-            data.add(new ValueDataEntry(entry.getKey(), entry.getValue()));
+            data.add(new PieEntry(entry.getValue().floatValue(), entry.getKey()));
         }
-        mPieView.setChart(pie);
-        //mPieView.setChart(pie);
-        pie.data(data);
+        PieDataSet dataSet = new PieDataSet(data, "Category Spending");
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        PieData pieData = new PieData(dataSet);
+        mPieView.setData(pieData);
         mPieView.invalidate();
     }
 }
