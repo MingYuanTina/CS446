@@ -1,4 +1,4 @@
-package cs446.budgetme;
+package cs446.budgetme.Fragement;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,28 +10,25 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import cs446.budgetme.Model.Transaction;
+import cs446.budgetme.R;
+import cs446.budgetme.Adaptor.TransactionListViewAdaptor;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link DashboardSummaryFragment.OnFragmentInteractionListener} interface
+ * {@link DashboardTransactiondetailFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link DashboardSummaryFragment#newInstance} factory method to
+ * Use the {@link DashboardTransactiondetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DashboardSummaryFragment extends Fragment {
+public class DashboardTransactiondetailFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -41,12 +38,10 @@ public class DashboardSummaryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private List<Transaction> mTransactions;
-    private PieChart mPieView;
-
     private OnFragmentInteractionListener mListener;
+    private ListView transactionList;
 
-    public DashboardSummaryFragment() {
+    public DashboardTransactiondetailFragment() {
         // Required empty public constructor
     }
 
@@ -56,11 +51,11 @@ public class DashboardSummaryFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment DashboardSummaryFragment.
+     * @return A new instance of fragment DashboardTransactiondetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DashboardSummaryFragment newInstance(String param1, String param2) {
-        DashboardSummaryFragment fragment = new DashboardSummaryFragment();
+    public static DashboardTransactiondetailFragment newInstance(String param1, String param2) {
+        DashboardTransactiondetailFragment fragment = new DashboardTransactiondetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -75,28 +70,31 @@ public class DashboardSummaryFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        mTransactions = Transaction.getFakeData();
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mPieView = getView().findViewById(R.id.summary_pie_chart);
-        updateCharts();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard_summary, container, false);
+        return inflater.inflate(R.layout.fragment_dashboard_transactiondetail, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        String[] manuItems = {"first t", "second 2", "third 3"};
+        transactionList = (ListView) getView().findViewById(R.id.TransationDetail);
+        ArrayAdapter<String> ListViewAdpter = new ArrayAdapter<String>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                manuItems
+        );
+
+        ArrayList<Transaction> mTransactions =  (ArrayList)Transaction.getFakeData();
+       TransactionListViewAdaptor adapter =  new TransactionListViewAdaptor(getActivity(), mTransactions);
+        transactionList.setAdapter(adapter);
+
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -128,31 +126,5 @@ public class DashboardSummaryFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    public void onTransactionAdded(Transaction transaction) {
-        mTransactions.add(transaction);
-        updateCharts();
-    }
-
-    private void updateCharts() {
-        List<PieEntry> data = new ArrayList<>();
-        HashMap<String, Double> map = new HashMap<>();
-        for (Transaction t : mTransactions) {
-            if (map.containsKey(t.getCategoryName())) {
-                map.put(t.getCategoryName(), map.get(t.getCategoryName()) + t.getCost());
-            } else {
-                map.put(t.getCategoryName(), t.getCost());
-            }
-        }
-        for (Map.Entry<String, Double> entry : map.entrySet()) {
-            data.add(new PieEntry(entry.getValue().floatValue(), entry.getKey()));
-        }
-        PieDataSet dataSet = new PieDataSet(data, "Category Spending");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-
-        PieData pieData = new PieData(dataSet);
-        mPieView.setData(pieData);
-        mPieView.invalidate();
     }
 }

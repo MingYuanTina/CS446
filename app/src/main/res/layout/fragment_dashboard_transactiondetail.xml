@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragement.DashboardSummaryFragment">
+    tools:context=".Fragement.DashboardTransactiondetailFragment">
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/summary_pie_chart"
+    <ListView
+        android:id="@+id/TransationDetail"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </FrameLayout>

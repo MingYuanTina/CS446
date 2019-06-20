@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +14,13 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.view.View;
 
-public class DashboardActivity extends AppCompatActivity implements DashboardSummaryFragment.OnFragmentInteractionListener{
+import cs446.budgetme.Adaptor.DashboardTabAdapter;
+import cs446.budgetme.Fragement.DashboardSummaryFragment;
+import cs446.budgetme.Fragement.DashboardTransactiondetailFragment;
+import cs446.budgetme.Model.Transaction;
+
+public class DashboardActivity extends AppCompatActivity
+        implements DashboardSummaryFragment.OnFragmentInteractionListener, DashboardTransactiondetailFragment.OnFragmentInteractionListener{
     private DashboardTabAdapter mAdapter;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
@@ -39,9 +44,12 @@ public class DashboardActivity extends AppCompatActivity implements DashboardSum
         mViewPager = findViewById(R.id.dashboard_view_pager);
         mTabLayout = findViewById(R.id.dashboard_tab_layout);
         mAdapter = new DashboardTabAdapter(getSupportFragmentManager());
+        //TODO: add profile of the user
         mAdapter.addFragment(new Fragment(), "Tab 1");
         mAdapter.addFragment(new DashboardSummaryFragment(), getResources().getString(R.string.title_dashboard_tab_summary));
-        mAdapter.addFragment(new Fragment(), "Tab 3");
+
+        //TODO:add a list view for the expense
+        mAdapter.addFragment(new DashboardTransactiondetailFragment(), "Transaction Details");
 
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager, true);

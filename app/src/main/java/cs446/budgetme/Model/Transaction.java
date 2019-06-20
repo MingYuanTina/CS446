@@ -1,4 +1,4 @@
-package cs446.budgetme;
+package cs446.budgetme.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -31,6 +31,8 @@ public class Transaction implements Parcelable {
     public Double getCost() {
         return mCost;
     }
+
+    public Date getDate(){ return mDate; }
 
     public static List<Transaction> getFakeData() {
         List<TransactionCategory> transactionCategories = TransactionCategory.getDefaults();

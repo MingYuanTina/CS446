@@ -1,4 +1,4 @@
-package cs446.budgetme;
+package cs446.budgetme.Adaptor;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -11,13 +11,14 @@ import java.util.List;
 public class DashboardTabAdapter extends FragmentStatePagerAdapter {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
-    DashboardTabAdapter(FragmentManager fm) {
+    public DashboardTabAdapter(FragmentManager fm) {
         super(fm);
     }
     @Override
     public Fragment getItem(int position) {
         return mFragmentList.get(position);
     }
+
     public void addFragment(Fragment fragment, String title) {
         mFragmentList.add(fragment);
         mFragmentTitleList.add(title);

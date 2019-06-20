@@ -16,15 +16,16 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import cs446.budgetme.Model.Transaction;
+import cs446.budgetme.Model.TransactionCategory;
 
 public class AddTransactionActivity extends AppCompatActivity {
     private String mCurrentCost = "";

@@ -1,4 +1,4 @@
-package cs446.budgetme;
+package cs446.budgetme.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
