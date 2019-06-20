@@ -1,6 +1,7 @@
 package cs446.budgetme;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -9,8 +10,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,6 +22,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,6 +32,10 @@ public class AddTransactionActivity extends AppCompatActivity {
     private EditText mDateEdit;
     private final Calendar mCalendar = Calendar.getInstance();
     private AutoCompleteTextView mDropdown;
+    private EditText mNoteEdit;
+    private Button mButton;
+    private int mCategoryIndex;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,14 +99,42 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         // Initialize Category spinner
         mDropdown = findViewById(R.id.add_transaction_category);
-        List<TransactionCategory> transactionCategories = new ArrayList<>();
-        transactionCategories.add(new TransactionCategory("Groceries"));
-        transactionCategories.add(new TransactionCategory("Entertainment"));
-        transactionCategories.add(new TransactionCategory("Gas"));
-        transactionCategories.add(new TransactionCategory("Self-Indulgence"));
+        final List<TransactionCategory> transactionCategories = TransactionCategory.getDefaults();
 
         ArrayAdapter<TransactionCategory> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_menu_popup_item, transactionCategories);
         mDropdown.setAdapter(adapter);
+        mDropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View arg1, int position,
+                                    long arg3) {
+                mCategoryIndex = position;
+            }
+        });
+
+        mNoteEdit = findViewById(R.id.add_transaction_note);
+
+        mButton = findViewById(R.id.add_transaction_button);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    String cleanString = mCostEdit.getText().toString().replaceAll("[$,]", "");
+                    double parsedCost = Double.parseDouble(cleanString);
+                    Date date = mCalendar.getTime();
+                    TransactionCategory transactionCategory = transactionCategories.get(mCategoryIndex);
+                    String note = mNoteEdit.getText().toString();
+                    Transaction transaction = new Transaction(date, parsedCost, note, transactionCategory);
+
+                    Intent i = new Intent();
+                    i.putExtra("transaction", transaction);
+                    setResult(RESULT_OK, i);
+                    finish();
+                } catch (Exception e) {
+
+                }
+            }
+        });
     }
 
     private void updateLabel() {
