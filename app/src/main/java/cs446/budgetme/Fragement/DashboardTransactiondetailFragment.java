@@ -72,6 +72,7 @@ public class DashboardTransactiondetailFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mTransactions =  (ArrayList)Transaction.getFakeData();
     }
 
     @Override
@@ -85,14 +86,18 @@ public class DashboardTransactiondetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //update the list and display it on dashboard
-        ArrayList<Transaction> mTransactions =  (ArrayList)Transaction.getFakeData();
-       TransactionListViewAdaptor adapter =  new TransactionListViewAdaptor(getActivity(), mTransactions);
-        transactionList.setAdapter(adapter);
-
+        transactionList = getView().findViewById(R.id.TransationDetail);
+        updateView();
     }
 
+    private void updateView(){
+        TransactionListViewAdaptor adapter =  new TransactionListViewAdaptor(getActivity(), mTransactions);
+        transactionList.setAdapter(adapter);
+        transactionList.invalidate();
+    }
     public void onTransactionAdded(Transaction transaction) {
         mTransactions.add(transaction);
+        updateView();
     }
     @Override
     public void onAttach(Context context) {

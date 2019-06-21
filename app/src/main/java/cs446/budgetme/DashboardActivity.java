@@ -45,13 +45,13 @@ public class DashboardActivity extends AppCompatActivity
         mTabLayout = findViewById(R.id.dashboard_tab_layout);
         mAdapter = new DashboardTabAdapter(getSupportFragmentManager());
         //TODO: add profile of the user
-        mAdapter.addFragment(new Fragment(), "Tab 1");
-        mAdapter.addFragment(new DashboardSummaryFragment(), getResources().getString(R.string.title_dashboard_tab_summary));
 
-        //TODO:add a list view for the expense
-        mAdapter.addFragment(new DashboardTransactiondetailFragment(), "Transaction Details");
+        mAdapter.addFragment(new DashboardSummaryFragment(), getResources().getString(R.string.title_dashboard_tab_summary));
+        mAdapter.addFragment(new DashboardTransactiondetailFragment(),"Transaction Details");
+        mAdapter.addFragment(new Fragment(), "Profile");
 
         mViewPager.setAdapter(mAdapter);
+        mViewPager.setOffscreenPageLimit(2);
         mTabLayout.setupWithViewPager(mViewPager, true);
         mViewPager.setCurrentItem(1);
     }
@@ -72,8 +72,8 @@ public class DashboardActivity extends AppCompatActivity
         if (requestCode == REQUEST_CODE_ADD_TRANSACTION) {
             if (resultCode == RESULT_OK) {
                 Transaction transaction = (Transaction)data.getExtras().getParcelable("transaction");
-                ((DashboardSummaryFragment)mAdapter.getItem(mViewPager.getCurrentItem())).onTransactionAdded(transaction);
-                ((DashboardTransactiondetailFragment)mAdapter.getItem(mViewPager.getCurrentItem())).onTransactionAdded(transaction);
+                ((DashboardSummaryFragment)mAdapter.getItem(0)).onTransactionAdded(transaction);
+                ((DashboardTransactiondetailFragment)mAdapter.getItem(1)).onTransactionAdded(transaction);
             }
         }
     }
