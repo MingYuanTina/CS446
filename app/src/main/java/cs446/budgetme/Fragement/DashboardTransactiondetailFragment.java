@@ -41,6 +41,8 @@ public class DashboardTransactiondetailFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private ListView transactionList;
 
+    private ArrayList<Transaction> mTransactions;
+
     public DashboardTransactiondetailFragment() {
         // Required empty public constructor
     }
@@ -79,23 +81,19 @@ public class DashboardTransactiondetailFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_dashboard_transactiondetail, container, false);
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        String[] manuItems = {"first t", "second 2", "third 3"};
-        transactionList = (ListView) getView().findViewById(R.id.TransationDetail);
-        ArrayAdapter<String> ListViewAdpter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                manuItems
-        );
-
+        //update the list and display it on dashboard
         ArrayList<Transaction> mTransactions =  (ArrayList)Transaction.getFakeData();
        TransactionListViewAdaptor adapter =  new TransactionListViewAdaptor(getActivity(), mTransactions);
         transactionList.setAdapter(adapter);
 
     }
 
-
+    public void onTransactionAdded(Transaction transaction) {
+        mTransactions.add(transaction);
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -127,4 +125,6 @@ public class DashboardTransactiondetailFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
 }

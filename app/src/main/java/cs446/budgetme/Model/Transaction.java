@@ -3,6 +3,8 @@ package cs446.budgetme.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +34,11 @@ public class Transaction implements Parcelable {
         return mCost;
     }
 
-    public Date getDate(){ return mDate; }
+    public String getDate(){
+        DateFormat outputFormatter = new SimpleDateFormat("MM/dd/yyyy");
+        String dateWithoutTime = outputFormatter.format(mDate);
+        return dateWithoutTime;
+    }
 
     public static List<Transaction> getFakeData() {
         List<TransactionCategory> transactionCategories = TransactionCategory.getDefaults();

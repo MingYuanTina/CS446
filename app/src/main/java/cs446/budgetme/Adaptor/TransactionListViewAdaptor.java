@@ -39,7 +39,7 @@ public class TransactionListViewAdaptor extends ArrayAdapter<Transaction>{
             TextView category = convertView.findViewById(R.id.textTransCategory);
             TextView amount = convertView.findViewById(R.id.textTransAmount);
             if (date != null) {
-                date.setText(trans.getDate().toString());
+                date.setText(trans.getDate());
             }
             if (category != null) {
                 category.setText(trans.getCategoryName());
