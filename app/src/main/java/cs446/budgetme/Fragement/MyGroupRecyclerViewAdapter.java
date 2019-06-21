@@ -7,10 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import cs446.budgetme.Fragement.DashboardUserProfileFragment.OnListFragmentInteractionListener;
-import cs446.budgetme.Fragement.dummy.GroupContent.*;
+import cs446.budgetme.Fragement.GroupFragment.OnListFragmentInteractionListener;
+import cs446.budgetme.Fragement.dummy.DummyContent.DummyItem;
 import cs446.budgetme.R;
-
 
 import java.util.List;
 
@@ -19,12 +18,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecyclerViewAdapter.ViewHolder> {
+public class MyGroupRecyclerViewAdapter extends RecyclerView.Adapter<MyGroupRecyclerViewAdapter.ViewHolder> {
 
-    private final List<GroupItem> mValues;
+    private final List<DummyItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyUserRecyclerViewAdapter(List<GroupItem> items, OnListFragmentInteractionListener listener) {
+    public MyGroupRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -32,7 +31,7 @@ public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecycl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_user, parent, false);
+                .inflate(R.layout.fragment_group, parent, false);
         return new ViewHolder(view);
     }
 
@@ -63,7 +62,7 @@ public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecycl
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public GroupItem mItem;
+        public DummyItem mItem;
 
         public ViewHolder(View view) {
             super(view);

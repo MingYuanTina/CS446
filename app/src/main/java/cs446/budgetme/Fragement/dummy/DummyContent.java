@@ -5,25 +5,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cs446.budgetme.Model.User;
-
 /**
  * Helper class for providing sample content for user interfaces created by
  * Android template wizards.
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class GroupContent {
+public class DummyContent {
 
+    /**
+     * An array of sample (dummy) items.
+     */
+    public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
 
-    public static final ArrayList<String> ITEMS = new ArrayList<String>();
+    /**
+     * A map of sample (dummy) items, by ID.
+     */
+    public static final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
 
-    private static void addItem(String item) {
-        ITEMS.add(item);
+    private static final int COUNT = 2;
+
+    static {
+        // Add some sample items.
+        for (int i = 1; i <= COUNT; i++) {
+            addItem(createDummyItem(i));
+        }
     }
 
-    private static GroupItem createGroupItem(int position) {
-        return new GroupItem(String.valueOf(position), ITEMS.get(position), makeDetails(position));
+    private static void addItem(DummyItem item) {
+        ITEMS.add(item);
+        ITEM_MAP.put(item.id, item);
+    }
+
+    private static DummyItem createDummyItem(int position) {
+        return new DummyItem(String.valueOf(position), "Item " + position, makeDetails(position));
     }
 
     private static String makeDetails(int position) {
@@ -38,12 +53,12 @@ public class GroupContent {
     /**
      * A dummy item representing a piece of content.
      */
-    public static class GroupItem {
+    public static class DummyItem {
         public final String id;
         public final String content;
         public final String details;
 
-        public GroupItem(String id, String content, String details) {
+        public DummyItem(String id, String content, String details) {
             this.id = id;
             this.content = content;
             this.details = details;

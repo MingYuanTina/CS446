@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import cs446.budgetme.Fragement.dummy.GroupContent;
 import cs446.budgetme.R;
 import cs446.budgetme.Fragement.dummy.DummyContent;
 import cs446.budgetme.Fragement.dummy.DummyContent.DummyItem;
@@ -25,7 +24,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class DashboardUserProfileFragment extends Fragment {
+public class GroupFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -37,13 +36,13 @@ public class DashboardUserProfileFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public DashboardUserProfileFragment() {
+    public GroupFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static DashboardUserProfileFragment newInstance(int columnCount) {
-        DashboardUserProfileFragment fragment = new DashboardUserProfileFragment();
+    public static GroupFragment newInstance(int columnCount) {
+        GroupFragment fragment = new GroupFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -62,18 +61,21 @@ public class DashboardUserProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_group_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
+
+            //Add value to dummyItem
+
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyUserRecyclerViewAdapter(GroupContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyGroupRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }
         return view;
     }

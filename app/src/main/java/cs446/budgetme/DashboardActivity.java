@@ -17,6 +17,7 @@ import android.view.View;
 import cs446.budgetme.Adaptor.DashboardTabAdapter;
 import cs446.budgetme.Fragement.DashboardSummaryFragment;
 import cs446.budgetme.Fragement.DashboardTransactiondetailFragment;
+import cs446.budgetme.Fragement.GroupFragment;
 import cs446.budgetme.Model.Transaction;
 
 public class DashboardActivity extends AppCompatActivity
@@ -48,12 +49,12 @@ public class DashboardActivity extends AppCompatActivity
 
         mAdapter.addFragment(new DashboardSummaryFragment(), getResources().getString(R.string.title_dashboard_tab_summary));
         mAdapter.addFragment(new DashboardTransactiondetailFragment(),"Transaction Details");
-        mAdapter.addFragment(new Fragment(), "Profile");
+        mAdapter.addFragment(new GroupFragment(), "Profile");
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(2);
         mTabLayout.setupWithViewPager(mViewPager, true);
-        mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(0);
     }
 
     @Override
