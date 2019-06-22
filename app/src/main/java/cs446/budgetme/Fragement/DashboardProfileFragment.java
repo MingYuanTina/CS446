@@ -11,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -40,6 +43,11 @@ public class DashboardProfileFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private ListView userGroupListView;
+    private TextView username;
+    private TextView userTotalAmmount;
+    private Button addGroupButton;
+    private ImageView userAvatar;
+
 
     private ArrayList<String> userGroupList;
 
@@ -72,7 +80,10 @@ public class DashboardProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-       // mTransactions =  (ArrayList)Transaction.getFakeData();
+        userGroupList = new ArrayList<String>();
+        userGroupList.add("Group1");
+        userGroupList.add("Group2");
+
     }
 
     @Override
@@ -85,12 +96,16 @@ public class DashboardProfileFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        //update the list and display it on dashboard
+        //Create the views needed
+        username= getView().findViewById(R.id.UserName);
+        userTotalAmmount = getView().findViewById(R.id.UserTotalAmount);
+        userAvatar = getView().findViewById(R.id.UserAvatar);
+        addGroupButton = getView().findViewById(R.id.AddGroupButton);
         userGroupListView = getView().findViewById(R.id.TransationDetail);
-        updateView();
+        updateGroupList();
     }
 
-    private void updateView(){
+    private void updateGroupList(){
         ArrayAdapter<String> adapter =  new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, userGroupList);
         userGroupListView.setAdapter(adapter);
         userGroupListView.invalidate();

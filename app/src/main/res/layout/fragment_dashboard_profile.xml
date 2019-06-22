@@ -28,12 +28,12 @@
     <ListView
         android:id="@+id/TransationDetail"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="500dp">
 
     </ListView>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/AddGroupButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/layout_button_add_group" />
