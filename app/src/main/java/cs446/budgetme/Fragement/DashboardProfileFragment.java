@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -38,9 +39,9 @@ public class DashboardProfileFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private ListView transactionList;
+    private ListView userGroupListView;
 
-    private ArrayList<Transaction> mTransactions;
+    private ArrayList<String> userGroupList;
 
     public DashboardProfileFragment() {
         // Required empty public constructor
@@ -71,7 +72,7 @@ public class DashboardProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        mTransactions =  (ArrayList)Transaction.getFakeData();
+       // mTransactions =  (ArrayList)Transaction.getFakeData();
     }
 
     @Override
@@ -85,19 +86,16 @@ public class DashboardProfileFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //update the list and display it on dashboard
-        transactionList = getView().findViewById(R.id.TransationDetail);
+        userGroupListView = getView().findViewById(R.id.TransationDetail);
         updateView();
     }
 
     private void updateView(){
-        TransactionListViewAdaptor adapter =  new TransactionListViewAdaptor(getActivity(), mTransactions);
-        transactionList.setAdapter(adapter);
-        transactionList.invalidate();
+        ArrayAdapter<String> adapter =  new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, userGroupList);
+        userGroupListView.setAdapter(adapter);
+        userGroupListView.invalidate();
     }
-    public void onTransactionAdded(Transaction transaction) {
-        mTransactions.add(transaction);
-        updateView();
-    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
