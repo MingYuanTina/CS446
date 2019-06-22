@@ -31,6 +31,9 @@ public class DashboardActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        //get indent information
+        Intent intent = getIntent();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -42,14 +45,21 @@ public class DashboardActivity extends AppCompatActivity
             }
         });
 
+        //set the pager and adapter for the fragments
         mViewPager = findViewById(R.id.dashboard_view_pager);
         mTabLayout = findViewById(R.id.dashboard_tab_layout);
         mAdapter = new DashboardTabAdapter(getSupportFragmentManager());
-        //TODO: add profile of the user
 
+        //create a DashboardProfileFrag to update the user information
+        Bundle bundle = new Bundle();
+        bundle.putString("username", intent.getStringExtra("username"));
+
+        DashboardProfileFragment mProfile = new DashboardProfileFragment();
+        mProfile.setArguments(bundle);
+        //add the fragments
         mAdapter.addFragment(new DashboardSummaryFragment(), getResources().getString(R.string.title_dashboard_tab_summary));
         mAdapter.addFragment(new DashboardTransDetailFragment(), "Transaction Detail");
-        mAdapter.addFragment(new DashboardProfileFragment(),"Profile");
+        mAdapter.addFragment(mProfile,"Profile");
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(2);
