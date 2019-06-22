@@ -48,8 +48,8 @@ public class DashboardActivity extends AppCompatActivity
         //TODO: add profile of the user
 
         mAdapter.addFragment(new DashboardSummaryFragment(), getResources().getString(R.string.title_dashboard_tab_summary));
-        mAdapter.addFragment(new DashboardProfileFragment(),"Profile");
         mAdapter.addFragment(new DashboardTransDetailFragment(), "Transaction Detail");
+        mAdapter.addFragment(new DashboardProfileFragment(),"Profile");
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(2);

@@ -18,9 +18,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.R;
-import cs446.budgetme.Adaptor.TransactionListViewAdaptor;
 
 
 /**
@@ -44,9 +42,7 @@ public class DashboardProfileFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private ListView userGroupListView;
     private TextView username;
-    private TextView userTotalAmmount;
-    private Button addGroupButton;
-    private ImageView userAvatar;
+    private ArrayAdapter<String> arrayAdapter;
 
 
     private ArrayList<String> userGroupList;
@@ -98,16 +94,17 @@ public class DashboardProfileFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //Create the views needed
         username= getView().findViewById(R.id.UserName);
-        userTotalAmmount = getView().findViewById(R.id.UserTotalAmount);
-        userAvatar = getView().findViewById(R.id.UserAvatar);
-        addGroupButton = getView().findViewById(R.id.AddGroupButton);
-        userGroupListView = getView().findViewById(R.id.TransationDetail);
+       // userTotalAmmount = getView().findViewById(R.id.UserTotalAmount);
+        // userAvatar = getView().findViewById(R.id.UserAvatar);
+        // addGroupButton = getView().findViewById(R.id.AddGroupButton);
+        arrayAdapter =  new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, userGroupList);
+        userGroupListView = getView().findViewById(R.id.GroupList);
         updateGroupList();
     }
 
     private void updateGroupList(){
-        ArrayAdapter<String> adapter =  new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, userGroupList);
-        userGroupListView.setAdapter(adapter);
+        arrayAdapter.notifyDataSetChanged();
+        userGroupListView.setAdapter(arrayAdapter);
         userGroupListView.invalidate();
     }
 
