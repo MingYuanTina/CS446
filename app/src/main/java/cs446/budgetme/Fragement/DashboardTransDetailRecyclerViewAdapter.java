@@ -7,23 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import cs446.budgetme.Fragement.GroupFragment.OnListFragmentInteractionListener;
-import cs446.budgetme.Fragement.dummy.DummyContent.DummyItem;
+import cs446.budgetme.Fragement.DashboardTransDetailFragment.OnListFragmentInteractionListener;
+import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.R;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link } and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyGroupRecyclerViewAdapter extends RecyclerView.Adapter<MyGroupRecyclerViewAdapter.ViewHolder> {
+public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapter<DashboardTransDetailRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Transaction> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyGroupRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public DashboardTransDetailRecyclerViewAdapter(List<Transaction> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -38,8 +38,8 @@ public class MyGroupRecyclerViewAdapter extends RecyclerView.Adapter<MyGroupRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getDate());
+        holder.mContentView.setText(mValues.get(position).getCost().toString());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +62,7 @@ public class MyGroupRecyclerViewAdapter extends RecyclerView.Adapter<MyGroupRecy
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Transaction mItem;
 
         public ViewHolder(View view) {
             super(view);

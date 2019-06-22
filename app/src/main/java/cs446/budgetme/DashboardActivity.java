@@ -9,19 +9,19 @@ import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.View;
 
 import cs446.budgetme.Adaptor.DashboardTabAdapter;
 import cs446.budgetme.Fragement.DashboardSummaryFragment;
-import cs446.budgetme.Fragement.DashboardTransactiondetailFragment;
-import cs446.budgetme.Fragement.GroupFragment;
+import cs446.budgetme.Fragement.DashboardProfileFragment;
+import cs446.budgetme.Fragement.DashboardTransDetailFragment;
 import cs446.budgetme.Model.Transaction;
 
 public class DashboardActivity extends AppCompatActivity
-        implements DashboardSummaryFragment.OnFragmentInteractionListener, DashboardTransactiondetailFragment.OnFragmentInteractionListener{
+        implements DashboardSummaryFragment.OnFragmentInteractionListener, DashboardProfileFragment.OnFragmentInteractionListener,
+        DashboardTransDetailFragment.OnListFragmentInteractionListener{
     private DashboardTabAdapter mAdapter;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
@@ -48,8 +48,8 @@ public class DashboardActivity extends AppCompatActivity
         //TODO: add profile of the user
 
         mAdapter.addFragment(new DashboardSummaryFragment(), getResources().getString(R.string.title_dashboard_tab_summary));
-        mAdapter.addFragment(new DashboardTransactiondetailFragment(),"Transaction Details");
-        mAdapter.addFragment(new GroupFragment(), "Profile");
+        mAdapter.addFragment(new DashboardProfileFragment(),"Profile");
+        mAdapter.addFragment(new DashboardTransDetailFragment(), "Transaction Detail");
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(2);
@@ -61,6 +61,9 @@ public class DashboardActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+    @Override
+    public void onListFragmentInteraction(Transaction item){}
+
 
     private void startAddTransaction() {
         Intent i = new Intent(this, AddTransactionActivity.class);
@@ -74,7 +77,7 @@ public class DashboardActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 Transaction transaction = (Transaction)data.getExtras().getParcelable("transaction");
                 ((DashboardSummaryFragment)mAdapter.getItem(0)).onTransactionAdded(transaction);
-                ((DashboardTransactiondetailFragment)mAdapter.getItem(1)).onTransactionAdded(transaction);
+                ((DashboardProfileFragment)mAdapter.getItem(1)).onTransactionAdded(transaction);
             }
         }
     }

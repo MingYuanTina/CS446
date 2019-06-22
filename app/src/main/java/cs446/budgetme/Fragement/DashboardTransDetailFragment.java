@@ -12,11 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.R;
-import cs446.budgetme.Fragement.dummy.DummyContent;
-import cs446.budgetme.Fragement.dummy.DummyContent.DummyItem;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A fragment representing a list of Items.
@@ -24,25 +23,27 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class GroupFragment extends Fragment {
+public class DashboardTransDetailFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private ArrayList<Transaction> mTransactions;
+    private RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public GroupFragment() {
+    public DashboardTransDetailFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static GroupFragment newInstance(int columnCount) {
-        GroupFragment fragment = new GroupFragment();
+    public static DashboardTransDetailFragment newInstance(int columnCount) {
+        DashboardTransDetailFragment fragment = new DashboardTransDetailFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -56,6 +57,7 @@ public class GroupFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+        mTransactions =  (ArrayList)Transaction.getFakeData();
     }
 
     @Override
@@ -66,16 +68,14 @@ public class GroupFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-
-            //Add value to dummyItem
+            recyclerView = (RecyclerView) view;
 
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyGroupRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mTransactions, mListener));
         }
         return view;
     }
@@ -110,6 +110,6 @@ public class GroupFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Transaction item);
     }
 }
