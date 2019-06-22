@@ -77,7 +77,7 @@ public class DashboardActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 Transaction transaction = (Transaction)data.getExtras().getParcelable("transaction");
                 ((DashboardSummaryFragment)mAdapter.getItem(0)).onTransactionAdded(transaction);
-                ((DashboardProfileFragment)mAdapter.getItem(1)).onTransactionAdded(transaction);
+                ((DashboardTransDetailFragment)mAdapter.getItem(2)).onTransactionAdded(transaction);
             }
         }
     }

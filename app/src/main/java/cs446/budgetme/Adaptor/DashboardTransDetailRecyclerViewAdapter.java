@@ -1,4 +1,4 @@
-package cs446.budgetme.Fragement;
+package cs446.budgetme.Adaptor;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,15 +31,16 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_group, parent, false);
+                .inflate(R.layout.fragment_transactionview, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getDate());
-        holder.mContentView.setText(mValues.get(position).getCost().toString());
+        holder.mDateView.setText(mValues.get(position).getDate());
+        holder.mCategoryView.setText(mValues.get(position).getCategoryName());
+        holder.mAmountView.setText(mValues.get(position).getCost().toString());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,20 +61,22 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final TextView mDateView;
+        public final TextView mCategoryView;
+        public final TextView mAmountView;
         public Transaction mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mDateView = (TextView) view.findViewById(R.id.transDate);
+            mCategoryView = (TextView) view.findViewById(R.id.transCategory);
+            mAmountView = (TextView) view.findViewById(R.id.transAmount);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString()+": " + mDateView.getText() + ", " +mCategoryView.getText()+", "+mAmountView.getText();
         }
     }
 }
