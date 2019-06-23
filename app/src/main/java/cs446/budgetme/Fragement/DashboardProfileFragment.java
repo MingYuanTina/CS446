@@ -1,6 +1,7 @@
 package cs446.budgetme.Fragement;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,7 +18,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
+import cs446.budgetme.DashboardActivity;
+import cs446.budgetme.Model.Transaction;
+import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.R;
 
 
@@ -43,6 +48,7 @@ public class DashboardProfileFragment extends Fragment {
     private ListView userGroupListView;
     private TextView usernameText;
     private ArrayAdapter<String> arrayAdapter;
+    private Button goalButton;
 
 
     private ArrayList<String> userGroupList;
@@ -99,6 +105,20 @@ public class DashboardProfileFragment extends Fragment {
          // userTotalAmmount = getView().findViewById(R.id.UserTotalAmount);
         // userAvatar = getView().findViewById(R.id.UserAvatar);
         // addGroupButton = getView().findViewById(R.id.AddGroupButton);
+
+        goalButton = getView().findViewById(R.id.CreateGoal);
+        goalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ((DashboardActivity)getActivity()).startGoalSetting();
+                } catch (Exception e) {
+
+                }
+            }
+        });
+
+        //create the group list
         arrayAdapter =  new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, userGroupList);
         userGroupListView = getView().findViewById(R.id.GroupList);
         updateGroupList();

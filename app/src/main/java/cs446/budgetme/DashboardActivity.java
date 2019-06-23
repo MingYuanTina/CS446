@@ -27,6 +27,7 @@ public class DashboardActivity extends AppCompatActivity
     private ViewPager mViewPager;
 
     private static final int REQUEST_CODE_ADD_TRANSACTION = 10000;
+    private static final int REQUEST_CODE_GOAL_SETTING = 11000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +81,11 @@ public class DashboardActivity extends AppCompatActivity
         startActivityForResult(i, REQUEST_CODE_ADD_TRANSACTION);
     }
 
+    public void startGoalSetting(){
+        Intent i = new Intent(this, GoalSettingActivity.class);
+        startActivityForResult(i, REQUEST_CODE_GOAL_SETTING);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
@@ -87,8 +93,11 @@ public class DashboardActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 Transaction transaction = (Transaction)data.getExtras().getParcelable("transaction");
                 ((DashboardSummaryFragment)mAdapter.getItem(0)).onTransactionAdded(transaction);
-                ((DashboardTransDetailFragment)mAdapter.getItem(2)).onTransactionAdded(transaction);
+                ((DashboardTransDetailFragment)mAdapter.getItem(1)).onTransactionAdded(transaction);
             }
+        }
+        else if (requestCode == REQUEST_CODE_GOAL_SETTING){
+
         }
     }
 }

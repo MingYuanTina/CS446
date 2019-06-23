@@ -17,6 +17,14 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.XAxis.XAxisPosition;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,13 +47,16 @@ public class DashboardSummaryFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int NUM_CATEGORY = 5;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private List<Transaction> mTransactions;
+    private List<Transaction> mGoal;
     private PieChart mPieView;
+    private HorizontalBarChart goalChartView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -79,12 +90,15 @@ public class DashboardSummaryFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mTransactions = Transaction.getFakeData();
+        mGoal = Transaction.getFakeData();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mPieView = getView().findViewById(R.id.summary_pie_chart);
+        goalChartView = getView().findViewById(R.id.summary_goal_chart);
         updateCharts();
+        updateGoalChart();
     }
 
     @Override
@@ -139,6 +153,8 @@ public class DashboardSummaryFragment extends Fragment {
     }
 
     private void updateCharts() {
+
+        //updated Pie Chart
         List<PieEntry> data = new ArrayList<>();
         HashMap<String, Double> map = new HashMap<>();
         for (Transaction t : mTransactions) {
@@ -155,7 +171,41 @@ public class DashboardSummaryFragment extends Fragment {
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
         PieData pieData = new PieData(dataSet);
+
         mPieView.setData(pieData);
         mPieView.invalidate();
+    }
+
+    private void updateGoalChart() {
+        //updated goal Chart
+
+        ArrayList<BarEntry> goalEntry = new ArrayList<>();
+        ArrayList<BarEntry> curExpenseEntry = new ArrayList<>();
+        double goalValue[] = new double[NUM_CATEGORY];
+        double curExpenseValue[] = new double[NUM_CATEGORY];
+
+
+        //calculate the sum for each category
+        for (Transaction t : mGoal) {
+            goalValue[t.getCategoryId()]+=t.getCost();
+        }
+        for (Transaction t : mTransactions) {
+            curExpenseValue[t.getCategoryId()]+=t.getCost();
+        }
+
+        for (int i = 0; i < NUM_CATEGORY; i++) {
+            goalEntry.add(new BarEntry(i, (float)goalValue[i]));
+            curExpenseEntry.add(new BarEntry(i, (float)curExpenseValue[i]));
+        }
+
+        BarDataSet goalDataSet = new BarDataSet(goalEntry, "Goal");
+        BarDataSet curExpenseDataSet= new BarDataSet(curExpenseEntry, "Current Expense");
+        goalDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        curExpenseDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        BarData data = new BarData(goalDataSet, curExpenseDataSet);
+
+        goalChartView.setData(data);
+        goalChartView.invalidate();
     }
 }
