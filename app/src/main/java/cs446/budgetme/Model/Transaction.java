@@ -42,11 +42,11 @@ public class Transaction implements Parcelable {
 
     public static List<Transaction> getFakeData() {
         List<TransactionCategory> transactionCategories = TransactionCategory.getDefaults();
-        Transaction t1 = new Transaction(new Date(2019, 5, 18), 23.01, "", transactionCategories.get(0));
-        Transaction t2 = new Transaction(new Date(2019, 5, 17), 1.32, "", transactionCategories.get(1));
-        Transaction t3 = new Transaction(new Date(2019, 5, 14), 4.68, "", transactionCategories.get(2));
-        Transaction t4 = new Transaction(new Date(2019, 5, 13), 5.79, "", transactionCategories.get(3));
-        Transaction t5 = new Transaction(new Date(2019, 5, 12), 8.00, "", transactionCategories.get(2));
+        Transaction t1 = new Transaction(new Date(/*2019*/ 119, 5, 18), 23.01, "", transactionCategories.get(0));
+        Transaction t2 = new Transaction(new Date(/*2019*/ 119, 5, 17), 1.32, "", transactionCategories.get(1));
+        Transaction t3 = new Transaction(new Date(/*2019*/ 119, 5, 14), 4.68, "", transactionCategories.get(2));
+        Transaction t4 = new Transaction(new Date(/*2019*/ 119, 5, 13), 5.79, "", transactionCategories.get(3));
+        Transaction t5 = new Transaction(new Date(/*2019*/ 119, 5, 12), 8.00, "", transactionCategories.get(2));
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(t1);
         transactions.add(t2);

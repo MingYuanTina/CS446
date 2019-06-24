@@ -62,11 +62,15 @@ public class AddTransactionActivity extends AppCompatActivity {
                     mCostEdit.removeTextChangedListener(this);
 
                     String cleanString = s.toString().replaceAll("[$,.]", "");
+                    double parsed = 0.0;
+                    String formatted = mCurrentCost;
+                    try {
+                        parsed = Double.parseDouble(cleanString);
+                        formatted = NumberFormat.getCurrencyInstance().format((parsed/100));
+                        mCurrentCost = formatted;
+                    } catch (Exception e){
 
-                    double parsed = Double.parseDouble(cleanString);
-                    String formatted = NumberFormat.getCurrencyInstance().format((parsed/100));
-
-                    mCurrentCost = formatted;
+                    }
                     mCostEdit.setText(formatted);
                     mCostEdit.setSelection(formatted.length());
 
