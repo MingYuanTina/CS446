@@ -97,7 +97,10 @@ public class DashboardActivity extends AppCompatActivity
             }
         }
         else if (requestCode == REQUEST_CODE_GOAL_SETTING){
-
+            if (resultCode == RESULT_OK) {
+                Transaction goal = (Transaction)data.getExtras().getParcelable("goal");
+                ((DashboardSummaryFragment)mAdapter.getItem(0)).onGoalAdded(goal);
+            }
         }
     }
 }

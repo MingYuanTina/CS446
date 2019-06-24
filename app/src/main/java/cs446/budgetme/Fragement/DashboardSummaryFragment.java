@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -48,6 +49,7 @@ public class DashboardSummaryFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final int NUM_CATEGORY = 5;
+    private static final float BAR_WIDTH = 0.2f;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -105,7 +107,9 @@ public class DashboardSummaryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard_summary, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_dashboard_summary, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -150,8 +154,13 @@ public class DashboardSummaryFragment extends Fragment {
     public void onTransactionAdded(Transaction transaction) {
         mTransactions.add(transaction);
         updateCharts();
+        updateGoalChart();
     }
 
+    public void onGoalAdded(Transaction transaction) {
+        mGoal.add(transaction);
+        updateGoalChart();
+    }
     private void updateCharts() {
 
         //updated Pie Chart
@@ -177,13 +186,11 @@ public class DashboardSummaryFragment extends Fragment {
     }
 
     private void updateGoalChart() {
-        //updated goal Chart
 
-        ArrayList<BarEntry> goalEntry = new ArrayList<>();
+        ArrayList<BarEntry> precentCompeletion = new ArrayList<>();
         ArrayList<BarEntry> curExpenseEntry = new ArrayList<>();
         double goalValue[] = new double[NUM_CATEGORY];
         double curExpenseValue[] = new double[NUM_CATEGORY];
-
 
         //calculate the sum for each category
         for (Transaction t : mGoal) {
@@ -194,17 +201,20 @@ public class DashboardSummaryFragment extends Fragment {
         }
 
         for (int i = 0; i < NUM_CATEGORY; i++) {
-            goalEntry.add(new BarEntry(i, (float)goalValue[i]));
-            curExpenseEntry.add(new BarEntry(i, (float)curExpenseValue[i]));
+            precentCompeletion.add( new BarEntry(i, (float)(curExpenseValue[i]/goalValue[i])));
         }
 
-        BarDataSet goalDataSet = new BarDataSet(goalEntry, "Goal");
-        BarDataSet curExpenseDataSet= new BarDataSet(curExpenseEntry, "Current Expense");
-        goalDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        curExpenseDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
-        BarData data = new BarData(goalDataSet, curExpenseDataSet);
+        BarDataSet progressDataSet = new BarDataSet(precentCompeletion, "Goal Progress");
 
+        progressDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        BarData data = new BarData(progressDataSet);
+        data.setBarWidth(BAR_WIDTH);
+        goalChartView.getLegend().setEnabled(false);
+        goalChartView.getXAxis().setEnabled(false);
+        goalChartView.getAxisLeft().setAxisMaximum(1);
+        //goalChartView.getAxisLeft().setAxisMinimum(1);
+        goalChartView.getAxisRight().setEnabled(false);
         goalChartView.setData(data);
         goalChartView.invalidate();
     }
