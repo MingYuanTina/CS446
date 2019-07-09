@@ -3,36 +3,21 @@ package cs446.budgetme.Fragement;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
-
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
-
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.XAxis.XAxisPosition;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.charts.PieChart;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import cs446.budgetme.R;
 import cs446.budgetme.Model.Transaction;
+import cs446.budgetme.Model.TransactionsDataSummary;
+import cs446.budgetme.R;
+import cs446.budgetme.Widgets.BarChartObserver;
+import cs446.budgetme.Widgets.PieChartObserver;
 
 
 /**
@@ -55,9 +40,7 @@ public class DashboardSummaryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private List<Transaction> mTransactions;
-    private List<Transaction> mGoal;
-    private PieChart mPieView;
+    private TransactionsDataSummary mTransactionsDataSummary;
     private HorizontalBarChart goalChartView;
 
     private OnFragmentInteractionListener mListener;
@@ -91,16 +74,14 @@ public class DashboardSummaryFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        mTransactions = Transaction.getFakeData();
-        mGoal = Transaction.getFakeData();
+        mTransactionsDataSummary = new TransactionsDataSummary(Transaction.getFakeData());
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mPieView = getView().findViewById(R.id.summary_pie_chart);
-        goalChartView = getView().findViewById(R.id.summary_goal_chart);
-        updateCharts();
-        updateGoalChart();
+        mTransactionsDataSummary.register(new PieChartObserver((PieChart)getView().findViewById(R.id.summary_pie_chart), mTransactionsDataSummary));
+        mTransactionsDataSummary.register(new BarChartObserver((HorizontalBarChart)getView().findViewById(R.id.summary_goal_chart), mTransactionsDataSummary));
+        mTransactionsDataSummary.notifyObservers();
     }
 
     @Override
@@ -152,70 +133,10 @@ public class DashboardSummaryFragment extends Fragment {
     }
 
     public void onTransactionAdded(Transaction transaction) {
-        mTransactions.add(transaction);
-        updateCharts();
-        updateGoalChart();
+        mTransactionsDataSummary.addTransaction(transaction);
     }
 
     public void onGoalAdded(Transaction transaction) {
-        mGoal.add(transaction);
-        updateGoalChart();
-    }
-    private void updateCharts() {
-
-        //updated Pie Chart
-        List<PieEntry> data = new ArrayList<>();
-        HashMap<String, Double> map = new HashMap<>();
-        for (Transaction t : mTransactions) {
-            if (map.containsKey(t.getCategoryName())) {
-                map.put(t.getCategoryName(), map.get(t.getCategoryName()) + t.getCost());
-            } else {
-                map.put(t.getCategoryName(), t.getCost());
-            }
-        }
-        for (Map.Entry<String, Double> entry : map.entrySet()) {
-            data.add(new PieEntry(entry.getValue().floatValue(), entry.getKey()));
-        }
-        PieDataSet dataSet = new PieDataSet(data, "Category Spending");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-
-        PieData pieData = new PieData(dataSet);
-
-        mPieView.setData(pieData);
-        mPieView.invalidate();
-    }
-
-    private void updateGoalChart() {
-
-        ArrayList<BarEntry> precentCompeletion = new ArrayList<>();
-        ArrayList<BarEntry> curExpenseEntry = new ArrayList<>();
-        double goalValue[] = new double[NUM_CATEGORY];
-        double curExpenseValue[] = new double[NUM_CATEGORY];
-
-        //calculate the sum for each category
-        for (Transaction t : mGoal) {
-            goalValue[t.getCategoryId()]+=t.getCost();
-        }
-        for (Transaction t : mTransactions) {
-            curExpenseValue[t.getCategoryId()]+=t.getCost();
-        }
-
-        for (int i = 0; i < NUM_CATEGORY; i++) {
-            precentCompeletion.add( new BarEntry(i, (float)(curExpenseValue[i]/goalValue[i])));
-        }
-
-
-        BarDataSet progressDataSet = new BarDataSet(precentCompeletion, "Goal Progress");
-
-        progressDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        BarData data = new BarData(progressDataSet);
-        data.setBarWidth(BAR_WIDTH);
-        goalChartView.getLegend().setEnabled(false);
-        goalChartView.getXAxis().setEnabled(false);
-        goalChartView.getAxisLeft().setAxisMaximum(1);
-        //goalChartView.getAxisLeft().setAxisMinimum(1);
-        goalChartView.getAxisRight().setEnabled(false);
-        goalChartView.setData(data);
-        goalChartView.invalidate();
+        mTransactionsDataSummary.addGoal(transaction);
     }
 }
