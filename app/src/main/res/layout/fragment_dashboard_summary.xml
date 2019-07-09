@@ -18,12 +18,11 @@
            android:id="@+id/summary_goal_chart"
            android:layout_width="match_parent"
            android:layout_below="@+id/summary_pie_chart"
+           android:layout_marginTop="20pt"
            android:layout_height="200pt" >
 
        </com.github.mikephil.charting.charts.HorizontalBarChart>
 
    </RelativeLayout>
-
-
 
 </ScrollView>
