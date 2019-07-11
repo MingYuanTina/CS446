@@ -12,24 +12,23 @@ import java.util.List;
 import java.util.Map;
 
 import cs446.budgetme.Model.Observer;
-import cs446.budgetme.Model.Subject;
 import cs446.budgetme.Model.Transaction;
-import cs446.budgetme.Model.TransactionsDataSummary;
+import cs446.budgetme.Model.SpendingsDataSummary;
 
 public class PieChartObserver implements Observer {
     private PieChart mPieChart;
-    TransactionsDataSummary mTransactionsDataSummary;
+    SpendingsDataSummary mSpendingsDataSummary;
 
-    public PieChartObserver(PieChart pieChart, TransactionsDataSummary transactionsDataSummary) {
+    public PieChartObserver(PieChart pieChart, SpendingsDataSummary spendingsDataSummary) {
         mPieChart = pieChart;
-        mTransactionsDataSummary = transactionsDataSummary;
+        mSpendingsDataSummary = spendingsDataSummary;
     }
 
     @Override
     public void update() {
         List<PieEntry> data = new ArrayList<>();
         HashMap<String, Double> map = new HashMap<>();
-        for (Transaction t : mTransactionsDataSummary.getTransactions()) {
+        for (Transaction t : mSpendingsDataSummary.getTransactions()) {
             if (map.containsKey(t.getCategoryName())) {
                 map.put(t.getCategoryName(), map.get(t.getCategoryName()) + t.getCost());
             } else {

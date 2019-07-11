@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-public class TransactionsDataSummary implements Subject {
+public class SpendingsDataSummary implements Subject {
 
     ArrayList<Observer> observerList;
 
@@ -13,14 +13,15 @@ public class TransactionsDataSummary implements Subject {
     Date fromDate;
     HashSet<TransactionCategory> excludeList;
 
-    List<Transaction> mGoal; // this should not be a list, maybe a mapping from category to cost, or literally its own class
+    List<Goal> goals; // this should not be a list, maybe a mapping from category to cost, or literally its own class
 
-    public TransactionsDataSummary(List<Transaction> transactions) {
+    public SpendingsDataSummary(List<Transaction> transactions) {
         observerList = new ArrayList<>();
         excludeList = new HashSet<>();
         this.transactions = transactions;
+        goals = Goal.getFakeData();
 
-        mGoal = Transaction.getFakeData();
+        //mGoal = Transaction.getFakeData();
     }
     @Override
     public void register(Observer observer) {
@@ -48,12 +49,12 @@ public class TransactionsDataSummary implements Subject {
         return transactions;
     }
 
-    public List<Transaction> getGoals() {
-        return mGoal;
+    public List<Goal> getGoals() {
+        return goals;
     }
 
-    public void addGoal(Transaction t) {
-        mGoal.add(t);
+    public void addGoal(Goal goal) {
+        goals.add(goal);
         notifyObservers();
     }
 }

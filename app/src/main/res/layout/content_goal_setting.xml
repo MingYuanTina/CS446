@@ -19,15 +19,15 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <cs446.budgetme.EndOnlyEditText
-            android:id="@+id/goal_setting_cost"
+            android:id="@+id/goal_setting_limit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/label_cost"/>
+            android:hint="@string/label_limit"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/goal_setting_date_layout"
+        android:id="@+id/goal_setting_start_date_layout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -36,11 +36,29 @@
         app:layout_constraintTop_toBottomOf="@id/goal_setting_cost_layout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/goal_setting_date"
+            android:id="@+id/goal_setting_start_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="false"
-            android:hint="@string/label_date" />
+            android:hint="@string/label_start_date" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/goal_setting_end_date_layout"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@id/goal_setting_start_date_layout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/goal_setting_end_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:hint="@string/label_end_date" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -50,16 +68,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/goal_setting_date_layout"
-        android:hint="@string/label_category"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        app:layout_constraintTop_toBottomOf="@id/goal_setting_end_date_layout">
 
-        <AutoCompleteTextView
-            android:id="@+id/goal_setting_category"
-            android:editable="false"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/goal_setting_categories"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
+            android:layout_height="wrap_content"
+            android:hint="@string/label_categories"
+            android:lines="1"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:focusable="false"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 

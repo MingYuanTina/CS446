@@ -8,19 +8,20 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
+import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Observer;
 import cs446.budgetme.Model.Transaction;
-import cs446.budgetme.Model.TransactionsDataSummary;
+import cs446.budgetme.Model.SpendingsDataSummary;
 
 public class BarChartObserver implements Observer {
     private HorizontalBarChart mBarChart;
-    TransactionsDataSummary mTransactionsDataSummary;
+    SpendingsDataSummary mSpendingsDataSummary;
     private static final int NUM_CATEGORY = 5;
     private static final float BAR_WIDTH = 0.2f;
 
-    public BarChartObserver(HorizontalBarChart barChart, TransactionsDataSummary transactionsDataSummary) {
+    public BarChartObserver(HorizontalBarChart barChart, SpendingsDataSummary spendingsDataSummary) {
         mBarChart = barChart;
-        mTransactionsDataSummary = transactionsDataSummary;
+        mSpendingsDataSummary = spendingsDataSummary;
     }
 
     @Override
@@ -31,10 +32,10 @@ public class BarChartObserver implements Observer {
         double curExpenseValue[] = new double[NUM_CATEGORY];
 
         //calculate the sum for each category
-        for (Transaction t : mTransactionsDataSummary.getGoals()) {
+        /*for (Goal t : mSpendingsDataSummary.getGoals()) {
             goalValue[t.getCategoryId()]+=t.getCost();
-        }
-        for (Transaction t : mTransactionsDataSummary.getTransactions()) {
+        }*/
+        for (Transaction t : mSpendingsDataSummary.getTransactions()) {
             curExpenseValue[t.getCategoryId()]+=t.getCost();
         }
 

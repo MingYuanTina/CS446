@@ -13,8 +13,9 @@ import androidx.fragment.app.Fragment;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.PieChart;
 
+import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Transaction;
-import cs446.budgetme.Model.TransactionsDataSummary;
+import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.R;
 import cs446.budgetme.Widgets.BarChartObserver;
 import cs446.budgetme.Widgets.PieChartObserver;
@@ -40,8 +41,7 @@ public class DashboardSummaryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private TransactionsDataSummary mTransactionsDataSummary;
-    private HorizontalBarChart goalChartView;
+    private SpendingsDataSummary mSpendingsDataSummary;
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,14 +74,14 @@ public class DashboardSummaryFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        mTransactionsDataSummary = new TransactionsDataSummary(Transaction.getFakeData());
+        mSpendingsDataSummary = new SpendingsDataSummary(Transaction.getFakeData());
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mTransactionsDataSummary.register(new PieChartObserver((PieChart)getView().findViewById(R.id.summary_pie_chart), mTransactionsDataSummary));
-        mTransactionsDataSummary.register(new BarChartObserver((HorizontalBarChart)getView().findViewById(R.id.summary_goal_chart), mTransactionsDataSummary));
-        mTransactionsDataSummary.notifyObservers();
+        mSpendingsDataSummary.register(new PieChartObserver((PieChart)getView().findViewById(R.id.summary_pie_chart), mSpendingsDataSummary));
+        mSpendingsDataSummary.register(new BarChartObserver((HorizontalBarChart)getView().findViewById(R.id.summary_goal_chart), mSpendingsDataSummary));
+        mSpendingsDataSummary.notifyObservers();
     }
 
     @Override
@@ -133,10 +133,10 @@ public class DashboardSummaryFragment extends Fragment {
     }
 
     public void onTransactionAdded(Transaction transaction) {
-        mTransactionsDataSummary.addTransaction(transaction);
+        mSpendingsDataSummary.addTransaction(transaction);
     }
 
-    public void onGoalAdded(Transaction transaction) {
-        mTransactionsDataSummary.addGoal(transaction);
+    public void onGoalAdded(Goal goal) {
+        mSpendingsDataSummary.addGoal(goal);
     }
 }

@@ -17,6 +17,7 @@ import cs446.budgetme.Adaptor.DashboardTabAdapter;
 import cs446.budgetme.Fragement.DashboardSummaryFragment;
 import cs446.budgetme.Fragement.DashboardProfileFragment;
 import cs446.budgetme.Fragement.DashboardTransDetailFragment;
+import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Transaction;
 
 public class DashboardActivity extends AppCompatActivity
@@ -98,7 +99,7 @@ public class DashboardActivity extends AppCompatActivity
         }
         else if (requestCode == REQUEST_CODE_GOAL_SETTING){
             if (resultCode == RESULT_OK) {
-                Transaction goal = (Transaction)data.getExtras().getParcelable("goal");
+                Goal goal = (Goal)data.getExtras().getParcelable("goal");
                 ((DashboardSummaryFragment)mAdapter.getItem(0)).onGoalAdded(goal);
             }
         }
