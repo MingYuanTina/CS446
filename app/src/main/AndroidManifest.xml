@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cs446.budgetme">
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -9,6 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ReceiptOCRActivity">
+        </activity>
         <activity
             android:name=".DashboardActivity"
             android:label="@string/title_activity_dashboard"
@@ -22,9 +25,9 @@
         <activity
             android:name=".AddTransactionActivity"
             android:label="@string/title_activity_add_transaction"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".LoginActivity"> </activity>
-        <activity android:name=".GoalSettingActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".GoalSettingActivity" />
     </application>
 
 </manifest>

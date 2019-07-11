@@ -1,4 +1,6 @@
 package cs446.budgetme.ReceiptOCR;
 
-public class IOCRCallBack {
+public interface IOCRCallBack {
+
+    void getOCRCallBackResult(String response);
 }
