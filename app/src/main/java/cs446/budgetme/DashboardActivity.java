@@ -38,6 +38,7 @@ public class DashboardActivity extends AppCompatActivity
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //toolbar.setNavigationIcon(R.drawable.ic_filter_list_white_24dp);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="Date"
+        android:id="@+id/menu_summary_date_range"
+        android:icon="@drawable/ic_date_range_white_24dp"
+        app:showAsAction="always"/>
+    <item
+        android:title="Filter"
+        android:id="@+id/menu_summary_filter"
+        android:icon="@drawable/ic_filter_list_white_24dp"
+        app:showAsAction="always"/>
+</menu>
