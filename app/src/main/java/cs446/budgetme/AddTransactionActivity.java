@@ -16,6 +16,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -124,17 +125,24 @@ public class AddTransactionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
+                    // Required Fields
                     String cleanString = mCostEdit.getText().toString().replaceAll("[$,]", "");
                     double parsedCost = Double.parseDouble(cleanString);
                     Date date = mCalendar.getTime();
                     TransactionCategory transactionCategory = transactionCategories.get(mCategoryIndex);
-                    String note = mNoteEdit.getText().toString();
-                    Transaction transaction = new Transaction(date, parsedCost, note, transactionCategory);
+                    Transaction.TransactionBuilder builder = new Transaction.TransactionBuilder(parsedCost, date, transactionCategory);
+
+                    // Optional Fields
+                    if (!mNoteEdit.getText().toString().isEmpty()) {
+                        builder.setNote(mNoteEdit.getText().toString());
+                    }
 
                     Intent i = new Intent();
-                    i.putExtra("transaction", transaction);
+                    i.putExtra("transaction", builder.build());
                     setResult(RESULT_OK, i);
                     finish();
+                } catch (IllegalStateException e) {
+                    Toast.makeText(AddTransactionActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
 
                 }

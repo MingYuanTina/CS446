@@ -10,16 +10,46 @@ import java.util.Date;
 import java.util.List;
 
 public class Transaction implements Parcelable {
-    private Date mDate;
     private Double mCost;
-    private String mNote;
+    private Date mDate;
     private TransactionCategory mCategory;
+    private String mNote;
 
-    public Transaction(Date date, Double cost, String note, TransactionCategory category) {
-        mDate = date;
-        mCost = cost;
-        mNote = note;
-        mCategory = category;
+    private Transaction(TransactionBuilder builder) {
+        this.mCost = builder.mCost;
+        this.mDate = builder.mDate;
+        this.mCategory = builder.mCategory;
+        this.mNote = builder.mNote;
+    }
+
+    public static class TransactionBuilder implements Builder<Transaction>{
+        private Date mDate;
+        private Double mCost;
+        private String mNote;
+        private TransactionCategory mCategory;
+
+        public TransactionBuilder(Double cost, Date date, TransactionCategory category) {
+            mCost = cost;
+            mDate = date;
+            mCategory = category;
+        }
+
+        public TransactionBuilder setNote(String note) {
+            mNote = note;
+            return this;
+        }
+
+        @Override
+        public Transaction build() throws IllegalStateException {
+            if (mCost == null || mCost < 0) {
+                throw new IllegalStateException("Invalid Cost");
+            } else if (mDate == null) {
+                throw new IllegalStateException("Invalid Date");
+            } else if (mCategory == null) {
+                throw new IllegalStateException("Invalid Category");
+            }
+            return new Transaction(this);
+        }
     }
 
     public String getCategoryName() {
@@ -42,17 +72,22 @@ public class Transaction implements Parcelable {
 
     public static List<Transaction> getFakeData() {
         List<TransactionCategory> transactionCategories = TransactionCategory.getDefaults();
-        Transaction t1 = new Transaction(new Date(/*2019*/ 119, 5, 18), 23.01, "", transactionCategories.get(0));
-        Transaction t2 = new Transaction(new Date(/*2019*/ 119, 5, 17), 1.32, "", transactionCategories.get(1));
-        Transaction t3 = new Transaction(new Date(/*2019*/ 119, 5, 14), 4.68, "", transactionCategories.get(2));
-        Transaction t4 = new Transaction(new Date(/*2019*/ 119, 5, 13), 5.79, "", transactionCategories.get(3));
-        Transaction t5 = new Transaction(new Date(/*2019*/ 119, 5, 12), 8.00, "", transactionCategories.get(2));
         List<Transaction> transactions = new ArrayList<>();
-        transactions.add(t1);
-        transactions.add(t2);
-        transactions.add(t3);
-        transactions.add(t4);
-        transactions.add(t5);
+        try {
+            Transaction t1 = new TransactionBuilder(23.01, new Date(/*2019*/ 119, 5, 18), transactionCategories.get(0)).build();
+            Transaction t2 = new TransactionBuilder(1.32, new Date(/*2019*/ 119, 5, 17), transactionCategories.get(1)).setNote("HI").build();
+            Transaction t3 = new TransactionBuilder(4.68, new Date(/*2019*/ 119, 5, 14), transactionCategories.get(2)).build();
+            Transaction t4 = new TransactionBuilder(5.79, new Date(/*2019*/ 119, 5, 13), transactionCategories.get(3)).build();
+            Transaction t5 = new TransactionBuilder(8.00, new Date(/*2019*/ 119, 5, 12), transactionCategories.get(2)).build();
+
+            transactions.add(t1);
+            transactions.add(t2);
+            transactions.add(t3);
+            transactions.add(t4);
+            transactions.add(t5);
+        } catch (IllegalStateException e) {
+            // Handle illegal state.
+        }
         return transactions;
     }
 
@@ -63,8 +98,8 @@ public class Transaction implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeSerializable(mDate);
         out.writeDouble(mCost);
+        out.writeSerializable(mDate);
         out.writeParcelable(mCategory, flags);
         out.writeString(mNote);
     }
@@ -82,8 +117,8 @@ public class Transaction implements Parcelable {
 
     // example constructor that takes a Parcel and gives you an object populated with it's values
     private Transaction(Parcel in) {
-        mDate = (Date)in.readSerializable();
         mCost = in.readDouble();
+        mDate = (Date)in.readSerializable();
         mCategory = in.readParcelable(TransactionCategory.class.getClassLoader());
         mNote = in.readString();
     }

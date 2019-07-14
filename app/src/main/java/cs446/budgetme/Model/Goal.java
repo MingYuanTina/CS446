@@ -8,18 +8,52 @@ import java.util.Date;
 import java.util.List;
 
 public class Goal implements Parcelable {
+    private Double mLimit;
     private Date mStartDate;
     private Date mEndDate;
-    private List<TransactionCategory> applicableCategories;
-    private Double mTotalSpendings;
-    private Double mCurrentSpendings;
+    private List<TransactionCategory> mCategories;
+    private String mNote;
 
-    public Goal(Date startDate, Date endDate, List<TransactionCategory> categories, Double totalSpendings, Double currentSpendings) {
-        mStartDate = startDate;
-        mEndDate = endDate;
-        applicableCategories = categories;
-        mTotalSpendings = totalSpendings;
-        mCurrentSpendings = currentSpendings;
+    private Goal(GoalBuilder builder) {
+        this.mLimit = builder.mLimit;
+        this.mStartDate = builder.mStartDate;
+        this.mEndDate = builder.mEndDate;
+        this.mCategories = builder.mCategories;
+        this.mNote = builder.mNote;
+    }
+
+    public static class GoalBuilder implements Builder<Goal> {
+        private Double mLimit;
+        private Date mStartDate;
+        private Date mEndDate;
+        private List<TransactionCategory> mCategories;
+        private String mNote;
+
+        public GoalBuilder(Double limit, Date startDate, Date endDate, List<TransactionCategory> categories) {
+            mLimit = limit;
+            mStartDate = startDate;
+            mEndDate = endDate;
+            mCategories = categories;
+        }
+
+        // TODO Perhaps can make mCategories optional.
+
+        public GoalBuilder setNote(String note) {
+            mNote = note;
+            return this;
+        }
+
+        @Override
+        public Goal build() throws IllegalStateException {
+            if (mLimit < 0) {
+                throw new IllegalStateException("Invalid limit");
+            } else if (mStartDate == null) {
+                throw new IllegalStateException("Invalid start date");
+            } else if (mEndDate == null) {
+                throw new IllegalStateException("Invalid end date");
+            }
+            return new Goal(this);
+        }
     }
 
     @Override
@@ -29,11 +63,10 @@ public class Goal implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
+        out.writeDouble(mLimit);
         out.writeSerializable(mStartDate);
         out.writeSerializable(mEndDate);
-        out.writeTypedList(applicableCategories);
-        out.writeDouble(mTotalSpendings);
-        out.writeDouble(mCurrentSpendings);
+        out.writeTypedList(mCategories);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -49,17 +82,16 @@ public class Goal implements Parcelable {
 
     // example constructor that takes a Parcel and gives you an object populated with it's values
     private Goal(Parcel in) {
+        mLimit = in.readDouble();
         mStartDate = (Date)in.readSerializable();
         mEndDate = (Date)in.readSerializable();
-        applicableCategories = new ArrayList<>();
-        in.readTypedList(applicableCategories, TransactionCategory.CREATOR);
-        mTotalSpendings = in.readDouble();
-        mCurrentSpendings = in.readDouble();
+        mCategories = new ArrayList<>();
+        in.readTypedList(mCategories, TransactionCategory.CREATOR);
     }
 
     public boolean affectedBy(Transaction transaction) {
-        if (applicableCategories.isEmpty()) return true;
-        for (TransactionCategory category : applicableCategories) {
+        if (mCategories.isEmpty()) return true;
+        for (TransactionCategory category : mCategories) {
             if (transaction.getCategoryId() == category.getId()) {
                 return true;
             }
@@ -70,11 +102,16 @@ public class Goal implements Parcelable {
     public static List<Goal> getFakeData() {
         List<TransactionCategory> transactionCategories = TransactionCategory.getDefaults();
         List<Goal> goals = new ArrayList<>();
-        for (int i = 0; i<3; i++) {
-            List<TransactionCategory> thisList = new ArrayList<TransactionCategory>(transactionCategories);
-            thisList.remove(i);
-            goals.add(new Goal(new Date(119, 5, 8), new Date(119, 6, 8), thisList, 300.0, 0.0));
+        try {
+            for (int i = 0; i<3; i++) {
+                List<TransactionCategory> thisList = new ArrayList<TransactionCategory>(transactionCategories);
+                thisList.remove(i);
+                goals.add(new GoalBuilder(300.0, new Date(119, 5, 8), new Date(119, 6, 8), thisList).build());
+            }
+        } catch (IllegalStateException e) {
+            // Handle illegal state.
         }
+
         return goals;
     }
 }
