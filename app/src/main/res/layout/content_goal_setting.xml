@@ -79,7 +79,8 @@
             android:scrollHorizontally="true"
             android:ellipsize="end"
             android:singleLine="true"
-            android:focusable="false"/>
+            android:focusable="false"
+            android:text="@string/label_all_categories"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 

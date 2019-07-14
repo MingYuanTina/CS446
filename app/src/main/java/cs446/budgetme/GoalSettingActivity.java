@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -46,7 +47,7 @@ public class GoalSettingActivity extends AppCompatActivity {
     private EditText mCategoriesEdit;
     private Button mButton;
     private AlertDialog mDialog;
-    private List<TransactionCategory> mChosenCategories;
+    private List<TransactionCategory> mChosenCategories = new ArrayList<>();
     private ArrayList<TransactionCategory> availableCategories;
     private ArrayList<Boolean> mCheckedItems;
 
@@ -144,11 +145,12 @@ public class GoalSettingActivity extends AppCompatActivity {
         });
 
         availableCategories = TransactionCategory.getDefaults(); // This should be the user's available categories.
+        mCheckedItems = new ArrayList<>(Collections.nCopies(availableCategories.size() + 1, true));
         mCategoriesEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ArrayList<String> items = new ArrayList<>();
-                items.add("Select All");
+                items.add(getResources().getString(R.string.label_all_categories));
                 for (TransactionCategory category : availableCategories) {
                     items.add(category.toString());
                 }
@@ -158,22 +160,21 @@ public class GoalSettingActivity extends AppCompatActivity {
                 builder.setTitle("Choose items");
 
                 final boolean[] checkedItems = new boolean[items.size()]; //this will checked the items when user open the dialog
-                if (mCheckedItems == null) {
-                    Arrays.fill(checkedItems, true);
-                } else {
-                    checkedItems[0] = true;
-                    for (int i = 0; i<mCheckedItems.size(); i++) {
-                        checkedItems[i+1] = mCheckedItems.get(i);
-                    }
+                for (int i = 0; i<mCheckedItems.size(); i++) {
+                    checkedItems[i] = mCheckedItems.get(i);
                 }
                 builder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which, boolean isChecked) {
                         if (which == 0) {
-                            checkedItems[0] = isChecked;
                             for (int i = 1; i < listItems.length; i++) {
                                 checkedItems[i] = isChecked;
                                 mDialog.getListView().setItemChecked(i, isChecked);
+                            }
+                        } else {
+                            if (!isChecked) {
+                                checkedItems[0] = isChecked;
+                                mDialog.getListView().setItemChecked(0, isChecked);
                             }
                         }
                         //Toast.makeText(GoalSettingActivity.this, "Position: " + which + " Value: " + listItems[which] + " State: " + (isChecked ? "checked" : "unchecked"), Toast.LENGTH_LONG).show();
@@ -185,16 +186,22 @@ public class GoalSettingActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mChosenCategories = new ArrayList<>();
-                        mCheckedItems = new ArrayList<>();
                         ArrayList<String> text = new ArrayList<>();
-                        for (int i = 1; i < checkedItems.length; i++) {
-                            if (checkedItems[i]) {
-                                mChosenCategories.add(availableCategories.get(i-1));
-                                text.add(availableCategories.get(i-1).toString());
-                            }
-                            mCheckedItems.add(checkedItems[i]);
+                        // Copy all the values into mCheckedItems
+                        for (int i = 0; i < checkedItems.length; i++) {
+                            mCheckedItems.set(i, checkedItems[i]);
                         }
-                        mCategoriesEdit.setText(TextUtils.join(", ", text));
+                        if (mCheckedItems.get(0)) {
+                            mCategoriesEdit.setText(getResources().getString(R.string.label_all_categories));
+                        } else {
+                            for (int i = 1; i < checkedItems.length; i++) {
+                                if (checkedItems[i]) {
+                                    mChosenCategories.add(availableCategories.get(i-1));
+                                    text.add(availableCategories.get(i-1).toString());
+                                }
+                            }
+                            mCategoriesEdit.setText(TextUtils.join(", ", text));
+                        }
                     }
                 });
 
@@ -217,7 +224,11 @@ public class GoalSettingActivity extends AppCompatActivity {
                     // Required Categories
                     String cleanString = mLimitEdit.getText().toString().replaceAll("[$,]", "");
                     double parsedCost = Double.parseDouble(cleanString);
-                    Goal.GoalBuilder builder = new Goal.GoalBuilder(parsedCost, mStartDate, mEndDate, mChosenCategories);
+                    Goal.GoalBuilder builder = new Goal.GoalBuilder(parsedCost, mStartDate, mEndDate);
+
+                    if (!mChosenCategories.isEmpty()) {
+                        builder.setCategories(mChosenCategories);
+                    }
 
                     Intent i = new Intent();
                     i.putExtra("goal", builder.build());

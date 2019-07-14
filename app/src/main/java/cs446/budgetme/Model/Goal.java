@@ -29,17 +29,21 @@ public class Goal implements Parcelable {
         private List<TransactionCategory> mCategories;
         private String mNote;
 
-        public GoalBuilder(Double limit, Date startDate, Date endDate, List<TransactionCategory> categories) {
+        public GoalBuilder(Double limit, Date startDate, Date endDate) {
             mLimit = limit;
             mStartDate = startDate;
             mEndDate = endDate;
-            mCategories = categories;
         }
 
         // TODO Perhaps can make mCategories optional.
 
         public GoalBuilder setNote(String note) {
             mNote = note;
+            return this;
+        }
+
+        public GoalBuilder setCategories(List<TransactionCategory> categories) {
+            mCategories = categories;
             return this;
         }
 
@@ -106,7 +110,7 @@ public class Goal implements Parcelable {
             for (int i = 0; i<3; i++) {
                 List<TransactionCategory> thisList = new ArrayList<TransactionCategory>(transactionCategories);
                 thisList.remove(i);
-                goals.add(new GoalBuilder(300.0, new Date(119, 5, 8), new Date(119, 6, 8), thisList).build());
+                goals.add(new GoalBuilder(300.0, new Date(119, 5, 8), new Date(119, 6, 8)).setCategories(thisList).build());
             }
         } catch (IllegalStateException e) {
             // Handle illegal state.
