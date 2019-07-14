@@ -35,8 +35,6 @@ public class Goal implements Parcelable {
             mEndDate = endDate;
         }
 
-        // TODO Perhaps can make mCategories optional.
-
         public GoalBuilder setNote(String note) {
             mNote = note;
             return this;
