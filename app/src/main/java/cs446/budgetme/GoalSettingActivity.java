@@ -214,14 +214,17 @@ public class GoalSettingActivity extends AppCompatActivity {
                     Toast.makeText(GoalSettingActivity.this, "Please choose applicable categories for this goal.", Toast.LENGTH_LONG).show();
                 }
                 try {
+                    // Required Categories
                     String cleanString = mLimitEdit.getText().toString().replaceAll("[$,]", "");
                     double parsedCost = Double.parseDouble(cleanString);
-                    Goal goal = new Goal(mStartDate, mEndDate, mChosenCategories, parsedCost, 0.0);
+                    Goal.GoalBuilder builder = new Goal.GoalBuilder(parsedCost, mStartDate, mEndDate, mChosenCategories);
 
                     Intent i = new Intent();
-                    i.putExtra("goal", goal);
+                    i.putExtra("goal", builder.build());
                     setResult(RESULT_OK, i);
                     finish();
+                } catch (IllegalStateException e) {
+
                 } catch (Exception e) {
 
                 }
