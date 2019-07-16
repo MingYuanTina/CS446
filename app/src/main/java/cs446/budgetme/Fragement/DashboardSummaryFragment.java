@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.PieChart;
 
+import java.util.Calendar;
 import java.util.List;
 
 import cs446.budgetme.Model.Goal;
@@ -25,6 +27,7 @@ import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.R;
 import cs446.budgetme.Widgets.BarChartObserver;
+import cs446.budgetme.Widgets.DateRangePicker;
 import cs446.budgetme.Widgets.MultipleChoiceWithSelectAllDialog;
 import cs446.budgetme.Widgets.PieChartObserver;
 
@@ -158,12 +161,27 @@ public class DashboardSummaryFragment extends Fragment {
 
     protected boolean handleMenuItemSelected(int id) {
         if (id == MENU_DATE_ID) {
+            handleDateMenuItem();
             return true;
         } else if (id == MENU_TRANSACTION_CATEGORIES_ID) {
-            mTransactionCategoryFilterDialog.show();
+            handleTransactionCategoriesMenuItem();
             return true;
         }
         return false;
+    }
+
+    private void handleDateMenuItem() {
+        final DateRangePicker dateRangePicker = new DateRangePicker(getContext(), new DateRangePicker.OnCalenderClickListener() {
+            @Override
+            public void onDateSelected(Calendar selectedStartDate, Calendar selectedEndDate) {
+                mSpendingsDataSummary.setDateFilters(selectedStartDate, selectedEndDate);
+            }
+        });
+        dateRangePicker.show();
+    }
+
+    private void handleTransactionCategoriesMenuItem() {
+        mTransactionCategoryFilterDialog.show();
     }
 
 

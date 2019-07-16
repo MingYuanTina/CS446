@@ -38,7 +38,7 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mDateView.setText(mValues.get(position).getDate());
+        holder.mDateView.setText(mValues.get(position).getStringDate());
         holder.mCategoryView.setText(mValues.get(position).getCategoryName());
         holder.mAmountView.setText(mValues.get(position).getCost().toString());
 

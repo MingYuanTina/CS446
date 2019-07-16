@@ -64,7 +64,11 @@ public class Transaction implements Parcelable {
         return mCost;
     }
 
-    public String getDate(){
+    public Date getDate() {
+        return mDate;
+    }
+
+    public String getStringDate(){
         DateFormat outputFormatter = new SimpleDateFormat("MM/dd/yyyy");
         String dateWithoutTime = outputFormatter.format(mDate);
         return dateWithoutTime;
