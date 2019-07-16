@@ -3,9 +3,7 @@ package cs446.budgetme;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -13,9 +11,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -24,18 +19,17 @@ import android.widget.Toast;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import cs446.budgetme.Model.Goal;
-import cs446.budgetme.Model.Transaction;
+import cs446.budgetme.Model.MultipleChoiceWithSelectAllDialogCallback;
 import cs446.budgetme.Model.TransactionCategory;
+import cs446.budgetme.Widgets.MultipleChoiceWithSelectAllDialog;
 
-public class GoalSettingActivity extends AppCompatActivity {
+public class GoalSettingActivity extends AppCompatActivity implements MultipleChoiceWithSelectAllDialogCallback<TransactionCategory> {
 
     private String mCurrentCost = "";
     private EditText mLimitEdit;
@@ -46,10 +40,10 @@ public class GoalSettingActivity extends AppCompatActivity {
     private Date mEndDate;
     private EditText mCategoriesEdit;
     private Button mButton;
-    private AlertDialog mDialog;
     private List<TransactionCategory> mChosenCategories = new ArrayList<>();
     private ArrayList<TransactionCategory> availableCategories;
     private ArrayList<Boolean> mCheckedItems;
+    private MultipleChoiceWithSelectAllDialog<TransactionCategory> mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,67 +139,10 @@ public class GoalSettingActivity extends AppCompatActivity {
         });
 
         availableCategories = TransactionCategory.getDefaults(); // This should be the user's available categories.
-        mCheckedItems = new ArrayList<>(Collections.nCopies(availableCategories.size() + 1, true));
+        mDialog = new MultipleChoiceWithSelectAllDialog<>(GoalSettingActivity.this, availableCategories, this);
         mCategoriesEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<String> items = new ArrayList<>();
-                items.add(getResources().getString(R.string.label_all_categories));
-                for (TransactionCategory category : availableCategories) {
-                    items.add(category.toString());
-                }
-                final String[] listItems = items.toArray(new String[items.size()]);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(GoalSettingActivity.this);
-                builder.setTitle("Choose items");
-
-                final boolean[] checkedItems = new boolean[items.size()]; //this will checked the items when user open the dialog
-                for (int i = 0; i<mCheckedItems.size(); i++) {
-                    checkedItems[i] = mCheckedItems.get(i);
-                }
-                builder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which, boolean isChecked) {
-                        if (which == 0) {
-                            for (int i = 1; i < listItems.length; i++) {
-                                checkedItems[i] = isChecked;
-                                mDialog.getListView().setItemChecked(i, isChecked);
-                            }
-                        } else {
-                            if (!isChecked) {
-                                checkedItems[0] = isChecked;
-                                mDialog.getListView().setItemChecked(0, isChecked);
-                            }
-                        }
-                        //Toast.makeText(GoalSettingActivity.this, "Position: " + which + " Value: " + listItems[which] + " State: " + (isChecked ? "checked" : "unchecked"), Toast.LENGTH_LONG).show();
-                        //mDialog.getListView().setItemChecked(0, false);
-                    }
-                });
-
-                builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mChosenCategories = new ArrayList<>();
-                        ArrayList<String> text = new ArrayList<>();
-                        // Copy all the values into mCheckedItems
-                        for (int i = 0; i < checkedItems.length; i++) {
-                            mCheckedItems.set(i, checkedItems[i]);
-                        }
-                        if (mCheckedItems.get(0)) {
-                            mCategoriesEdit.setText(getResources().getString(R.string.label_all_categories));
-                        } else {
-                            for (int i = 1; i < checkedItems.length; i++) {
-                                if (checkedItems[i]) {
-                                    mChosenCategories.add(availableCategories.get(i-1));
-                                    text.add(availableCategories.get(i-1).toString());
-                                }
-                            }
-                            mCategoriesEdit.setText(TextUtils.join(", ", text));
-                        }
-                    }
-                });
-
-                mDialog = builder.create();
                 mDialog.show();
             }
         });
@@ -241,5 +178,19 @@ public class GoalSettingActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void multipleChoiceWithSelectAllDialogCallback(List<TransactionCategory> chosenCategories) {
+        mChosenCategories = chosenCategories;
+        if (mChosenCategories.isEmpty()) {
+            mCategoriesEdit.setText(getResources().getString(R.string.label_all_categories));
+        } else {
+            List<String> text = new ArrayList<>();
+            for (int i = 0; i < mChosenCategories.size(); i++) {
+                text.add(mChosenCategories.get(i).toString());
+            }
+            mCategoriesEdit.setText(TextUtils.join(", ", text));
+        }
     }
 }
