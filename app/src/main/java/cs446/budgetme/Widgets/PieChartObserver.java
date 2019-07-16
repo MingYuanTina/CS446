@@ -28,7 +28,7 @@ public class PieChartObserver implements Observer {
     public void update() {
         List<PieEntry> data = new ArrayList<>();
         HashMap<String, Double> map = new HashMap<>();
-        for (Transaction t : mSpendingsDataSummary.getTransactions()) {
+        for (Transaction t : mSpendingsDataSummary.getFilteredTransactions()) {
             if (map.containsKey(t.getCategoryName())) {
                 map.put(t.getCategoryName(), map.get(t.getCategoryName()) + t.getCost());
             } else {

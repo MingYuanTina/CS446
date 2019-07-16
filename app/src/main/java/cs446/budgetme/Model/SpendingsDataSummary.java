@@ -9,16 +9,16 @@ public class SpendingsDataSummary implements Subject {
 
     ArrayList<Observer> observerList;
 
-    List<Transaction> transactions;
+    List<Transaction> mTransactions;
     Date fromDate;
-    HashSet<TransactionCategory> excludeList;
+    HashSet<Integer> mChosenCategoriesIds;
 
     List<Goal> goals; // this should not be a list, maybe a mapping from category to cost, or literally its own class
 
     public SpendingsDataSummary(List<Transaction> transactions) {
         observerList = new ArrayList<>();
-        excludeList = new HashSet<>();
-        this.transactions = transactions;
+        mChosenCategoriesIds = new HashSet<>();
+        this.mTransactions = transactions;
         goals = Goal.getFakeData();
 
         //mGoal = Transaction.getFakeData();
@@ -41,12 +41,34 @@ public class SpendingsDataSummary implements Subject {
     }
 
     public void addTransaction(Transaction t) {
-        transactions.add(t);
+        mTransactions.add(t);
         notifyObservers();
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+    public void setCategoryFilters(List<TransactionCategory> categories) {
+        mChosenCategoriesIds.clear();
+        for (TransactionCategory category : categories) {
+            mChosenCategoriesIds.add(category.getId());
+        }
+        notifyObservers();
+    }
+
+    public List<Transaction> getFilteredTransactions() {
+        if (mChosenCategoriesIds.isEmpty()) {
+            return mTransactions;
+        }
+        List<Transaction> filteredTransactions = new ArrayList<>();
+
+        for (Transaction t : mTransactions) {
+            if (mChosenCategoriesIds.contains(t.getCategoryId())) {
+                filteredTransactions.add(t);
+            }
+        }
+        return filteredTransactions;
+    }
+
+    private List<Transaction> getTransactions() {
+        return mTransactions;
     }
 
     public List<Goal> getGoals() {
