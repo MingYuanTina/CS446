@@ -17,6 +17,7 @@ import cs446.budgetme.Adaptor.DashboardTabAdapter;
 import cs446.budgetme.Fragement.DashboardSummaryFragment;
 import cs446.budgetme.Fragement.DashboardProfileFragment;
 import cs446.budgetme.Fragement.DashboardTransDetailFragment;
+import cs446.budgetme.Fragement.GroupDashboardSummaryFragment;
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Transaction;
 

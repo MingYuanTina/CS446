@@ -40,6 +40,9 @@ public class DashboardSummaryFragment extends Fragment {
     private static final int NUM_CATEGORY = 5;
     private static final float BAR_WIDTH = 0.2f;
 
+    protected static final int MENU_DATE_ID = View.generateViewId();
+    protected static final int MENU_FILTER_ID = View.generateViewId();
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -123,20 +126,28 @@ public class DashboardSummaryFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_summary, menu);
         super.onCreateOptionsMenu(menu,inflater);
+        addMenuItems(menu);
+    }
+
+    protected void addMenuItems(Menu menu) {
+        menu.add(0, MENU_DATE_ID, Menu.NONE, R.string.menu_date).setIcon(R.drawable.ic_date_range_white_24dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(0, MENU_FILTER_ID, Menu.NONE, R.string.menu_filter).setIcon(R.drawable.ic_filter_list_white_24dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.menu_summary_filter:
-                // do stuff, like showing settings fragment
-                return true;
-        }
+        return handleMenuItemSelected(id);
+    }
 
-        return super.onOptionsItemSelected(item); // important line
+    protected boolean handleMenuItemSelected(int id) {
+        if (id == MENU_DATE_ID) {
+            return true;
+        } else if (id == MENU_FILTER_ID) {
+            return true;
+        }
+        return false;
     }
 
     /**
