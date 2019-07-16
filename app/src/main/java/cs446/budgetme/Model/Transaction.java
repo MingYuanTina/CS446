@@ -6,8 +6,12 @@ import android.os.Parcelable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 public class Transaction implements Parcelable {
     private Double mCost;
@@ -93,6 +97,37 @@ public class Transaction implements Parcelable {
             // Handle illegal state.
         }
         return transactions;
+    }
+
+    public static TreeMap<Date, List<Transaction>> getTransactionsGroupedByDay(List<Transaction> transactions) {
+        TreeMap<Date, List<Transaction>> map = new TreeMap<>();
+        for (Transaction t : transactions) {
+            Date currentDate = t.getRoundedDateOfTransaction();
+            if (map.get(currentDate) == null) {
+                map.put(currentDate, new ArrayList<Transaction>());
+            }
+            map.get(currentDate).add(t);
+        }
+        return map;
+    }
+
+    private Date getRoundedDateOfTransaction() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(mDate);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+    public static void sortTransactionsByDate(List<Transaction> transactions) {
+        Collections.sort(transactions, new Comparator<Transaction>() {
+            @Override
+            public int compare(Transaction t1, Transaction t2) {
+                return t1.getDate().compareTo(t2.getDate());
+            }
+        });
     }
 
     @Override

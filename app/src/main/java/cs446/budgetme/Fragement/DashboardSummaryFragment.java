@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 
 import java.util.Calendar;
@@ -28,6 +29,7 @@ import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.R;
 import cs446.budgetme.Widgets.BarChartObserver;
 import cs446.budgetme.Widgets.DateRangePicker;
+import cs446.budgetme.Widgets.LineChartObserver;
 import cs446.budgetme.Widgets.MultipleChoiceWithSelectAllDialog;
 import cs446.budgetme.Widgets.PieChartObserver;
 
@@ -106,6 +108,7 @@ public class DashboardSummaryFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mSpendingsDataSummary.register(new PieChartObserver((PieChart)getView().findViewById(R.id.summary_pie_chart), mSpendingsDataSummary));
         mSpendingsDataSummary.register(new BarChartObserver((HorizontalBarChart)getView().findViewById(R.id.summary_goal_chart), mSpendingsDataSummary));
+        mSpendingsDataSummary.register(new LineChartObserver((LineChart)getView().findViewById(R.id.summary_line_chart), mSpendingsDataSummary));
         mSpendingsDataSummary.notifyObservers();
     }
 

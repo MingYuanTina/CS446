@@ -20,6 +20,7 @@ public class BarChartObserver implements Observer {
 
     public BarChartObserver(HorizontalBarChart barChart, SpendingsDataSummary spendingsDataSummary) {
         mBarChart = barChart;
+        mBarChart.getDescription().setEnabled(false);
         mSpendingsDataSummary = spendingsDataSummary;
     }
 

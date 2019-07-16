@@ -21,6 +21,7 @@ public class PieChartObserver implements Observer {
 
     public PieChartObserver(PieChart pieChart, SpendingsDataSummary spendingsDataSummary) {
         mPieChart = pieChart;
+        mPieChart.getDescription().setEnabled(false);
         mSpendingsDataSummary = spendingsDataSummary;
     }
 
