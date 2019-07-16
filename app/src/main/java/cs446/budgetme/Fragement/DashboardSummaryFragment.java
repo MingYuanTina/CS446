@@ -171,7 +171,8 @@ public class DashboardSummaryFragment extends Fragment {
     }
 
     private void handleDateMenuItem() {
-        final DateRangePicker dateRangePicker = new DateRangePicker(getContext(), new DateRangePicker.OnCalenderClickListener() {
+        final DateRangePicker dateRangePicker = new DateRangePicker(getContext(),
+                mSpendingsDataSummary.getStartDate(), mSpendingsDataSummary.getEndDate(), new DateRangePicker.OnCalenderClickListener() {
             @Override
             public void onDateSelected(Calendar selectedStartDate, Calendar selectedEndDate) {
                 mSpendingsDataSummary.setDateFilters(selectedStartDate, selectedEndDate);

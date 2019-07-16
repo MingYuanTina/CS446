@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import cs446.budgetme.R;
@@ -44,6 +45,14 @@ public class DateRangePicker extends Dialog implements View.OnClickListener, Tab
         super(context);
         this.context = context;
         this.onCalenderClickListener = onCalenderClickListener;
+    }
+
+    public DateRangePicker(@NonNull Context context, Date startDate, Date endDate, OnCalenderClickListener onCalenderClickListener) {
+        this(context, onCalenderClickListener);
+        if (startDate != null && endDate != null) {
+            selectedFromDate = startDate.getTime();
+            selectedToDate = endDate.getTime();
+        }
     }
 
     /**
@@ -95,6 +104,11 @@ public class DateRangePicker extends Dialog implements View.OnClickListener, Tab
                 endDate.setText(dateFormatter.format(endDateCal.getTime()));
             }
         });
+
+        if (selectedFromDate != 0 && selectedToDate != 0) {
+            startDateCalendarView.setDate(selectedFromDate);
+            endDateCalendarView.setDate(selectedToDate);
+        }
 
         tabLayout.addTab(tabLayout.newTab().setText(startDateTitle), true);
         tabLayout.addTab(tabLayout.newTab().setText(endDateTitle));

@@ -111,6 +111,14 @@ public class SpendingsDataSummary implements Subject {
         return goals;
     }
 
+    public Date getStartDate() {
+        return mStartDate;
+    }
+
+    public Date getEndDate() {
+        return mEndDate;
+    }
+
     public void addGoal(Goal goal) {
         goals.add(goal);
         notifyObservers();
