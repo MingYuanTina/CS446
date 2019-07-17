@@ -3,6 +3,8 @@ package cs446.budgetme.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,9 +12,16 @@ import java.util.Date;
 import java.util.List;
 
 public class Transaction implements Parcelable {
+    @SerializedName("cost")
     private Double mCost;
+
+    @SerializedName("date")
     private Date mDate;
+
+    @SerializedName("category")
     private TransactionCategory mCategory;
+
+    @SerializedName("description")
     private String mNote;
 
     private Transaction(TransactionBuilder builder) {

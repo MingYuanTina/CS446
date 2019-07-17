@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -80,7 +79,7 @@ public class OCRAsyncTask extends AsyncTask {
 
         JSONObject postDataParams = new JSONObject();
 
-        postDataParams.put("apikey", apiKey);//TODO Add your Registered API key
+        postDataParams.put("apikey", apiKey);
         postDataParams.put("isOverlayRequired", isOverlayRequired);
         postDataParams.put("base64Image", imageFile);
         postDataParams.put("language", language);

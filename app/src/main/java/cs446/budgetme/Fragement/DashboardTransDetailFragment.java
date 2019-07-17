@@ -8,15 +8,24 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import cs446.budgetme.Adaptor.DashboardTransDetailRecyclerViewAdapter;
+import cs446.budgetme.Client.GetDataService;
+import cs446.budgetme.Client.RetrofitClient;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -33,6 +42,7 @@ public class DashboardTransDetailFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private ArrayList<Transaction> mTransactions;
     private RecyclerView recyclerView;
+    private static final String TAG = DashboardTransDetailFragment.class.getName();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,6 +69,7 @@ public class DashboardTransDetailFragment extends Fragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
         mTransactions =  (ArrayList)Transaction.getFakeData();
+
     }
 
     @Override
@@ -70,15 +81,48 @@ public class DashboardTransDetailFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
-
+//
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mTransactions, mListener));
+           recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mTransactions, mListener));
+            getTransList();
         }
         return view;
+    }
+
+    public void getTransList(){
+        RetrofitClient retrofit = new RetrofitClient();
+        GetDataService apiInterface= retrofit.getRetrofitClient().create(GetDataService.class);
+        String token="abc";
+        Call<List<Transaction>> call = apiInterface.getUserTrans(token);
+        call.enqueue(new Callback<List<Transaction>>() {
+            @Override
+            public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println("Code: " + response.code());
+                    return;
+                }
+                List<Transaction>  gets = response.body();
+                List<Transaction>  post = Transaction.getFakeData();
+                onListUpdate(post);
+                recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(gets, mListener));
+            }
+
+            @Override
+            public void onFailure(Call<List<Transaction>> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
+
+    }
+
+    public  void onListUpdate(List<Transaction> translist){
+        Log.d(TAG, "in ListUpdate");
+        recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(translist, mListener));
+        recyclerView.invalidate();
     }
 
     public void onTransactionAdded(Transaction transaction) {
