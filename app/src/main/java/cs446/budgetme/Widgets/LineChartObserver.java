@@ -93,6 +93,7 @@ public class LineChartObserver implements Observer {
             currentCalendar.add(Calendar.DATE, 1);
             dayOffset += 1;
         }
+        mLineChart.getXAxis().setLabelCount(dayOffset, true);
         mDateValueFormatter.setStartingDate(firstEntryDate);
 /*
         for (Map.Entry<Date, List<Transaction>> entry : groupedByDay.entrySet()) {
@@ -103,7 +104,7 @@ public class LineChartObserver implements Observer {
             runningTotal += total;
             entries.add(new Entry(new Long(entry.getKey().getTime()).floatValue(), runningTotal.floatValue()));
         }*/
-        LineDataSet set = new LineDataSet(entries, "Running Total");
+        LineDataSet set = new LineDataSet(entries, "Cumulative Spendings");
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set); // add the data sets

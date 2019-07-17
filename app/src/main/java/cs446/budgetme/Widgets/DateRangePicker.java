@@ -45,6 +45,15 @@ public class DateRangePicker extends Dialog implements View.OnClickListener, Tab
         super(context);
         this.context = context;
         this.onCalenderClickListener = onCalenderClickListener;
+
+        startDateCal.set(Calendar.HOUR_OF_DAY, 0);
+        startDateCal.set(Calendar.MINUTE, 0);
+        startDateCal.set(Calendar.SECOND, 0);
+        startDateCal.set(Calendar.MILLISECOND, 0);
+        endDateCal.set(Calendar.HOUR_OF_DAY, 0);
+        endDateCal.set(Calendar.MINUTE, 0);
+        endDateCal.set(Calendar.SECOND, 0);
+        endDateCal.set(Calendar.MILLISECOND, 0);
     }
 
     public DateRangePicker(@NonNull Context context, Date startDate, Date endDate, OnCalenderClickListener onCalenderClickListener) {
