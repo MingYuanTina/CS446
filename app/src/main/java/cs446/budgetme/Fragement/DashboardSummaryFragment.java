@@ -9,18 +9,28 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 
+import java.util.Calendar;
+import java.util.List;
+
 import cs446.budgetme.Model.Goal;
+import cs446.budgetme.Model.MultipleChoiceWithSelectAllDialogCallback;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.SpendingsDataSummary;
+import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.R;
 import cs446.budgetme.Widgets.BarChartObserver;
+import cs446.budgetme.Widgets.DateRangePicker;
+import cs446.budgetme.Widgets.LineChartObserver;
+import cs446.budgetme.Widgets.MultipleChoiceWithSelectAllDialog;
 import cs446.budgetme.Widgets.PieChartObserver;
 
 
@@ -41,13 +51,16 @@ public class DashboardSummaryFragment extends Fragment {
     private static final float BAR_WIDTH = 0.2f;
 
     protected static final int MENU_DATE_ID = View.generateViewId();
-    protected static final int MENU_FILTER_ID = View.generateViewId();
+    protected static final int MENU_TRANSACTION_CATEGORIES_ID = View.generateViewId();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private SpendingsDataSummary mSpendingsDataSummary;
+
+    private MultipleChoiceWithSelectAllDialogCallback<TransactionCategory> mTransactionCategoryCallback;
+    private MultipleChoiceWithSelectAllDialog<TransactionCategory> mTransactionCategoryFilterDialog;
 
     private OnFragmentInteractionListener mListener;
 
@@ -82,12 +95,20 @@ public class DashboardSummaryFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mSpendingsDataSummary = new SpendingsDataSummary(Transaction.getFakeData());
+        mTransactionCategoryCallback = new MultipleChoiceWithSelectAllDialogCallback<TransactionCategory>() {
+            @Override
+            public void multipleChoiceWithSelectAllDialogCallback(List<TransactionCategory> chosenCategories) {
+                mSpendingsDataSummary.setCategoryFilters(chosenCategories);
+            }
+        };
+        mTransactionCategoryFilterDialog = new MultipleChoiceWithSelectAllDialog<>(getContext(), TransactionCategory.getDefaults(), mTransactionCategoryCallback);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mSpendingsDataSummary.register(new PieChartObserver((PieChart)getView().findViewById(R.id.summary_pie_chart), mSpendingsDataSummary));
         mSpendingsDataSummary.register(new BarChartObserver((HorizontalBarChart)getView().findViewById(R.id.summary_goal_chart), mSpendingsDataSummary));
+        mSpendingsDataSummary.register(new LineChartObserver((LineChart)getView().findViewById(R.id.summary_line_chart), mSpendingsDataSummary));
         mSpendingsDataSummary.notifyObservers();
     }
 
@@ -132,7 +153,7 @@ public class DashboardSummaryFragment extends Fragment {
 
     protected void addMenuItems(Menu menu) {
         menu.add(0, MENU_DATE_ID, Menu.NONE, R.string.menu_date).setIcon(R.drawable.ic_date_range_white_24dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.add(0, MENU_FILTER_ID, Menu.NONE, R.string.menu_filter).setIcon(R.drawable.ic_filter_list_white_24dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(0, MENU_TRANSACTION_CATEGORIES_ID, Menu.NONE, R.string.menu_filter).setIcon(R.drawable.ic_filter_list_white_24dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     }
 
     @Override
@@ -143,12 +164,30 @@ public class DashboardSummaryFragment extends Fragment {
 
     protected boolean handleMenuItemSelected(int id) {
         if (id == MENU_DATE_ID) {
+            handleDateMenuItem();
             return true;
-        } else if (id == MENU_FILTER_ID) {
+        } else if (id == MENU_TRANSACTION_CATEGORIES_ID) {
+            handleTransactionCategoriesMenuItem();
             return true;
         }
         return false;
     }
+
+    private void handleDateMenuItem() {
+        final DateRangePicker dateRangePicker = new DateRangePicker(getContext(),
+                mSpendingsDataSummary.getStartDate(), mSpendingsDataSummary.getEndDate(), new DateRangePicker.OnCalenderClickListener() {
+            @Override
+            public void onDateSelected(Calendar selectedStartDate, Calendar selectedEndDate) {
+                mSpendingsDataSummary.setDateFilters(selectedStartDate, selectedEndDate);
+            }
+        });
+        dateRangePicker.show();
+    }
+
+    private void handleTransactionCategoriesMenuItem() {
+        mTransactionCategoryFilterDialog.show();
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

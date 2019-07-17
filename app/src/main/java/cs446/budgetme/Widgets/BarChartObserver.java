@@ -8,7 +8,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
-import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Observer;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.SpendingsDataSummary;
@@ -21,6 +20,7 @@ public class BarChartObserver implements Observer {
 
     public BarChartObserver(HorizontalBarChart barChart, SpendingsDataSummary spendingsDataSummary) {
         mBarChart = barChart;
+        mBarChart.getDescription().setEnabled(false);
         mSpendingsDataSummary = spendingsDataSummary;
     }
 
@@ -35,7 +35,7 @@ public class BarChartObserver implements Observer {
         /*for (Goal t : mSpendingsDataSummary.getGoals()) {
             goalValue[t.getCategoryId()]+=t.getCost();
         }*/
-        for (Transaction t : mSpendingsDataSummary.getTransactions()) {
+        for (Transaction t : mSpendingsDataSummary.getFilteredTransactions()) {
             curExpenseValue[t.getCategoryId()]+=t.getCost();
         }
 
