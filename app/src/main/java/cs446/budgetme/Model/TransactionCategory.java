@@ -3,11 +3,16 @@ package cs446.budgetme.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 // This should maybe be updated to a singleton class with just a single map mapping Id to Name.
 public class TransactionCategory implements Parcelable {
+    @SerializedName("categoryName")
     private String mName;
+
+    @SerializedName("categoryUserId")
     private Integer mId;
 
     private TransactionCategory(String name, int id) {

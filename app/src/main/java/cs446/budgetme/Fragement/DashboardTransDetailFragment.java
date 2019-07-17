@@ -43,6 +43,7 @@ public class DashboardTransDetailFragment extends Fragment {
     private ArrayList<Transaction> mTransactions;
     private RecyclerView recyclerView;
     private static final String TAG = DashboardTransDetailFragment.class.getName();
+    private final String USER_TOKEN= "5d2e9e1059613a39f2e27a43";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -68,7 +69,8 @@ public class DashboardTransDetailFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-        mTransactions =  (ArrayList)Transaction.getFakeData();
+        mTransactions = new ArrayList<Transaction>();
+        getTransList();
 
     }
 
@@ -81,23 +83,22 @@ public class DashboardTransDetailFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
-//
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-           recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mTransactions, mListener));
-            getTransList();
+            recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mTransactions, mListener));
+
         }
         return view;
     }
 
+
     public void getTransList(){
         RetrofitClient retrofit = new RetrofitClient();
         GetDataService apiInterface= retrofit.getRetrofitClient().create(GetDataService.class);
-        String token="abc";
-        Call<List<Transaction>> call = apiInterface.getUserTrans(token);
+        Call<List<Transaction>> call = apiInterface.getUserTrans(USER_TOKEN);
         call.enqueue(new Callback<List<Transaction>>() {
             @Override
             public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
@@ -105,10 +106,7 @@ public class DashboardTransDetailFragment extends Fragment {
                     System.out.println("Code: " + response.code());
                     return;
                 }
-                List<Transaction>  gets = response.body();
-                List<Transaction>  post = Transaction.getFakeData();
-                onListUpdate(post);
-                recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(gets, mListener));
+                onListUpdate(response.body());
             }
 
             @Override
@@ -120,13 +118,15 @@ public class DashboardTransDetailFragment extends Fragment {
     }
 
     public  void onListUpdate(List<Transaction> translist){
-        Log.d(TAG, "in ListUpdate");
-        recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(translist, mListener));
+       // Log.d(TAG, "in ListUpdate");
+        mTransactions = (ArrayList)translist;
+        recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mTransactions, mListener));
         recyclerView.invalidate();
     }
 
     public void onTransactionAdded(Transaction transaction) {
         mTransactions.add(transaction);
+     //   sendPost(transaction);
         recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mTransactions, mListener));
         recyclerView.invalidate();
     }
