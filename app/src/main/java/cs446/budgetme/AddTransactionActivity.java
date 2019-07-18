@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
 
@@ -37,6 +38,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     private EditText mNoteEdit;
     private Button mButton;
     private int mCategoryIndex;
+    private APIUtils apicall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,9 @@ public class AddTransactionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_transaction);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //setup API client
+        apicall = new APIUtils();
 
         // Initialize Cost EditText
         mCostEdit = findViewById(R.id.add_transaction_cost);
@@ -137,8 +142,11 @@ public class AddTransactionActivity extends AppCompatActivity {
                         builder.setNote(mNoteEdit.getText().toString());
                     }
 
+                    Transaction transaction = builder.build();
+                    apicall.postTrans(transaction);
+
                     Intent i = new Intent();
-                    i.putExtra("transaction", builder.build());
+                    i.putExtra("transaction", transaction);
                     setResult(RESULT_OK, i);
                     finish();
                 } catch (IllegalStateException e) {

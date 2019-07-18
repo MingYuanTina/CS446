@@ -57,15 +57,19 @@ public class DashboardSummaryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private SpendingsDataSummary mSpendingsDataSummary;
-
     private MultipleChoiceWithSelectAllDialogCallback<TransactionCategory> mTransactionCategoryCallback;
     private MultipleChoiceWithSelectAllDialog<TransactionCategory> mTransactionCategoryFilterDialog;
+
+    private SpendingsDataSummary mSpendingsDataSummary;
 
     private OnFragmentInteractionListener mListener;
 
     public DashboardSummaryFragment() {
         // Required empty public constructor
+    }
+
+    public DashboardSummaryFragment(SpendingsDataSummary spendingsDataSummary) {
+        mSpendingsDataSummary = spendingsDataSummary;
     }
 
     /**
@@ -94,7 +98,6 @@ public class DashboardSummaryFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        mSpendingsDataSummary = new SpendingsDataSummary(Transaction.getFakeData());
         mTransactionCategoryCallback = new MultipleChoiceWithSelectAllDialogCallback<TransactionCategory>() {
             @Override
             public void multipleChoiceWithSelectAllDialogCallback(List<TransactionCategory> chosenCategories) {
@@ -202,10 +205,6 @@ public class DashboardSummaryFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    public void onTransactionAdded(Transaction transaction) {
-        mSpendingsDataSummary.addTransaction(transaction);
     }
 
     public void onGoalAdded(Goal goal) {

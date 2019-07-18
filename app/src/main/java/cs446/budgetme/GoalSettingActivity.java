@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.MultipleChoiceWithSelectAllDialogCallback;
 import cs446.budgetme.Model.TransactionCategory;
@@ -44,6 +45,7 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
     private ArrayList<TransactionCategory> availableCategories;
     private ArrayList<Boolean> mCheckedItems;
     private MultipleChoiceWithSelectAllDialog<TransactionCategory> mDialog;
+    private APIUtils apicall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,9 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
 
         Toolbar toolbar = findViewById(R.id.toolbar_goal);
         setSupportActionBar(toolbar);
+
+        //setup API client
+        apicall = new APIUtils();
 
         //get all the view components
         mLimitEdit = findViewById(R.id.goal_setting_limit);

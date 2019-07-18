@@ -2,6 +2,8 @@ package cs446.budgetme.APIClient;
 
 import android.util.Log;
 
+import java.util.List;
+
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Transaction;
 import retrofit2.Call;

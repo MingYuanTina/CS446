@@ -14,6 +14,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
 import android.view.View;
 
+import java.util.List;
+
 import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Adaptor.DashboardTabAdapter;
 import cs446.budgetme.APIClient.GetDataService;
@@ -22,6 +24,7 @@ import cs446.budgetme.Fragement.DashboardSummaryFragment;
 import cs446.budgetme.Fragement.DashboardProfileFragment;
 import cs446.budgetme.Fragement.DashboardTransDetailFragment;
 import cs446.budgetme.Model.Goal;
+import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.Model.Transaction;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,7 +40,10 @@ public class DashboardActivity extends AppCompatActivity
     private static final int REQUEST_CODE_ADD_TRANSACTION = 10000;
     private static final int REQUEST_CODE_GOAL_SETTING = 11000;
 
+    private final String USER_TOKEN= "5d2e9e1059613a39f2e27a43";
+
     private APIUtils apicall;
+    private SpendingsDataSummary mSpendingsDataSummary = new SpendingsDataSummary(Transaction.getFakeData());
 
 
     @Override
@@ -74,14 +80,39 @@ public class DashboardActivity extends AppCompatActivity
         DashboardProfileFragment mProfile = new DashboardProfileFragment();
         mProfile.setArguments(bundle);
         //add the fragments
-        mAdapter.addFragment(new DashboardSummaryFragment(), getResources().getString(R.string.title_dashboard_tab_summary));
-        mAdapter.addFragment(new DashboardTransDetailFragment(), "Transaction Detail");
+        mAdapter.addFragment(new DashboardSummaryFragment(mSpendingsDataSummary), getResources().getString(R.string.title_dashboard_tab_summary));
+        mAdapter.addFragment(new DashboardTransDetailFragment(mSpendingsDataSummary), "Transaction Detail");
         mAdapter.addFragment(mProfile,"Profile");
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(2);
         mTabLayout.setupWithViewPager(mViewPager, true);
         mViewPager.setCurrentItem(0);
+
+        loadTransactionList();
+    }
+
+    public void loadTransactionList(){
+        Call<List<Transaction>> call = apicall.getApiInterface().getTransactionList(USER_TOKEN);
+        call.enqueue(new Callback<List<Transaction>>() {
+            @Override
+            public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println("Code: " + response.code());
+                    return;
+                }
+                updateTransactions(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Transaction>> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
+    }
+
+    private void updateTransactions(List<Transaction> transactions) {
+        mSpendingsDataSummary.setTransactions(transactions);
     }
 
     @Override
@@ -108,9 +139,7 @@ public class DashboardActivity extends AppCompatActivity
         if (requestCode == REQUEST_CODE_ADD_TRANSACTION) {
             if (resultCode == RESULT_OK) {
                 Transaction transaction = (Transaction)data.getExtras().getParcelable("transaction");
-                apicall.postTrans(transaction);
-                ((DashboardSummaryFragment)mAdapter.getItem(0)).onTransactionAdded(transaction);
-                ((DashboardTransDetailFragment)mAdapter.getItem(1)).onTransactionAdded(transaction);
+                mSpendingsDataSummary.addTransaction(transaction);
             }
         }
         else if (requestCode == REQUEST_CODE_GOAL_SETTING){
@@ -119,6 +148,10 @@ public class DashboardActivity extends AppCompatActivity
                 ((DashboardSummaryFragment)mAdapter.getItem(0)).onGoalAdded(goal);
             }
         }
+    }
+
+    public SpendingsDataSummary getSpendingsDataSummary() {
+        return mSpendingsDataSummary;
     }
 
 
