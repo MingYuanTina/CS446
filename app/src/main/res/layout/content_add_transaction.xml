@@ -101,5 +101,11 @@
         app:layout_constraintRight_toRightOf="@id/add_transaction_note_layout"
         app:layout_constraintTop_toBottomOf="@id/add_transaction_note_layout"/>
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

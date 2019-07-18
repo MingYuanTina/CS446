@@ -137,6 +137,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                         builder.setNote(mNoteEdit.getText().toString());
                     }
 
+
                     Intent i = new Intent();
                     i.putExtra("transaction", builder.build());
                     setResult(RESULT_OK, i);
