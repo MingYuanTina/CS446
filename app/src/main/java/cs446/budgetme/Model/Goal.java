@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 public class Goal implements Parcelable {
+    //need id for Goal for deletion
+    private String mId;
     private Double mLimit;
     private Date mStartDate;
     private Date mEndDate;
@@ -20,6 +22,7 @@ public class Goal implements Parcelable {
         this.mEndDate = builder.mEndDate;
         this.mCategories = builder.mCategories;
         this.mNote = builder.mNote;
+        this.mId = builder.mId;
     }
 
     public static class GoalBuilder implements Builder<Goal> {
@@ -28,6 +31,7 @@ public class Goal implements Parcelable {
         private Date mEndDate;
         private List<TransactionCategory> mCategories;
         private String mNote;
+        private String mId;
 
         public GoalBuilder(Double limit, Date startDate, Date endDate) {
             mLimit = limit;
@@ -42,6 +46,11 @@ public class Goal implements Parcelable {
 
         public GoalBuilder setCategories(List<TransactionCategory> categories) {
             mCategories = categories;
+            return this;
+        }
+
+        public GoalBuilder setId(String id) {
+            mId = id;
             return this;
         }
 

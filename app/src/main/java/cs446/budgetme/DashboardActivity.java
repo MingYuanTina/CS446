@@ -14,9 +14,10 @@ import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
 import android.view.View;
 
+import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Adaptor.DashboardTabAdapter;
-import cs446.budgetme.Client.GetDataService;
-import cs446.budgetme.Client.RetrofitClient;
+import cs446.budgetme.APIClient.GetDataService;
+import cs446.budgetme.APIClient.RetrofitClient;
 import cs446.budgetme.Fragement.DashboardSummaryFragment;
 import cs446.budgetme.Fragement.DashboardProfileFragment;
 import cs446.budgetme.Fragement.DashboardTransDetailFragment;
@@ -35,14 +36,19 @@ public class DashboardActivity extends AppCompatActivity
 
     private static final int REQUEST_CODE_ADD_TRANSACTION = 10000;
     private static final int REQUEST_CODE_GOAL_SETTING = 11000;
-    private static final String TAG = DashboardActivity.class.getName();
-    private final String USER_TOKEN= "5d2e9e1059613a39f2e27a43";
+
+    private APIUtils apicall;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         //get indent information
         Intent intent = getIntent();
+
+        //setup API client
+        apicall = new APIUtils();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -102,7 +108,7 @@ public class DashboardActivity extends AppCompatActivity
         if (requestCode == REQUEST_CODE_ADD_TRANSACTION) {
             if (resultCode == RESULT_OK) {
                 Transaction transaction = (Transaction)data.getExtras().getParcelable("transaction");
-                sendPost(transaction);
+                apicall.postTrans(transaction);
                 ((DashboardSummaryFragment)mAdapter.getItem(0)).onTransactionAdded(transaction);
                 ((DashboardTransDetailFragment)mAdapter.getItem(1)).onTransactionAdded(transaction);
             }
@@ -115,23 +121,5 @@ public class DashboardActivity extends AppCompatActivity
         }
     }
 
-    public void sendPost(Transaction transList) {
-        RetrofitClient retrofit = new RetrofitClient();
-        GetDataService apiInterface= retrofit.getRetrofitClient().create(GetDataService.class);
-        apiInterface.addTransaction(transList, USER_TOKEN).enqueue(new Callback<Transaction>() {
-            @Override
-            public void onResponse(Call<Transaction> call, Response<Transaction> response) {
 
-                if(response.isSuccessful()) {
-                    //     showResponse(response.body().toString());
-                    Log.i(TAG, "post submitted to API." + response.body().toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Transaction> call, Throwable t) {
-                Log.e(TAG, "Unable to submit post to API.");
-            }
-        });
-    }
 }

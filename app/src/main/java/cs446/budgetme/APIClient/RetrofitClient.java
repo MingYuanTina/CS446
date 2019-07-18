@@ -1,4 +1,4 @@
-package cs446.budgetme.Client;
+package cs446.budgetme.APIClient;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
