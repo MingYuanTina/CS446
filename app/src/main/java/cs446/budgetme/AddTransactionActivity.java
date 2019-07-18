@@ -1,6 +1,7 @@
 package cs446.budgetme;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Model.Transaction;
@@ -184,15 +187,38 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     }
     private void parseTxt(String imageText){
+        boolean findValuable = false;
         String[] txt = imageText.split("\t\r\n");
+        String[] line;
         for(String s : txt){
-            if(s.contains("Total")){
-                String[] line = s.split(" ");
+
+            if(isContain(s.toLowerCase(), "total")|| isContain(s.toLowerCase(), "roral")){
+                line = s.split(" ");
                 mCurrentCost = line[1];
                 mCostEdit.setText(mCurrentCost);
+                //find the something from the receipt
+                findValuable = true;
             }
         }
+
+        if(!findValuable){
+            //notify the user cannot find any value form the image
+            Context context = getApplicationContext();
+            CharSequence text = "Cannot find Cost";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+
+        }
     }
+
+    private static boolean isContain(String source, String subItem){
+        String pattern = "\\b"+subItem+"\\b";
+        Pattern p=Pattern.compile(pattern);
+        Matcher m=p.matcher(source);
+        return m.find();
+    }
+
     private void updateLabel() {
         String myFormat = "MM/dd/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
