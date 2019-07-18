@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
 
@@ -37,6 +38,9 @@ public class AddTransactionActivity extends AppCompatActivity {
     private EditText mNoteEdit;
     private Button mButton;
     private int mCategoryIndex;
+    private Button importImage;
+    private APIUtils apicall;
+    private int GET_FROM_IMAGE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,21 +49,26 @@ public class AddTransactionActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //setup API client
+        apicall = new APIUtils();
+
         // Initialize Cost EditText
         mCostEdit = findViewById(R.id.add_transaction_cost);
         mCostEdit.setRawInputType(Configuration.KEYBOARD_12KEY);
         mCostEdit.setText(mCurrentCost);
-        mCostEdit.addTextChangedListener(new TextWatcher(){
+        mCostEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable arg0) {
             }
+
             @Override
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!s.toString().equals(mCurrentCost)){
+                if (!s.toString().equals(mCurrentCost)) {
                     mCostEdit.removeTextChangedListener(this);
 
                     String cleanString = s.toString().replaceAll("[$,.]", "");
@@ -67,9 +76,9 @@ public class AddTransactionActivity extends AppCompatActivity {
                     String formatted = mCurrentCost;
                     try {
                         parsed = Double.parseDouble(cleanString);
-                        formatted = NumberFormat.getCurrencyInstance().format((parsed/100));
+                        formatted = NumberFormat.getCurrencyInstance().format((parsed / 100));
                         mCurrentCost = formatted;
-                    } catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                     mCostEdit.setText(formatted);
@@ -137,9 +146,11 @@ public class AddTransactionActivity extends AppCompatActivity {
                         builder.setNote(mNoteEdit.getText().toString());
                     }
 
+                    Transaction transaction = builder.build();
+                    apicall.postTrans(transaction);
 
                     Intent i = new Intent();
-                    i.putExtra("transaction", builder.build());
+                    i.putExtra("transaction", transaction);
                     setResult(RESULT_OK, i);
                     finish();
                 } catch (IllegalStateException e) {
@@ -149,13 +160,43 @@ public class AddTransactionActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //import Image for Text extracting
+        importImage= findViewById(R.id.import_from_image_button);
+        importImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //start the import image activity
+                Intent i = new Intent(AddTransactionActivity.this, ReceiptOCRActivity.class);
+                startActivityForResult(i,GET_FROM_IMAGE );
+            }
+        });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //the activity information is passed back
+        if (requestCode == GET_FROM_IMAGE && resultCode == RESULT_OK) {
+            String imageTxt = data.getStringExtra("goal");
+            parseTxt(imageTxt);
+        }
+
+    }
+    private void parseTxt(String imageText){
+        String[] txt = imageText.split("\t\r\n");
+        for(String s : txt){
+            if(s.contains("Total")){
+                String[] line = s.split(" ");
+                mCurrentCost = line[1];
+                mCostEdit.setText(mCurrentCost);
+            }
+        }
+    }
     private void updateLabel() {
         String myFormat = "MM/dd/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         mDateEdit.setText(sdf.format(mCalendar.getTime()));
     }
-
 }

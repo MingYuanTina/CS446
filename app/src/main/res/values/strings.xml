@@ -5,6 +5,7 @@
     <string name="label_date">Date</string>
     <string name="label_add_an_optional_note">Add an optional note...</string>
     <string name="label_add_expense">Add Expense</string>
+    <string name="label_image_import">Import Image</string>
     <string name="label_category">Category</string>
     <string name="label_categories">Categories</string>
     <string name="title_activity_dashboard">DashboardActivity</string>

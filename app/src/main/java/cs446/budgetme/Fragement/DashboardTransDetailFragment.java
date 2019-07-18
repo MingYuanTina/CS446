@@ -16,6 +16,8 @@ import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Adaptor.DashboardTransDetailRecyclerViewAdapter;
 import cs446.budgetme.APIClient.GetDataService;
 import cs446.budgetme.APIClient.RetrofitClient;
+import cs446.budgetme.Model.Observer;
+import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.R;
 import retrofit2.Call;
@@ -31,24 +33,26 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class DashboardTransDetailFragment extends Fragment {
+public class DashboardTransDetailFragment extends Fragment implements Observer {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private ArrayList<Transaction> mTransactions;
     private ArrayList<Transaction> transReceived;
     private RecyclerView recyclerView;
     private static final String TAG = DashboardTransDetailFragment.class.getName();
-    private final String USER_TOKEN= "5d2e9e1059613a39f2e27a43";
-    private APIUtils apicall;
+    private SpendingsDataSummary mSpendingsDataSummary;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
+    public DashboardTransDetailFragment(SpendingsDataSummary spendingsDataSummary) {
+        mSpendingsDataSummary = spendingsDataSummary;
+    }
+
     public DashboardTransDetailFragment() {
     }
 
@@ -69,9 +73,6 @@ public class DashboardTransDetailFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-        mTransactions = new ArrayList<Transaction>();
-        apicall = new APIUtils();
-        getTransList();
     }
 
     @Override
@@ -88,42 +89,15 @@ public class DashboardTransDetailFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mTransactions, mListener));
-
+            mSpendingsDataSummary.register(this);
+            update();
         }
         return view;
     }
 
-    public void getTransList(){
-        Call<List<Transaction>> call = apicall.getApiInterface().getTransactionList(USER_TOKEN);
-        call.enqueue(new Callback<List<Transaction>>() {
-            @Override
-            public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
-                if (!response.isSuccessful()) {
-                    System.out.println("Code: " + response.code());
-                    return;
-                }
-                onListUpdate(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<List<Transaction>> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        });
-    }
-
-    public  void onListUpdate(List<Transaction> translist){
-       // This is the initial get
-        mTransactions = (ArrayList)translist;
-        recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mTransactions, mListener));
-        recyclerView.invalidate();
-    }
-
-    public void onTransactionAdded(Transaction transaction) {
-        //TODO: check if mTransactions is the same as what is given back
-        mTransactions.add(transaction);
-        recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mTransactions, mListener));
+    @Override
+    public void update() {
+        recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mSpendingsDataSummary.getFilteredTransactions(), mListener));
         recyclerView.invalidate();
     }
 

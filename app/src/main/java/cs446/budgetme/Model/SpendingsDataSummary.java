@@ -123,4 +123,9 @@ public class SpendingsDataSummary implements Subject {
         goals.add(goal);
         notifyObservers();
     }
+
+    public void setTransactions(List<Transaction> transactions) {
+        mTransactions = transactions;
+        notifyObservers();
+    }
 }

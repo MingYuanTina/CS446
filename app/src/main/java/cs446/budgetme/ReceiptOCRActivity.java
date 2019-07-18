@@ -61,7 +61,11 @@ public class ReceiptOCRActivity extends AppCompatActivity implements IOCRCallBac
 
     @Override
     public void getOCRCallBackResult(String response) {
-        mTxtResult.setText(response);
+        Intent i = new Intent();
+        i.putExtra("goal", response);
+        setResult(RESULT_OK, i);
+        finish();
+      //  mTxtResult.setText(response);
 
     }
 
