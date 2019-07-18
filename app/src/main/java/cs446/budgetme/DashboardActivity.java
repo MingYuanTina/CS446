@@ -14,6 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cs446.budgetme.APIClient.APIUtils;
@@ -44,6 +45,8 @@ public class DashboardActivity extends AppCompatActivity
 
     private APIUtils apicall;
     private SpendingsDataSummary mSpendingsDataSummary = new SpendingsDataSummary(Transaction.getFakeData());
+    //need current transaction list to check if client Transaction List is the same as database
+    private ArrayList<Transaction> currTrans;
 
 
     @Override
@@ -113,6 +116,7 @@ public class DashboardActivity extends AppCompatActivity
 
     private void updateTransactions(List<Transaction> transactions) {
         mSpendingsDataSummary.setTransactions(transactions);
+        currTrans = (ArrayList) transactions;
     }
 
     @Override
@@ -123,8 +127,10 @@ public class DashboardActivity extends AppCompatActivity
     public void onListFragmentInteraction(Transaction item){}
 
 
+    //addtransaction activity needs the current transationList to see whether the database list is the same as current.
     private void startAddTransaction() {
         Intent i = new Intent(this, AddTransactionActivity.class);
+        i.putParcelableArrayListExtra("transactionList",currTrans );
         startActivityForResult(i, REQUEST_CODE_ADD_TRANSACTION);
     }
 
@@ -136,6 +142,10 @@ public class DashboardActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
+
+        //after return back to Dashboard, want to check if there is new updated to the database
+        loadTransactionList();
+
         if (requestCode == REQUEST_CODE_ADD_TRANSACTION) {
             if (resultCode == RESULT_OK) {
                 Transaction transaction = (Transaction)data.getExtras().getParcelable("transaction");

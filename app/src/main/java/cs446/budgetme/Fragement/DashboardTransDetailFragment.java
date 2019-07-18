@@ -40,7 +40,7 @@ public class DashboardTransDetailFragment extends Fragment implements Observer {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private ArrayList<Transaction> transReceived;
+   // private ArrayList<Transaction> transReceived;
     private RecyclerView recyclerView;
     private static final String TAG = DashboardTransDetailFragment.class.getName();
     private SpendingsDataSummary mSpendingsDataSummary;

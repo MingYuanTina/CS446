@@ -28,11 +28,14 @@ public class Transaction implements Parcelable {
     @SerializedName("description")
     private String mNote;
 
+    private String id;
+
     private Transaction(TransactionBuilder builder) {
         this.mCost = builder.mCost;
         this.mDate = builder.mDate;
         this.mCategory = builder.mCategory;
         this.mNote = builder.mNote;
+        this.id = builder.id;
     }
 
     public static class TransactionBuilder implements Builder<Transaction>{
@@ -40,6 +43,7 @@ public class Transaction implements Parcelable {
         private Double mCost;
         private String mNote;
         private TransactionCategory mCategory;
+        private String id;
 
         public TransactionBuilder(Double cost, Date date, TransactionCategory category) {
             mCost = cost;
@@ -52,6 +56,10 @@ public class Transaction implements Parcelable {
             return this;
         }
 
+        public TransactionBuilder setId(String id) {
+            id = id;
+            return this;
+        }
         @Override
         public Transaction build() throws IllegalStateException {
             if (mCost == null || mCost < 0) {
@@ -150,6 +158,7 @@ public class Transaction implements Parcelable {
         out.writeSerializable(mDate);
         out.writeParcelable(mCategory, flags);
         out.writeString(mNote);
+        out.writeString(id);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -169,5 +178,6 @@ public class Transaction implements Parcelable {
         mDate = (Date)in.readSerializable();
         mCategory = in.readParcelable(TransactionCategory.class.getClassLoader());
         mNote = in.readString();
+        id=in.readString();
     }
 }

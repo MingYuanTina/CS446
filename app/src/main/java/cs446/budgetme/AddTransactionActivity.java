@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +45,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     private Button importImage;
     private APIUtils apicall;
     private int GET_FROM_IMAGE = 3;
+    private ArrayList<Transaction> currTrans;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,11 @@ public class AddTransactionActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //set the current transation list
+        Intent intent = getIntent();
+
+        //TODO: check if need to update the list
+        currTrans = intent.getParcelableArrayListExtra("transactionList");
         //setup API client
         apicall = new APIUtils();
 

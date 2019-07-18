@@ -1,5 +1,7 @@
 package cs446.budgetme.APIClient;
 
+import com.google.gson.JsonElement;
+
 import java.util.List;
 
 import cs446.budgetme.Model.Goal;
@@ -21,7 +23,7 @@ public interface GetDataService {
     Call<List<Transaction>> getTransactionList(@Path("user_token") String token);
 
     @POST("/trans/{user_token}")
-    Call<Transaction> addTransaction(@Body Transaction trans,@Path("user_token") String token );
+    Call<JsonElement> addTransaction(@Body Transaction trans, @Path("user_token") String token );
 
     @DELETE("/trans/{user_token}/{transaction_token}/{group_id}")
     Call<ResponseBody> deleteTransaction(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("goal_Id") String goalId );
@@ -31,7 +33,7 @@ public interface GetDataService {
     Call<List<Goal>> getGoalList(@Path("user_token") String token,  @Path("group_id") String groupId );
 
     @POST("/goal/{user_token}/{group_id}")
-    Call<Goal> addGoal(@Body Goal mgoal, @Path("user_token") String token,  @Path("group_id") String groupId );
+    Call<JsonElement> addGoal(@Body Goal mgoal, @Path("user_token") String token,  @Path("group_id") String groupId );
 
     @DELETE("/goal/{user_token}/{group_id}/{goal_Id}")
     Call<ResponseBody> deleteGoal(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("goal_Id") String goalId );
