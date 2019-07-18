@@ -68,33 +68,37 @@ public class LineChartObserver implements Observer {
     @Override
     public void update() {
         List<Entry> entries = new ArrayList<>();
-        TreeMap<Date, List<Transaction>> groupedByDay = Transaction.getTransactionsGroupedByDay(mSpendingsDataSummary.getFilteredTransactions());
-        Double runningTotal = new Double(0.0);
+        List<Transaction> transactions = mSpendingsDataSummary.getFilteredTransactions();
+        if (!transactions.isEmpty()) {
+            TreeMap<Date, List<Transaction>> groupedByDay = Transaction.getTransactionsGroupedByDay(mSpendingsDataSummary.getFilteredTransactions());
+            Double runningTotal = new Double(0.0);
 
-        Date firstEntryDate = groupedByDay.firstEntry().getKey();
-        Date lastEntry = groupedByDay.lastEntry().getKey();
+            // Handle null case here.
+            Date firstEntryDate = groupedByDay.firstEntry().getKey();
+            Date lastEntry = groupedByDay.lastEntry().getKey();
 
-        int dayOffset = 0;
-        Calendar currentCalendar = Calendar.getInstance();
-        currentCalendar.setTime(firstEntryDate);
-        currentCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        currentCalendar.set(Calendar.MINUTE, 0);
-        currentCalendar.set(Calendar.SECOND, 0);
-        currentCalendar.set(Calendar.MILLISECOND, 0);
-        while (!currentCalendar.getTime().after(lastEntry)) {
-            if (groupedByDay.get(currentCalendar.getTime()) != null) {
-                Double total = new Double(0.0);
-                for (Transaction t : groupedByDay.get(currentCalendar.getTime())) {
-                    total += t.getCost();
+            int dayOffset = 0;
+            Calendar currentCalendar = Calendar.getInstance();
+            currentCalendar.setTime(firstEntryDate);
+            currentCalendar.set(Calendar.HOUR_OF_DAY, 0);
+            currentCalendar.set(Calendar.MINUTE, 0);
+            currentCalendar.set(Calendar.SECOND, 0);
+            currentCalendar.set(Calendar.MILLISECOND, 0);
+            while (!currentCalendar.getTime().after(lastEntry)) {
+                if (groupedByDay.get(currentCalendar.getTime()) != null) {
+                    Double total = new Double(0.0);
+                    for (Transaction t : groupedByDay.get(currentCalendar.getTime())) {
+                        total += t.getCost();
+                    }
+                    runningTotal += total;
                 }
-                runningTotal += total;
+                entries.add(new Entry(dayOffset, runningTotal.floatValue()));
+                currentCalendar.add(Calendar.DATE, 1);
+                dayOffset += 1;
             }
-            entries.add(new Entry(dayOffset, runningTotal.floatValue()));
-            currentCalendar.add(Calendar.DATE, 1);
-            dayOffset += 1;
+            mLineChart.getXAxis().setLabelCount(dayOffset, true);
+            mDateValueFormatter.setStartingDate(firstEntryDate);
         }
-        mLineChart.getXAxis().setLabelCount(dayOffset, true);
-        mDateValueFormatter.setStartingDate(firstEntryDate);
 /*
         for (Map.Entry<Date, List<Transaction>> entry : groupedByDay.entrySet()) {
             Double total = new Double(0.0);
