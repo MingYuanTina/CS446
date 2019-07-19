@@ -180,6 +180,8 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
                     if (!mChosenCategories.isEmpty()) {
                         builder.setCategories(mChosenCategories);
                     }
+
+                    builder.setNote("");
                     Goal goal = builder.build();
                     postGoal(goal);
 
