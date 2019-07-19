@@ -64,8 +64,7 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
         //first send delete request to server
         //setup API client
         apicall.deleteTrans(mValues.get(position));
-        mValues.remove(position);
-        notifyItemRemoved(position);
+        mListener.transListChanged();
     }
 
     @Override

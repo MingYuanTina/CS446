@@ -156,7 +156,17 @@ public class DashboardActivity extends AppCompatActivity
     public void onListFragmentInteraction(Transaction item){}
 
     @Override
+    public void transListChanged() {
+        loadTransactionList();
+    }
+
+    @Override
     public void onListFragmentInteraction(Goal goal) {}
+
+    @Override
+    public void goalListChanged() {
+        loadGoalList();
+    }
 
 
     //addtransaction activity needs the current transationList to see whether the database list is the same as current.

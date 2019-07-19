@@ -12,7 +12,7 @@
 
     <ImageButton
         android:id="@+id/deleteButton"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/text_margin"
         android:layout_weight="10"

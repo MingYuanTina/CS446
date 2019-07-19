@@ -16,6 +16,7 @@ import cs446.budgetme.R;
 
 public class Goal implements Parcelable {
     //need id for Goal for deletion
+    @SerializedName("goalId")
     private String mId;
     @SerializedName("targetAmount")
     private Double mLimit;

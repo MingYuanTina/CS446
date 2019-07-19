@@ -47,7 +47,7 @@ public class APIUtils {
     }
 
     public void deleteGoal(Goal goal) {
-        apiInterface.deleteGoal(USER_TOKEN, goal.getId(), groupID).enqueue(new Callback<ResponseBody>() {
+        apiInterface.deleteGoal(USER_TOKEN, groupID, goal.getId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {

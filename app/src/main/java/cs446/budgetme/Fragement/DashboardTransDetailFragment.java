@@ -124,5 +124,6 @@ public class DashboardTransDetailFragment extends Fragment implements Observer {
      */
     public interface OnListFragmentInteractionListener {
         void onListFragmentInteraction(Transaction item);
+        void transListChanged();
     }
 }

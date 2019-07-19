@@ -169,5 +169,7 @@ public class DashboardGoalFragment extends Fragment implements Observer {
      */
     public interface OnListFragmentInteractionListener {
         void onListFragmentInteraction(Goal goal);
+
+        void goalListChanged();
     }
 }

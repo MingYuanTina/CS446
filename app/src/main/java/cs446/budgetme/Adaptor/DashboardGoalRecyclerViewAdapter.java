@@ -83,13 +83,8 @@ public class DashboardGoalRecyclerViewAdapter extends RecyclerView.Adapter<Dashb
 
     }
     public void delete(int position) { //removes the row
-        // TODO: implement delete goal
-        //first send delete request to server
-        //setup API client
-        // TODO FIX UPDATE should reload the list of goals, fix in trans detail adapter too
         apicall.deleteGoal(mGoals.get(position));
-        mGoals.remove(position);
-        notifyItemRemoved(position);
+        mListener.goalListChanged();
     }
 
     @Override
