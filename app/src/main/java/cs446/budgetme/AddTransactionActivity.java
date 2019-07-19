@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +19,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.gson.JsonElement;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -32,6 +35,9 @@ import java.util.regex.Pattern;
 import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddTransactionActivity extends AppCompatActivity {
     private String mCurrentCost = "";
@@ -46,6 +52,9 @@ public class AddTransactionActivity extends AppCompatActivity {
     private APIUtils apicall;
     private int GET_FROM_IMAGE = 3;
     private ArrayList<Transaction> currTrans;
+    final String USER_TOKEN= "5d30ff4e6397c4000427fabe";
+    final String groupID = "5d30ff4e6397c4000427fabd";
+    private static final String TAG = AddTransactionActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,12 +167,8 @@ public class AddTransactionActivity extends AppCompatActivity {
                         builder.setNote("");
 
                     Transaction transaction = builder.build();
-                    apicall.postTrans(transaction);
+                    postTrans(transaction);
 
-                    Intent i = new Intent();
-//                    i.putExtra("transaction", transaction);
-                    setResult(RESULT_OK, i);
-                    finish();
                 } catch (IllegalStateException e) {
                     Toast.makeText(AddTransactionActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
@@ -184,6 +189,12 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
+    private void completePost(){
+        Intent i = new Intent();
+//                    i.putExtra("transaction", transaction);
+        setResult(RESULT_OK, i);
+        finish();
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -232,5 +243,21 @@ public class AddTransactionActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         mDateEdit.setText(sdf.format(mCalendar.getTime()));
+    }
+
+    public void postTrans(Transaction tran) {
+
+        apicall.getApiInterface().addTransaction(tran, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if(response.isSuccessful()) {
+                }
+                completePost();
+            }
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+        });
     }
 }

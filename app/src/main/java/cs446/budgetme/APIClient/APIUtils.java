@@ -30,20 +30,6 @@ public class APIUtils {
     public GetDataService getApiInterface(){
         return apiInterface;
     }
-    public void postTrans(Transaction tran) {
-
-        apiInterface.addTransaction(tran, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
-            @Override
-            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                if(response.isSuccessful()) {
-                }
-            }
-            @Override
-            public void onFailure(Call<JsonElement> call, Throwable t) {
-                Log.e(TAG, "Unable to submit post to API.");
-            }
-        });
-    }
 
     public void deleteTrans(Transaction tran) {
 
