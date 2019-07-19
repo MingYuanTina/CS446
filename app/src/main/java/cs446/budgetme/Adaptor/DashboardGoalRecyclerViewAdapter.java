@@ -119,7 +119,7 @@ public class DashboardGoalRecyclerViewAdapter extends RecyclerView.Adapter<Dashb
 
         @Override
         public String toString() {
-            return mGoal.toString();
+            return mGoal.getTitleString();
         }
     }
 }

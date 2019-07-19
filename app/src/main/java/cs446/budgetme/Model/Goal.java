@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,10 +17,15 @@ import cs446.budgetme.R;
 public class Goal implements Parcelable {
     //need id for Goal for deletion
     private String mId;
+    @SerializedName("targetAmount")
     private Double mLimit;
+    @SerializedName("startDate")
     private Date mStartDate;
+    @SerializedName("endDate")
     private Date mEndDate;
+    @SerializedName("categoryList")
     private List<TransactionCategory> mCategories;
+    @SerializedName("description")
     private String mNote;
 
     private Goal(GoalBuilder builder) {
@@ -151,8 +158,7 @@ public class Goal implements Parcelable {
         return goals;
     }
 
-    @Override
-    public String toString() {
+    public String getTitleString() {
         if (mNote != null && mNote.length() > 0) {
             return mNote;
         } else {
