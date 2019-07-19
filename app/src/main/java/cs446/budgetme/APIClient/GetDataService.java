@@ -19,11 +19,11 @@ public interface GetDataService {
 
     //-------------------------TRANSACTION-----------------------------------
     //TODO:need to change the api url
-    @GET("/trans/{user_token}")
-    Call<List<Transaction>> getTransactionList(@Path("user_token") String token);
+    @GET("/trans/{user_token}/{group_id}")
+    Call<List<Transaction>> getTransactionList(@Path("user_token") String token, @Path("group_id") String groupId );
 
-    @POST("/trans/{user_token}")
-    Call<JsonElement> addTransaction(@Body Transaction trans, @Path("user_token") String token );
+    @POST("/trans/{user_token}/{group_id}")
+    Call<JsonElement> addTransaction(@Body Transaction trans, @Path("user_token") String token, @Path("group_id") String groupId );
 
     @DELETE("/trans/{user_token}/{transaction_token}/{group_id}")
     Call<ResponseBody> deleteTransaction(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("goal_Id") String goalId );

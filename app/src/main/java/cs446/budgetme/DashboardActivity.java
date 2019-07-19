@@ -41,7 +41,8 @@ public class DashboardActivity extends AppCompatActivity
     private static final int REQUEST_CODE_ADD_TRANSACTION = 10000;
     private static final int REQUEST_CODE_GOAL_SETTING = 11000;
 
-    private final String USER_TOKEN= "5d2e9e1059613a39f2e27a43";
+    private final String USER_TOKEN= "5d30ff4e6397c4000427fabe";
+    private final String GroupId="5d30ff4e6397c4000427fabd";
 
     private APIUtils apicall;
     private SpendingsDataSummary mSpendingsDataSummary = new SpendingsDataSummary(Transaction.getFakeData());
@@ -96,7 +97,7 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     public void loadTransactionList(){
-        Call<List<Transaction>> call = apicall.getApiInterface().getTransactionList(USER_TOKEN);
+        Call<List<Transaction>> call = apicall.getApiInterface().getTransactionList(USER_TOKEN,GroupId );
         call.enqueue(new Callback<List<Transaction>>() {
             @Override
             public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
@@ -144,12 +145,14 @@ public class DashboardActivity extends AppCompatActivity
         super.onActivityResult(requestCode,resultCode,data);
 
         //after return back to Dashboard, want to check if there is new updated to the database
-     //   loadTransactionList();
+
 
         if (requestCode == REQUEST_CODE_ADD_TRANSACTION) {
             if (resultCode == RESULT_OK) {
                 Transaction transaction = (Transaction)data.getExtras().getParcelable("transaction");
-                mSpendingsDataSummary.addTransaction(transaction);
+                //load the new data from server
+                loadTransactionList();
+            //    mSpendingsDataSummary.addTransaction(transaction);
             }
         }
         else if (requestCode == REQUEST_CODE_GOAL_SETTING){

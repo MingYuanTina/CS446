@@ -18,8 +18,8 @@ import retrofit2.Response;
 public class APIUtils {
     private GetDataService apiInterface;
     private static final String TAG = APIUtils.class.getName();
-    final String USER_TOKEN= "5d2e9e1059613a39f2e27a43";
-    final String groupID = "adc";
+    final String USER_TOKEN= "5d30ff4e6397c4000427fabe";
+    final String groupID = "5d30ff4e6397c4000427fabd";
 
 
     public APIUtils(){
@@ -31,7 +31,7 @@ public class APIUtils {
     }
     public void postTrans(Transaction tran) {
 
-        apiInterface.addTransaction(tran, USER_TOKEN).enqueue(new Callback<JsonElement>() {
+        apiInterface.addTransaction(tran, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {

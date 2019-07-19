@@ -154,7 +154,8 @@ public class AddTransactionActivity extends AppCompatActivity {
                     // Optional Fields
                     if (!mNoteEdit.getText().toString().isEmpty()) {
                         builder.setNote(mNoteEdit.getText().toString());
-                    }
+                    }else
+                        builder.setNote("");
 
                     Transaction transaction = builder.build();
                     apicall.postTrans(transaction);
