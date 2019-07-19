@@ -11,6 +11,7 @@ import java.util.List;
 
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Transaction;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,13 +36,25 @@ public class APIUtils {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {
-               //     JsonObject obj = response.body().getAsJsonObject();
-
-                  //  Log.i(TAG, "id value returned is " + obj.get("TransId").getAsString());
                 }
             }
             @Override
             public void onFailure(Call<JsonElement> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+        });
+    }
+
+    public void deleteTrans(Transaction tran) {
+
+        apiInterface.deleteTransaction(USER_TOKEN, tran.getId(), groupID).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()) {
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e(TAG, "Unable to submit post to API.");
             }
         });

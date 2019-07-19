@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Fragement.DashboardTransDetailFragment.OnListFragmentInteractionListener;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.R;
@@ -24,10 +25,13 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
 
     private final List<Transaction> mValues;
     private final OnListFragmentInteractionListener mListener;
+    private APIUtils apicall;
 
     public DashboardTransDetailRecyclerViewAdapter(List<Transaction> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
+        apicall = new APIUtils();
+
     }
 
     @Override
@@ -57,6 +61,9 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
 
     }
     public void delete(int position) { //removes the row
+        //first send delete request to server
+        //setup API client
+        apicall.deleteTrans(mValues.get(position));
         mValues.remove(position);
         notifyItemRemoved(position);
     }

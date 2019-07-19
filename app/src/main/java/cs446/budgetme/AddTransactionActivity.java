@@ -161,7 +161,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                     apicall.postTrans(transaction);
 
                     Intent i = new Intent();
-                    i.putExtra("transaction", transaction);
+//                    i.putExtra("transaction", transaction);
                     setResult(RESULT_OK, i);
                     finish();
                 } catch (IllegalStateException e) {

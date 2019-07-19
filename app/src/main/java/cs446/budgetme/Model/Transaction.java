@@ -89,6 +89,9 @@ public class Transaction implements Parcelable {
     public Date getDate() {
         return mDate;
     }
+    public String getId() {
+        return id;
+    }
 
     public String getStringDate(){
         DateFormat outputFormatter = new SimpleDateFormat("MM/dd/yyyy");

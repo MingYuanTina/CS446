@@ -26,7 +26,7 @@ public interface GetDataService {
     Call<JsonElement> addTransaction(@Body Transaction trans, @Path("user_token") String token, @Path("group_id") String groupId );
 
     @DELETE("/trans/{user_token}/{transaction_token}/{group_id}")
-    Call<ResponseBody> deleteTransaction(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("goal_Id") String goalId );
+    Call<ResponseBody> deleteTransaction(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("group_id") String goalId );
 
     //-------------------------GOAL-----------------------------------------
     @GET("/goal/{user_token}/{group_id}")
@@ -35,8 +35,8 @@ public interface GetDataService {
     @POST("/goal/{user_token}/{group_id}")
     Call<JsonElement> addGoal(@Body Goal mgoal, @Path("user_token") String token,  @Path("group_id") String groupId );
 
-    @DELETE("/goal/{user_token}/{group_id}/{goal_Id}")
-    Call<ResponseBody> deleteGoal(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("goal_Id") String goalId );
+    @DELETE("/goal/{user_token}/{group_id}/{goal_id}")
+    Call<ResponseBody> deleteGoal(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("goal_id") String goalId );
 
     //---------------------CATEGORY------------------------------------
     @GET ("/category/{user_token}/{group_id}")
