@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/goal_line_chart"
+        android:layout_width="match_parent"
+        android:layout_height="200pt" >
+    </com.github.mikephil.charting.charts.LineChart>
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_weight="10"
+        android:background="@color/colorPrimaryDark"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/delete" />
+
+</LinearLayout>

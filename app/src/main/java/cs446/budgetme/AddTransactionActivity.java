@@ -251,8 +251,8 @@ public class AddTransactionActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {
+                    completePost();
                 }
-                completePost();
             }
             @Override
             public void onFailure(Call<JsonElement> call, Throwable t) {

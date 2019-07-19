@@ -2,10 +2,15 @@ package cs446.budgetme.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import cs446.budgetme.R;
 
 public class Goal implements Parcelable {
     //need id for Goal for deletion
@@ -67,6 +72,26 @@ public class Goal implements Parcelable {
         }
     }
 
+    public String getId() {
+        return mId;
+    }
+
+    public Double getLimit() {
+        return mLimit;
+    }
+
+    public Date getStartDate() {
+        return mStartDate;
+    }
+
+    public Date getEndDate() {
+        return mEndDate;
+    }
+
+    public List<TransactionCategory> getCategories() {
+        return mCategories;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -124,5 +149,25 @@ public class Goal implements Parcelable {
         }
 
         return goals;
+    }
+
+    @Override
+    public String toString() {
+        if (mNote != null && mNote.length() > 0) {
+            return mNote;
+        } else {
+            String categoriesString;
+            if (mCategories.isEmpty()) {
+                categoriesString = "All Categories";
+            } else {
+                List<String> text = new ArrayList<>();
+                for (int i = 0; i < mCategories.size(); i++) {
+                    text.add(mCategories.get(i).toString());
+                }
+                categoriesString = TextUtils.join(", ", text);
+            }
+            DateFormat outputFormatter = new SimpleDateFormat("MM/dd/yyyy");
+            return categoriesString + ", " + mLimit + ", " + outputFormatter.format(mStartDate) + " to " + outputFormatter.format(mEndDate);
+        }
     }
 }

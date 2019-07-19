@@ -181,8 +181,6 @@ public class DashboardSummaryFragment extends Fragment {
                 mSpendingsDataSummary.getStartDate(), mSpendingsDataSummary.getEndDate(), new DateRangePicker.OnCalenderClickListener() {
             @Override
             public void onDateSelected(Calendar selectedStartDate, Calendar selectedEndDate) {
-                selectedEndDate.add(Calendar.DATE, 1);
-                selectedEndDate.add(Calendar.MILLISECOND, -1);
                 mSpendingsDataSummary.setDateFilters(selectedStartDate, selectedEndDate);
             }
         });

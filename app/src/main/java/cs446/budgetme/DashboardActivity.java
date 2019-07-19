@@ -21,6 +21,7 @@ import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Adaptor.DashboardTabAdapter;
 import cs446.budgetme.APIClient.GetDataService;
 import cs446.budgetme.APIClient.RetrofitClient;
+import cs446.budgetme.Fragement.DashboardGoalFragment;
 import cs446.budgetme.Fragement.DashboardSummaryFragment;
 import cs446.budgetme.Fragement.DashboardProfileFragment;
 import cs446.budgetme.Fragement.DashboardTransDetailFragment;
@@ -33,7 +34,7 @@ import retrofit2.Response;
 
 public class DashboardActivity extends AppCompatActivity
         implements DashboardSummaryFragment.OnFragmentInteractionListener, DashboardProfileFragment.OnFragmentInteractionListener,
-        DashboardTransDetailFragment.OnListFragmentInteractionListener{
+        DashboardTransDetailFragment.OnListFragmentInteractionListener, DashboardGoalFragment.OnListFragmentInteractionListener {
     private DashboardTabAdapter mAdapter;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
@@ -45,9 +46,10 @@ public class DashboardActivity extends AppCompatActivity
     private final String GroupId="5d30ff4e6397c4000427fabd";
 
     private APIUtils apicall;
-    private SpendingsDataSummary mSpendingsDataSummary = new SpendingsDataSummary(Transaction.getFakeData());
+    private SpendingsDataSummary mSpendingsDataSummary = new SpendingsDataSummary(Transaction.getFakeData(), Goal.getFakeData());
     //need current transaction list to check if client Transaction List is the same as database
     private ArrayList<Transaction> currTrans;
+    private ArrayList<Goal> currGoals;
 
 
     @Override
@@ -85,6 +87,7 @@ public class DashboardActivity extends AppCompatActivity
         mProfile.setArguments(bundle);
         //add the fragments
         mAdapter.addFragment(new DashboardSummaryFragment(mSpendingsDataSummary), getResources().getString(R.string.title_dashboard_tab_summary));
+        mAdapter.addFragment(new DashboardGoalFragment(mSpendingsDataSummary), "Goals");
         mAdapter.addFragment(new DashboardTransDetailFragment(mSpendingsDataSummary), "Transaction Detail");
         mAdapter.addFragment(mProfile,"Profile");
 
@@ -94,6 +97,7 @@ public class DashboardActivity extends AppCompatActivity
         mViewPager.setCurrentItem(0);
 
         loadTransactionList();
+        loadGoalList();
     }
 
     public void loadTransactionList(){
@@ -120,12 +124,39 @@ public class DashboardActivity extends AppCompatActivity
         currTrans = (ArrayList) transactions;
     }
 
+    public void loadGoalList(){
+        Call<List<Goal>> call = apicall.getApiInterface().getGoalList(USER_TOKEN,GroupId );
+        call.enqueue(new Callback<List<Goal>>() {
+            @Override
+            public void onResponse(Call<List<Goal>> call, Response<List<Goal>> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println("Code: " + response.code());
+                    return;
+                }
+                updateGoals(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Goal>> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
+    }
+
+    private void updateGoals(List<Goal> goals) {
+        mSpendingsDataSummary.setGoals(goals);
+        currGoals = (ArrayList) goals;
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
     @Override
     public void onListFragmentInteraction(Transaction item){}
+
+    @Override
+    public void onListFragmentInteraction(Goal goal) {}
 
 
     //addtransaction activity needs the current transationList to see whether the database list is the same as current.
@@ -137,6 +168,7 @@ public class DashboardActivity extends AppCompatActivity
 
     public void startGoalSetting(){
         Intent i = new Intent(this, GoalSettingActivity.class);
+        i.putParcelableArrayListExtra("goalList",currTrans );
         startActivityForResult(i, REQUEST_CODE_GOAL_SETTING);
     }
 
@@ -157,9 +189,8 @@ public class DashboardActivity extends AppCompatActivity
         }
         else if (requestCode == REQUEST_CODE_GOAL_SETTING){
             if (resultCode == RESULT_OK) {
-                Goal goal = (Goal)data.getExtras().getParcelable("goal");
-                ((DashboardSummaryFragment)mAdapter.getItem(0)).onGoalAdded(goal);
-            }
+                loadGoalList();
+        }
         }
     }
 

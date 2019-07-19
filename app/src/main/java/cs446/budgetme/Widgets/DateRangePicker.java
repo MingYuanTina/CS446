@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import cs446.budgetme.R;
+import cs446.budgetme.Utils.DateUtils;
 
 public class DateRangePicker extends Dialog implements View.OnClickListener, TabLayout.OnTabSelectedListener {
     final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
@@ -46,14 +47,8 @@ public class DateRangePicker extends Dialog implements View.OnClickListener, Tab
         this.context = context;
         this.onCalenderClickListener = onCalenderClickListener;
 
-        startDateCal.set(Calendar.HOUR_OF_DAY, 0);
-        startDateCal.set(Calendar.MINUTE, 0);
-        startDateCal.set(Calendar.SECOND, 0);
-        startDateCal.set(Calendar.MILLISECOND, 0);
-        endDateCal.set(Calendar.HOUR_OF_DAY, 0);
-        endDateCal.set(Calendar.MINUTE, 0);
-        endDateCal.set(Calendar.SECOND, 0);
-        endDateCal.set(Calendar.MILLISECOND, 0);
+        DateUtils.setCalendarToBeginningOfDay(startDateCal);
+        DateUtils.setCalendarToBeginningOfDay(endDateCal);
     }
 
     public DateRangePicker(@NonNull Context context, Date startDate, Date endDate, OnCalenderClickListener onCalenderClickListener) {

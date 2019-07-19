@@ -10,11 +10,14 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.gson.JsonElement;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -29,6 +32,9 @@ import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.MultipleChoiceWithSelectAllDialogCallback;
 import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.Widgets.MultipleChoiceWithSelectAllDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class GoalSettingActivity extends AppCompatActivity implements MultipleChoiceWithSelectAllDialogCallback<TransactionCategory> {
 
@@ -46,6 +52,9 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
     private ArrayList<Boolean> mCheckedItems;
     private MultipleChoiceWithSelectAllDialog<TransactionCategory> mDialog;
     private APIUtils apicall;
+    final String USER_TOKEN= "5d30ff4e6397c4000427fabe";
+    final String groupID = "5d30ff4e6397c4000427fabd";
+    private static final String TAG = GoalSettingActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,11 +180,9 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
                     if (!mChosenCategories.isEmpty()) {
                         builder.setCategories(mChosenCategories);
                     }
+                    Goal goal = builder.build();
+                    postGoal(goal);
 
-                    Intent i = new Intent();
-                    i.putExtra("goal", builder.build());
-                    setResult(RESULT_OK, i);
-                    finish();
                 } catch (IllegalStateException e) {
 
                 } catch (Exception e) {
@@ -183,6 +190,28 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
                 }
             }
         });
+    }
+
+
+    public void postGoal(Goal goal) {
+        apicall.getApiInterface().addGoal(goal, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if(response.isSuccessful()) {
+                    completePost();
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+        });
+    }
+
+    private void completePost(){
+        Intent i = new Intent();
+        setResult(RESULT_OK, i);
+        finish();
     }
 
     @Override

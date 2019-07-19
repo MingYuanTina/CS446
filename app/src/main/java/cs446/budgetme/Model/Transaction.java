@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 
+import cs446.budgetme.Utils.DateUtils;
+
 public class Transaction implements Parcelable {
     @SerializedName("cost")
     private Double mCost;
@@ -29,14 +31,14 @@ public class Transaction implements Parcelable {
     private String mNote;
 
     @SerializedName("transId")
-    private String id;
+    private String mId;
 
     private Transaction(TransactionBuilder builder) {
         this.mCost = builder.mCost;
         this.mDate = builder.mDate;
         this.mCategory = builder.mCategory;
         this.mNote = builder.mNote;
-        this.id = builder.id;
+        this.mId = builder.mId;
     }
 
     public static class TransactionBuilder implements Builder<Transaction>{
@@ -44,7 +46,7 @@ public class Transaction implements Parcelable {
         private Double mCost;
         private String mNote;
         private TransactionCategory mCategory;
-        private String id;
+        private String mId;
 
         public TransactionBuilder(Double cost, Date date, TransactionCategory category) {
             mCost = cost;
@@ -58,7 +60,7 @@ public class Transaction implements Parcelable {
         }
 
         public TransactionBuilder setId(String id) {
-            id = id;
+            mId = id;
             return this;
         }
         @Override
@@ -90,7 +92,7 @@ public class Transaction implements Parcelable {
         return mDate;
     }
     public String getId() {
-        return id;
+        return mId;
     }
 
     public String getStringDate(){
@@ -135,10 +137,7 @@ public class Transaction implements Parcelable {
     private Date getRoundedDateOfTransaction() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(mDate);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        DateUtils.setCalendarToBeginningOfDay(calendar);
         return calendar.getTime();
     }
 
@@ -162,7 +161,7 @@ public class Transaction implements Parcelable {
         out.writeSerializable(mDate);
         out.writeParcelable(mCategory, flags);
         out.writeString(mNote);
-        out.writeString(id);
+        out.writeString(mId);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -182,6 +181,6 @@ public class Transaction implements Parcelable {
         mDate = (Date)in.readSerializable();
         mCategory = in.readParcelable(TransactionCategory.class.getClassLoader());
         mNote = in.readString();
-        id=in.readString();
+        mId=in.readString();
     }
 }

@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import cs446.budgetme.Utils.DateUtils;
+
 public class SpendingsDataSummary implements Subject {
 
     ArrayList<Observer> observerList;
@@ -15,16 +17,19 @@ public class SpendingsDataSummary implements Subject {
     Date mEndDate;
     HashSet<Integer> mChosenCategoriesIds;
 
-    List<Goal> goals; // this should not be a list, maybe a mapping from category to cost, or literally its own class
+    List<Goal> mGoals; // this should not be a list, maybe a mapping from category to cost, or literally its own class
 
     public SpendingsDataSummary(List<Transaction> transactions) {
         observerList = new ArrayList<>();
         mChosenCategoriesIds = new HashSet<>();
-        this.mTransactions = transactions;
-        goals = Goal.getFakeData();
-
-        //mGoal = Transaction.getFakeData();
+        mTransactions = transactions;
     }
+
+    public SpendingsDataSummary(List<Transaction> transactions, List<Goal> goals) {
+        this(transactions);
+        mGoals = goals;
+    }
+
     @Override
     public void register(Observer observer) {
         observerList.add(observer);
@@ -55,11 +60,30 @@ public class SpendingsDataSummary implements Subject {
         notifyObservers();
     }
 
+    public void setDateFiltersFromDates(Date startDate, Date endDate) {
+        if (startDate == null || endDate == null) {
+            mStartDate = null;
+            mEndDate = null;
+        } else {
+            Calendar startCalendar = Calendar.getInstance();
+            startCalendar.setTime(startDate);
+            DateUtils.setCalendarToBeginningOfDay(startCalendar);
+            mStartDate = startCalendar.getTime();
+            Calendar endCalendar = Calendar.getInstance();
+            endCalendar.setTime(endDate);
+            DateUtils.setCalendarToBeginningOfDay(endCalendar);
+            mEndDate = endCalendar.getTime();
+        }
+
+    }
+
     public void setDateFilters(Calendar startDate, Calendar endDate) {
         if (startDate == null || endDate == null) {
             mStartDate = null;
             mEndDate = null;
         } else {
+            endDate.add(Calendar.DATE, 1);
+            endDate.add(Calendar.MILLISECOND, -1);
             mStartDate = startDate.getTime();
             mEndDate = endDate.getTime();
         }
@@ -103,12 +127,12 @@ public class SpendingsDataSummary implements Subject {
         return filteredTransactions;
     }
 
-    private List<Transaction> getTransactions() {
+    public List<Transaction> getTransactions() {
         return mTransactions;
     }
 
     public List<Goal> getGoals() {
-        return goals;
+        return mGoals;
     }
 
     public Date getStartDate() {
@@ -120,7 +144,7 @@ public class SpendingsDataSummary implements Subject {
     }
 
     public void addGoal(Goal goal) {
-        goals.add(goal);
+        mGoals.add(goal);
         notifyObservers();
     }
 
@@ -128,6 +152,11 @@ public class SpendingsDataSummary implements Subject {
         mTransactions = transactions;
         //sort the list according to data
         Transaction.sortTransactionsByDate(transactions);
+        notifyObservers();
+    }
+
+    public void setGoals(List<Goal> goals) {
+        mGoals = goals;
         notifyObservers();
     }
 }
