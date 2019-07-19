@@ -35,9 +35,9 @@ public class APIUtils {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {
-                    JsonObject obj = response.body().getAsJsonObject();
+               //     JsonObject obj = response.body().getAsJsonObject();
 
-                    Log.i(TAG, "id value returned is " + obj.get("TransId").getAsString());
+                  //  Log.i(TAG, "id value returned is " + obj.get("TransId").getAsString());
                 }
             }
             @Override

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,30 +8,42 @@
     android:weightSum="100">
 
     <TextView
-        android:id="@+id/transDate"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/textDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/text_margin"
         android:layout_marginTop="@dimen/text_margin"
-        android:layout_weight="35"
+        android:layout_marginEnd="@dimen/text_margin"
+        android:layout_weight="30"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
         android:id="@+id/transCategory"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/text_margin"
-        android:layout_weight="33"
+        android:layout_weight="35"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
         android:id="@+id/transAmount"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/text_margin"
         android:layout_marginEnd="@dimen/text_margin"
-        android:layout_weight="35"
+        android:layout_weight="20"
         android:textAlignment="textEnd"
         android:textAppearance="?attr/textAppearanceListItem" />
+
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_weight="10"
+        android:background="@color/colorPrimaryDark"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/delete" />
 
 </LinearLayout>

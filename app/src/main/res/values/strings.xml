@@ -8,6 +8,7 @@
     <string name="label_image_import">Import Image</string>
     <string name="label_category">Category</string>
     <string name="label_categories">Categories</string>
+    <string name="label_delete">Delete</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
     <string name="title_dashboard_tab_summary">Summary</string>
     <string name="title_dashboard_tab_profile">Profile</string>

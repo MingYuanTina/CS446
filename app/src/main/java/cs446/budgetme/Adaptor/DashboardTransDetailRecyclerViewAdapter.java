@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import cs446.budgetme.Fragement.DashboardTransDetailFragment.OnListFragmentInteractionListener;
@@ -52,6 +54,11 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
                 }
             }
         });
+
+    }
+    public void delete(int position) { //removes the row
+        mValues.remove(position);
+        notifyItemRemoved(position);
     }
 
     @Override
@@ -65,13 +72,22 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
         public final TextView mCategoryView;
         public final TextView mAmountView;
         public Transaction mItem;
+        public ImageButton mDeleteButton;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mDateView = (TextView) view.findViewById(R.id.transDate);
+            mDateView = (TextView) view.findViewById(R.id.textDate);
             mCategoryView = (TextView) view.findViewById(R.id.transCategory);
             mAmountView = (TextView) view.findViewById(R.id.transAmount);
+            mDeleteButton = view.findViewById(R.id.deleteButton);
+
+            mDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    delete(getAdapterPosition());
+                }
+            });
         }
 
         @Override

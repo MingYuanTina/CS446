@@ -126,6 +126,8 @@ public class SpendingsDataSummary implements Subject {
 
     public void setTransactions(List<Transaction> transactions) {
         mTransactions = transactions;
+        //sort the list according to data
+        Transaction.sortTransactionsByDate(transactions);
         notifyObservers();
     }
 }

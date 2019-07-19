@@ -144,7 +144,7 @@ public class DashboardActivity extends AppCompatActivity
         super.onActivityResult(requestCode,resultCode,data);
 
         //after return back to Dashboard, want to check if there is new updated to the database
-        loadTransactionList();
+     //   loadTransactionList();
 
         if (requestCode == REQUEST_CODE_ADD_TRANSACTION) {
             if (resultCode == RESULT_OK) {

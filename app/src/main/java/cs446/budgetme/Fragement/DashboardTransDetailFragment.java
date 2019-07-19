@@ -20,12 +20,6 @@ import cs446.budgetme.Model.Observer;
 import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.

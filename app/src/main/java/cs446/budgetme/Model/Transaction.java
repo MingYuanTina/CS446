@@ -28,6 +28,7 @@ public class Transaction implements Parcelable {
     @SerializedName("description")
     private String mNote;
 
+    @SerializedName("transId")
     private String id;
 
     private Transaction(TransactionBuilder builder) {
