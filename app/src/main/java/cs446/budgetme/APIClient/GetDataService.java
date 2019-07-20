@@ -7,6 +7,8 @@ import java.util.List;
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
+import cs446.budgetme.Model.User;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -43,14 +45,18 @@ public interface GetDataService {
     Call<List<TransactionCategory>> getCategoryList(@Path("user_token") String token,  @Path("group_id") String groupId );
 
     @POST("/category/{user_token}/{group_id}")
-    Call<Goal> addCategoryList(@Body TransactionCategory mCategory, @Path("user_token") String token,  @Path("group_id") String groupId );
+    Call<ResponseBody> addCategory(@Body TransactionCategory mCategory, @Path("user_token") String token,  @Path("group_id") String groupId );
 
     @DELETE("/category/{user_token}/{group_id}/{categoryUserId}")
-    Call<ResponseBody> deleteCategory(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("goal_Id") String goalId );
+    Call<ResponseBody> deleteCategory(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("categoryUserId") String categoryId );
 
     //----------------------USER--------------------------------------
 
+    @GET("/user/")
+    Call<User> getUser();
 
+    @POST("/user")
+    Call<ResponseBody> register();
 
     //----------------------GROUP----------------------------------------------
 
