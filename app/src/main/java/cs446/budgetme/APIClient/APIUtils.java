@@ -31,20 +31,6 @@ public class APIUtils {
         return apiInterface;
     }
 
-    public void deleteTrans(Transaction tran) {
-
-        apiInterface.deleteTransaction(USER_TOKEN, tran.getId(), groupID).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()) {
-                }
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e(TAG, "Unable to submit post to API.");
-            }
-        });
-    }
 
     public void deleteGoal(Goal goal) {
         apiInterface.deleteGoal(USER_TOKEN, groupID, goal.getId()).enqueue(new Callback<ResponseBody>() {

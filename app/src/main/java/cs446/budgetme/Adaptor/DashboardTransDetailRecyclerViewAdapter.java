@@ -2,6 +2,7 @@ package cs446.budgetme.Adaptor;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,14 @@ import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Fragement.DashboardTransDetailFragment.OnListFragmentInteractionListener;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.R;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.List;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link } and makes a call to the
@@ -26,6 +33,8 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
     private final List<Transaction> mValues;
     private final OnListFragmentInteractionListener mListener;
     private APIUtils apicall;
+    final String USER_TOKEN= "5d30ff4e6397c4000427fabe";
+    final String groupID = "5d30ff4e6397c4000427fabd";
 
     public DashboardTransDetailRecyclerViewAdapter(List<Transaction> items, OnListFragmentInteractionListener listener) {
         mValues = items;
@@ -63,8 +72,23 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
     public void delete(int position) { //removes the row
         //first send delete request to server
         //setup API client
-        apicall.deleteTrans(mValues.get(position));
-        mListener.transListChanged();
+        deleteTrans(mValues.get(position));
+    }
+
+    public void deleteTrans(Transaction tran) {
+
+        apicall.getApiInterface().deleteTransaction(USER_TOKEN, tran.getId(), groupID).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()) {
+                    mListener.transListChanged();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+        });
     }
 
     @Override
