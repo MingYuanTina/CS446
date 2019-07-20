@@ -15,6 +15,14 @@ public class Group implements Parcelable {
         return 0;
     }
 
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public String getGroupName(){
+        return groupName;
+    }
+
     private Group(Parcel in) {
         groupId = in.readString();
         groupName = in.readString();

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import cs446.budgetme.DashboardActivity;
+import cs446.budgetme.Model.Group;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.Model.User;
@@ -66,9 +68,7 @@ public class DashboardProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userGroupList = new ArrayList<String>();
-        userGroupList.add("Group1");
-        userGroupList.add("Group2");
+        userGroupList = new ArrayList<>();
 
     }
 
@@ -104,12 +104,28 @@ public class DashboardProfileFragment extends Fragment {
         //create the group list
         arrayAdapter =  new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, userGroupList);
         userGroupListView = getView().findViewById(R.id.GroupList);
-        updateGroupList();
+        updateGroupList(mUser.getGroupList());
+        userGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,long arg3) {
+                view.setSelected(true);
+                //when group is selected then refresh all the user value
+                ((DashboardActivity)getActivity()).updateUserDefaultGroup(position);
+            }
+        });
     }
 
-    private void updateGroupList(){
-        arrayAdapter.notifyDataSetChanged();
+    public void setDefaultGroup(String id){
+        mUser.setDefaultGroupId(id);
+        updateGroupList(mUser.getGroupList());
+    }
+    private void updateGroupList(ArrayList<Group> groups){
+        userGroupList.clear();
+        for(Group g: groups){
+            userGroupList.add(g.getGroupName());
+        }
         userGroupListView.setAdapter(arrayAdapter);
+        arrayAdapter.notifyDataSetChanged();
         userGroupListView.invalidate();
     }
 

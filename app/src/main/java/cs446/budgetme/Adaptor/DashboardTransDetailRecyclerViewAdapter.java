@@ -13,6 +13,7 @@ import android.widget.TextView;
 import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Fragement.DashboardTransDetailFragment.OnListFragmentInteractionListener;
 import cs446.budgetme.Model.Transaction;
+import cs446.budgetme.Model.User;
 import cs446.budgetme.R;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -33,14 +34,15 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
     private final List<Transaction> mValues;
     private final OnListFragmentInteractionListener mListener;
     private APIUtils apicall;
-    final String USER_TOKEN= "5d30ff4e6397c4000427fabe";
-    final String groupID = "5d30ff4e6397c4000427fabd";
+    private String USER_TOKEN= "5d30ff4e6397c4000427fabe";
+    private String groupID = "5d30ff4e6397c4000427fabd";
 
-    public DashboardTransDetailRecyclerViewAdapter(List<Transaction> items, OnListFragmentInteractionListener listener) {
+    public DashboardTransDetailRecyclerViewAdapter(List<Transaction> items, OnListFragmentInteractionListener listener, User user) {
         mValues = items;
         mListener = listener;
         apicall = new APIUtils();
-
+        USER_TOKEN = user.getUserAuthToken();
+        groupID = user.getDefaultGroupId();
     }
 
     @Override

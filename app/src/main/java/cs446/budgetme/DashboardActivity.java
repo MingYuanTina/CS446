@@ -48,6 +48,7 @@ public class DashboardActivity extends AppCompatActivity
     //need current transaction list to check if client Transaction List is the same as database
     private ArrayList<Transaction> currTrans;
     private ArrayList<Goal> currGoals;
+    private User mUser;
 
 
     @Override
@@ -56,7 +57,7 @@ public class DashboardActivity extends AppCompatActivity
         setContentView(R.layout.activity_dashboard);
         //get indent information
         Intent intent = getIntent();
-        User currentUser = (User)intent.getExtras().getParcelable("user");
+        User currentUser = intent.getExtras().getParcelable("user");
 
         //set up the group id and user token for all the api calls
         GroupId= currentUser.getDefaultGroupId();
@@ -83,14 +84,14 @@ public class DashboardActivity extends AppCompatActivity
         mAdapter = new DashboardTabAdapter(getSupportFragmentManager());
 
         //create a DashboardProfileFrag to update the user information
-        Bundle bundle = new Bundle();
-        DashboardProfileFragment mProfile = new DashboardProfileFragment(currentUser);
-        mProfile.setArguments(bundle);
+     //   Bundle bundle = new Bundle();
+//        DashboardProfileFragment mProfile = ;
+//        mProfile.setArguments(bundle);
         //add the fragments
         mAdapter.addFragment(new DashboardSummaryFragment(mSpendingsDataSummary), getResources().getString(R.string.title_dashboard_tab_summary));
         mAdapter.addFragment(new DashboardGoalFragment(mSpendingsDataSummary), "Goals");
-        mAdapter.addFragment(new DashboardTransDetailFragment(mSpendingsDataSummary), "Transaction Detail");
-        mAdapter.addFragment(mProfile,"Profile");
+        mAdapter.addFragment(new DashboardTransDetailFragment(mSpendingsDataSummary, currentUser), "Transaction Detail");
+        mAdapter.addFragment(new DashboardProfileFragment(currentUser),"Profile");
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(2);
@@ -125,6 +126,19 @@ public class DashboardActivity extends AppCompatActivity
         currTrans = (ArrayList) transactions;
     }
 
+    public void updateUserDefaultGroup(int index){
+        //update the user
+        String groupID = mUser.getGroupList().get(index).getGroupId();
+        mUser.setDefaultGroupId(groupID);
+        //passUserGroupUpdate
+        DashboardProfileFragment mProfile= (DashboardProfileFragment)mAdapter.getItem(3);
+        mProfile.setDefaultGroup(groupID);
+
+        DashboardTransDetailFragment mTransFrag = (DashboardTransDetailFragment)mAdapter.getItem(2);
+        mTransFrag.setDefaultGroup(groupID);
+
+
+    }
     public void loadGoalList(){
         Call<List<Goal>> call = apicall.getApiInterface().getGoalList(USER_TOKEN,GroupId );
         call.enqueue(new Callback<List<Goal>>() {

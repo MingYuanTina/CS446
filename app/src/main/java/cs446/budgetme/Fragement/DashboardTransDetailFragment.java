@@ -12,13 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Adaptor.DashboardTransDetailRecyclerViewAdapter;
-import cs446.budgetme.APIClient.GetDataService;
-import cs446.budgetme.APIClient.RetrofitClient;
 import cs446.budgetme.Model.Observer;
 import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.Model.Transaction;
+import cs446.budgetme.Model.User;
 import cs446.budgetme.R;
 
 /**
@@ -38,13 +36,15 @@ public class DashboardTransDetailFragment extends Fragment implements Observer {
     private RecyclerView recyclerView;
     private static final String TAG = DashboardTransDetailFragment.class.getName();
     private SpendingsDataSummary mSpendingsDataSummary;
+    private User curUser;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public DashboardTransDetailFragment(SpendingsDataSummary spendingsDataSummary) {
+    public DashboardTransDetailFragment(SpendingsDataSummary spendingsDataSummary, User user) {
         mSpendingsDataSummary = spendingsDataSummary;
+        curUser = user;
     }
 
     public DashboardTransDetailFragment() {
@@ -89,9 +89,14 @@ public class DashboardTransDetailFragment extends Fragment implements Observer {
         return view;
     }
 
+    public void setDefaultGroup(String id){
+        curUser.setDefaultGroupId(id);
+        update();
+    }
+
     @Override
     public void update() {
-        recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mSpendingsDataSummary.getFilteredTransactions(), mListener));
+        recyclerView.setAdapter(new DashboardTransDetailRecyclerViewAdapter(mSpendingsDataSummary.getFilteredTransactions(), mListener, curUser));
         recyclerView.invalidate();
     }
 
