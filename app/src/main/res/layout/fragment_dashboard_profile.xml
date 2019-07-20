@@ -66,6 +66,7 @@
             android:id="@+id/GroupList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_key"
             android:layout_centerHorizontal="true"/>
 
         <Button
