@@ -23,6 +23,7 @@ import cs446.budgetme.Utils.DateUtils;
 public class LineChartUtils {
     public static class DateValueFormatter extends ValueFormatter {
         private Calendar mCalendar = Calendar.getInstance();
+        private int mTimeDivision;
 
         public DateValueFormatter() {
             super();
@@ -35,17 +36,139 @@ public class LineChartUtils {
             mCalendar.set(Calendar.SECOND, 0);
             mCalendar.set(Calendar.MILLISECOND, 0);
         }
+
+        public void setTimeDivision(int timeDivision) {
+            mTimeDivision = timeDivision;
+        }
+
         @Override
         public String getFormattedValue(float value) {
             DateFormat outputFormatter = new SimpleDateFormat("MM/dd");
-            mCalendar.add(Calendar.DATE, (int)value);
+            mCalendar.add(Calendar.DATE, mTimeDivision * (int)value);
             String dateWithoutTime = outputFormatter.format(mCalendar.getTime());
-            mCalendar.add(Calendar.DATE, -(int)value);
+            mCalendar.add(Calendar.DATE, -mTimeDivision * (int)value);
             return dateWithoutTime;
         }
     }
 
+    private static final long MILLISECONDS_10_DAYS = 864000000L;
+    private static final long MILLISECONDS_10_WEEKS = 6048000000L;
+    private static final long MILLISECONDS_10_MONTHS = 25920000000L;
+
     public static void setDailyDataFromTransactions(LineChart lineChart, List<Transaction> transactions, DateValueFormatter dateValueFormatter, String title) {
+        List<Entry> entries = new ArrayList<>();
+        if (!transactions.isEmpty()) {
+            TreeMap<Date, List<Transaction>> groupedByDay = Transaction.getTransactionsGroupedByDay(transactions);
+            Double runningTotal = new Double(0.0);
+
+            // Handle null case here.
+            Date firstEntryDate = groupedByDay.firstEntry().getKey();
+            Date lastEntry = groupedByDay.lastEntry().getKey();
+
+            int dayOffset = 0;
+            Calendar currentCalendar = Calendar.getInstance();
+            currentCalendar.setTime(firstEntryDate);
+            // DateUtils.setCalendarToBeginningOfDay(currentCalendar);
+
+            while (!currentCalendar.getTime().after(lastEntry)) {
+                if (groupedByDay.get(currentCalendar.getTime()) != null) {
+                    Double total = new Double(0.0);
+                    for (Transaction t : groupedByDay.get(currentCalendar.getTime())) {
+                        total += t.getCost();
+                    }
+                    runningTotal += total;
+                }
+                entries.add(new Entry(dayOffset, runningTotal.floatValue()));
+                currentCalendar.add(Calendar.DATE, 1);
+                dayOffset += 1;
+            }
+            lineChart.getXAxis().setLabelCount(dayOffset, true);
+            dateValueFormatter.setStartingDate(firstEntryDate);
+        }
+        LineDataSet set = new LineDataSet(entries, title);
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set); // add the data sets
+        lineChart.setData(new LineData(dataSets));
+        lineChart.invalidate();
+    }
+
+    public static void setTransactionsByAppropriateInterval(LineChart lineChart, List<Transaction> transactions, DateValueFormatter dateValueFormatter, String title) {
+        List<Entry> entries = new ArrayList<>();
+        if (!transactions.isEmpty()) {
+            TreeMap<Date, List<Transaction>> groupedByDay = Transaction.getTransactionsGroupedByDay(transactions);
+            // Handle null case here.
+            Date firstEntryDate = groupedByDay.firstEntry().getKey();
+            Date lastEntryDate = groupedByDay.lastEntry().getKey();
+
+            long timeDifference = lastEntryDate.getTime() - firstEntryDate.getTime();
+            Double runningTotal = new Double(0.0);
+
+            int index = 0;
+            Calendar currentCalendar = Calendar.getInstance();
+            currentCalendar.setTime(firstEntryDate);
+            // DateUtils.setCalendarToBeginningOfDay(currentCalendar);
+
+            if (timeDifference <= MILLISECONDS_10_DAYS) {
+                while (!currentCalendar.getTime().after(lastEntryDate)) {
+                    if (groupedByDay.get(currentCalendar.getTime()) != null) {
+                        Double total = new Double(0.0);
+                        for (Transaction t : groupedByDay.get(currentCalendar.getTime())) {
+                            total += t.getCost();
+                        }
+                        runningTotal += total;
+                    }
+                    entries.add(new Entry(index, runningTotal.floatValue()));
+                    currentCalendar.add(Calendar.DATE, 1);
+                    index += 1;
+                }
+                dateValueFormatter.setTimeDivision(1);
+            } else if (timeDifference <= MILLISECONDS_10_WEEKS) {
+                while (!currentCalendar.getTime().after(lastEntryDate)) {
+                    for (int i = 0; i < 7; i++) {
+                        if (groupedByDay.get(currentCalendar.getTime()) != null) {
+                            Double total = new Double(0.0);
+                            for (Transaction t : groupedByDay.get(currentCalendar.getTime())) {
+                                total += t.getCost();
+                            }
+                            runningTotal += total;
+                        }
+                        currentCalendar.add(Calendar.DATE, 1);
+                    }
+                    entries.add(new Entry(index, runningTotal.floatValue()));
+                    index += 1;
+                }
+                dateValueFormatter.setTimeDivision(7);
+            } else {
+                while (!currentCalendar.getTime().after(lastEntryDate)) {
+                    for (int i = 0; i < 30; i++) {
+                        if (groupedByDay.get(currentCalendar.getTime()) != null) {
+                            Double total = new Double(0.0);
+                            for (Transaction t : groupedByDay.get(currentCalendar.getTime())) {
+                                total += t.getCost();
+                            }
+                            runningTotal += total;
+                        }
+                        currentCalendar.add(Calendar.DATE, 1);
+                    }
+                    entries.add(new Entry(index, runningTotal.floatValue()));
+                    index += 1;
+                }
+                dateValueFormatter.setTimeDivision(30);
+            }
+            dateValueFormatter.setStartingDate(firstEntryDate);
+            lineChart.getXAxis().setLabelCount(index, true);
+        }
+
+        LineDataSet set = new LineDataSet(entries, title);
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set); // add the data sets
+        lineChart.setData(new LineData(dataSets));
+        lineChart.invalidate();
+    }
+
+    public static void setWeeklyDataFromTransactions(LineChart lineChart, List<Transaction> transactions, DateValueFormatter dateValueFormatter, String title) {
         List<Entry> entries = new ArrayList<>();
         if (!transactions.isEmpty()) {
             TreeMap<Date, List<Transaction>> groupedByDay = Transaction.getTransactionsGroupedByDay(transactions);

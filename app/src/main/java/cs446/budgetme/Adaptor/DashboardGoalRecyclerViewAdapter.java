@@ -66,7 +66,7 @@ public class DashboardGoalRecyclerViewAdapter extends RecyclerView.Adapter<Dashb
         SpendingsDataSummary spendingsDataSummary = new SpendingsDataSummary(mTransactions);
         spendingsDataSummary.setCategoryFilters(holder.mGoal.getCategories());
         spendingsDataSummary.setDateFiltersFromDates(holder.mGoal.getStartDate(), holder.mGoal.getEndDate());
-        LineChartUtils.setDailyDataFromTransactions(holder.mLineChart, spendingsDataSummary.getFilteredTransactions(), dateValueFormatter, holder.mGoal.getTitleString());
+        LineChartUtils.setTransactionsByAppropriateInterval(holder.mLineChart, spendingsDataSummary.getFilteredTransactions(), dateValueFormatter, holder.mGoal.getTitleString());
         LineChartUtils.setLimitLine(holder.mLineChart, holder.mGoal.getLimit());
 
 
