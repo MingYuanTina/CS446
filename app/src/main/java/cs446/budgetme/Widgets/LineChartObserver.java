@@ -44,6 +44,6 @@ public class LineChartObserver implements Observer {
 
     @Override
     public void update() {
-        LineChartUtils.setDailyDataFromTransactions(mLineChart, mSpendingsDataSummary.getFilteredTransactions(), mDateValueFormatter, "Cumulative Spendings");
+        LineChartUtils.setTransactionsByAppropriateInterval(mLineChart, mSpendingsDataSummary.getFilteredTransactions(), mDateValueFormatter, "Cumulative Spendings");
     }
 }
