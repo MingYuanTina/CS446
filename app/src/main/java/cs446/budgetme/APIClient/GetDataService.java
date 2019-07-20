@@ -1,6 +1,7 @@
 package cs446.budgetme.APIClient;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public interface GetDataService {
     Call<List<TransactionCategory>> getCategoryList(@Path("user_token") String token,  @Path("group_id") String groupId );
 
     @POST("/category/{user_token}/{group_id}")
-    Call<ResponseBody> addCategory(@Body TransactionCategory mCategory, @Path("user_token") String token,  @Path("group_id") String groupId );
+    Call<JsonElement> addCategory(@Body JsonObject categoryObject, @Path("user_token") String token, @Path("group_id") String groupId );
 
     @DELETE("/category/{user_token}/{group_id}/{categoryUserId}")
     Call<ResponseBody> deleteCategory(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("categoryUserId") String categoryId );

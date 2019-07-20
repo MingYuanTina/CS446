@@ -48,7 +48,7 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
     private EditText mCategoriesEdit;
     private Button mButton;
     private List<TransactionCategory> mChosenCategories = new ArrayList<>();
-    private ArrayList<TransactionCategory> availableCategories;
+    private List<TransactionCategory> availableCategories = new ArrayList<>();
     private ArrayList<Boolean> mCheckedItems;
     private MultipleChoiceWithSelectAllDialog<TransactionCategory> mDialog;
     private APIUtils apicall;
@@ -152,7 +152,6 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
             }
         });
 
-        availableCategories = new ArrayList<>();//TransactionCategory.getDefaults(); // This should be the user's available categories.
         mDialog = new MultipleChoiceWithSelectAllDialog<>(GoalSettingActivity.this, availableCategories, this);
         mCategoriesEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,6 +191,8 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
                 }
             }
         });
+
+        loadCategoryList();
     }
 
 
@@ -228,5 +229,29 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
             }
             mCategoriesEdit.setText(TextUtils.join(", ", text));
         }
+    }
+
+    public void loadCategoryList() {
+        Call<List<TransactionCategory>> call = apicall.getApiInterface().getCategoryList(USER_TOKEN, groupID);
+        call.enqueue(new Callback<List<TransactionCategory>>() {
+            @Override
+            public void onResponse(Call<List<TransactionCategory>> call, Response<List<TransactionCategory>> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println("Code: " + response.code());
+                    return;
+                }
+                updateTransactionCategoryList(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<TransactionCategory>> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
+    }
+
+    public void updateTransactionCategoryList(List<TransactionCategory> transactionCategories) {
+        availableCategories = transactionCategories;
+        mDialog = new MultipleChoiceWithSelectAllDialog<>(GoalSettingActivity.this, availableCategories, this);
     }
 }

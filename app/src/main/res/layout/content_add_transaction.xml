@@ -102,6 +102,17 @@
         app:layout_constraintTop_toBottomOf="@id/add_transaction_note_layout"/>
 
     <Button
+        android:id="@+id/new_category_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/label_new_category"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/import_from_image_button"
+        app:layout_constraintRight_toRightOf="@id/import_from_image_button"/>
+
+    <Button
         android:id="@+id/import_from_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
