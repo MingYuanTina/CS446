@@ -12,10 +12,10 @@ public class TransactionCategory implements Parcelable {
     @SerializedName("categoryName")
     private String mName;
 
-    @SerializedName("categoryUserId")
-    private Integer mId;
+    @SerializedName("categoryId")
+    private String mId;
 
-    private TransactionCategory(String name, int id) {
+    private TransactionCategory(String name, String id) {
         mName = name;
         mId = id;
     }
@@ -25,11 +25,11 @@ public class TransactionCategory implements Parcelable {
         return mName;
     }
 
-    public int getId() {
+    public String getId() {
         return mId;
     }
 
-    public static ArrayList<TransactionCategory> getDefaults() {
+    /*public static ArrayList<TransactionCategory> getDefaults() {
         ArrayList<TransactionCategory> transactionCategories = new ArrayList<>();
         transactionCategories.add(new TransactionCategory("Groceries", 0));
         transactionCategories.add(new TransactionCategory("Entertainment", 1));
@@ -37,7 +37,7 @@ public class TransactionCategory implements Parcelable {
         transactionCategories.add(new TransactionCategory("Self-Indulgence", 3));
 
         return transactionCategories;
-    }
+    }*/
 
     @Override
     public int describeContents() {
@@ -47,7 +47,7 @@ public class TransactionCategory implements Parcelable {
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(mName);
-        out.writeInt(mId);
+        out.writeString(mId);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -64,6 +64,6 @@ public class TransactionCategory implements Parcelable {
     // example constructor that takes a Parcel and gives you an object populated with it's values
     private TransactionCategory(Parcel in) {
         mName = in.readString();
-        mId = in.readInt();
+        mId = in.readString();
     }
 }

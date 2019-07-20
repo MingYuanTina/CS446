@@ -133,7 +133,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         // Initialize Category spinner
         mDropdown = findViewById(R.id.add_transaction_category);
-        final List<TransactionCategory> transactionCategories = TransactionCategory.getDefaults();
+        final List<TransactionCategory> transactionCategories = new ArrayList<>();//TransactionCategory.getDefaults();
 
         ArrayAdapter<TransactionCategory> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_menu_popup_item, transactionCategories);
         mDropdown.setAdapter(adapter);

@@ -152,7 +152,7 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
             }
         });
 
-        availableCategories = TransactionCategory.getDefaults(); // This should be the user's available categories.
+        availableCategories = new ArrayList<>();//TransactionCategory.getDefaults(); // This should be the user's available categories.
         mDialog = new MultipleChoiceWithSelectAllDialog<>(GoalSettingActivity.this, availableCategories, this);
         mCategoriesEdit.setOnClickListener(new View.OnClickListener() {
             @Override

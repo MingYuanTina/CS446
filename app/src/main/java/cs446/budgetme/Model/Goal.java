@@ -143,7 +143,7 @@ public class Goal implements Parcelable {
         return false;
     }
 
-    public static List<Goal> getFakeData() {
+    /*public static List<Goal> getFakeData() {
         List<TransactionCategory> transactionCategories = TransactionCategory.getDefaults();
         List<Goal> goals = new ArrayList<>();
         try {
@@ -157,7 +157,7 @@ public class Goal implements Parcelable {
         }
 
         return goals;
-    }
+    }*/
 
     public String getTitleString() {
         if (mNote != null && mNote.length() > 0) {

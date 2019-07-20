@@ -80,7 +80,7 @@ public class Transaction implements Parcelable {
         return mCategory.toString();
     }
 
-    public int getCategoryId() {
+    public String getCategoryId() {
         return mCategory.getId();
     }
 
@@ -101,15 +101,16 @@ public class Transaction implements Parcelable {
         return dateWithoutTime;
     }
 
-    public static List<Transaction> getFakeData() {
+    /*public static List<Transaction> getFakeData() {
         List<TransactionCategory> transactionCategories = TransactionCategory.getDefaults();
         List<Transaction> transactions = new ArrayList<>();
         try {
-            Transaction t1 = new TransactionBuilder(23.01, new Date(/*2019*/ 119, 5, 18), transactionCategories.get(0)).build();
-            Transaction t2 = new TransactionBuilder(1.32, new Date(/*2019*/ 119, 5, 17), transactionCategories.get(1)).setNote("HI").build();
-            Transaction t3 = new TransactionBuilder(4.68, new Date(/*2019*/ 119, 5, 14), transactionCategories.get(2)).build();
-            Transaction t4 = new TransactionBuilder(5.79, new Date(/*2019*/ 119, 5, 13), transactionCategories.get(3)).build();
-            Transaction t5 = new TransactionBuilder(8.00, new Date(/*2019*/ 119, 5, 12), transactionCategories.get(2)).build();
+            // Year 119 = 2019
+            Transaction t1 = new TransactionBuilder(23.01, new Date(119, 5, 18), transactionCategories.get(0)).build();
+            Transaction t2 = new TransactionBuilder(1.32, new Date(119, 5, 17), transactionCategories.get(1)).setNote("HI").build();
+            Transaction t3 = new TransactionBuilder(4.68, new Date(119, 5, 14), transactionCategories.get(2)).build();
+            Transaction t4 = new TransactionBuilder(5.79, new Date(119, 5, 13), transactionCategories.get(3)).build();
+            Transaction t5 = new TransactionBuilder(8.00, new Date(119, 5, 12), transactionCategories.get(2)).build();
 
             transactions.add(t1);
             transactions.add(t2);
@@ -120,7 +121,7 @@ public class Transaction implements Parcelable {
             // Handle illegal state.
         }
         return transactions;
-    }
+    }*/
 
     public static TreeMap<Date, List<Transaction>> getTransactionsGroupedByDay(List<Transaction> transactions) {
         TreeMap<Date, List<Transaction>> map = new TreeMap<>();

@@ -25,6 +25,7 @@ import cs446.budgetme.Fragement.DashboardTransDetailFragment;
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.Model.Transaction;
+import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.Model.User;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,7 +45,7 @@ public class DashboardActivity extends AppCompatActivity
     private String GroupId="5d30ff4e6397c4000427fabd";
 
     private APIUtils apicall;
-    private SpendingsDataSummary mSpendingsDataSummary = new SpendingsDataSummary(Transaction.getFakeData(), Goal.getFakeData());
+    private SpendingsDataSummary mSpendingsDataSummary = new SpendingsDataSummary();
     //need current transaction list to check if client Transaction List is the same as database
     private ArrayList<Transaction> currTrans;
     private ArrayList<Goal> currGoals;
@@ -97,8 +98,32 @@ public class DashboardActivity extends AppCompatActivity
         mTabLayout.setupWithViewPager(mViewPager, true);
         mViewPager.setCurrentItem(0);
 
+        loadCategoryList();
         loadTransactionList();
         loadGoalList();
+    }
+
+    public void loadCategoryList() {
+        Call<List<TransactionCategory>> call = apicall.getApiInterface().getCategoryList(USER_TOKEN,GroupId );
+        call.enqueue(new Callback<List<TransactionCategory>>() {
+            @Override
+            public void onResponse(Call<List<TransactionCategory>> call, Response<List<TransactionCategory>> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println("Code: " + response.code());
+                    return;
+                }
+                updateTransactionCategoryList(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<TransactionCategory>> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
+    }
+
+    public void updateTransactionCategoryList(List<TransactionCategory> transactionCategories) {
+        mSpendingsDataSummary.setTransactionCategories(transactionCategories);
     }
 
     public void loadTransactionList(){
