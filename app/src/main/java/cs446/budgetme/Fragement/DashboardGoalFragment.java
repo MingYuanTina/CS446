@@ -18,6 +18,7 @@ import cs446.budgetme.Adaptor.DashboardGoalRecyclerViewAdapter;
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Observer;
 import cs446.budgetme.Model.SpendingsDataSummary;
+import cs446.budgetme.Model.User;
 import cs446.budgetme.R;
 
 
@@ -37,13 +38,15 @@ public class DashboardGoalFragment extends Fragment implements Observer {
 
     private RecyclerView mRecyclerView;
     private int mColumnCount = 1;
+    private User mUser;
 
     public DashboardGoalFragment() {
         // Required empty public constructor
     }
 
-    public DashboardGoalFragment(SpendingsDataSummary spendingsDataSummary) {
+    public DashboardGoalFragment(SpendingsDataSummary spendingsDataSummary, User mUser) {
         mSpendingsDataSummary = spendingsDataSummary;
+        this.mUser=mUser;
     }
 
     /**
@@ -89,9 +92,13 @@ public class DashboardGoalFragment extends Fragment implements Observer {
         return view;
     }
 
+    public void setDefaultGroup(String id){
+        mUser.setDefaultGroupId(id);
+        update();
+    }
     @Override
     public void update() {
-        mRecyclerView.setAdapter(new DashboardGoalRecyclerViewAdapter(mSpendingsDataSummary.getGoals(), mSpendingsDataSummary.getTransactions(), mListener));
+        mRecyclerView.setAdapter(new DashboardGoalRecyclerViewAdapter(mSpendingsDataSummary.getGoals(), mSpendingsDataSummary.getTransactions(), mListener, mUser));
         mRecyclerView.invalidate();
     }
 

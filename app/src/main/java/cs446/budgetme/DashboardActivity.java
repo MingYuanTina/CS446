@@ -41,8 +41,8 @@ public class DashboardActivity extends AppCompatActivity
     private static final int REQUEST_CODE_ADD_TRANSACTION = 10000;
     private static final int REQUEST_CODE_GOAL_SETTING = 11000;
 
-    private String USER_TOKEN= "5d30ff4e6397c4000427fabe";
-    private String GroupId="5d30ff4e6397c4000427fabd";
+    private String USER_TOKEN;
+    private String GroupId;
 
     private APIUtils apicall;
     private SpendingsDataSummary mSpendingsDataSummary = new SpendingsDataSummary();
@@ -58,11 +58,11 @@ public class DashboardActivity extends AppCompatActivity
         setContentView(R.layout.activity_dashboard);
         //get indent information
         Intent intent = getIntent();
-        User currentUser = intent.getExtras().getParcelable("user");
+        mUser = intent.getExtras().getParcelable("user");
 
         //set up the group id and user token for all the api calls
-        GroupId= currentUser.getDefaultGroupId();
-        USER_TOKEN= currentUser.getUserAuthToken();
+        GroupId= mUser.getDefaultGroupId();
+        USER_TOKEN= mUser.getUserAuthToken();
 
         //setup API client
         apicall = new APIUtils();
@@ -90,9 +90,9 @@ public class DashboardActivity extends AppCompatActivity
 //        mProfile.setArguments(bundle);
         //add the fragments
         mAdapter.addFragment(new DashboardSummaryFragment(mSpendingsDataSummary), getResources().getString(R.string.title_dashboard_tab_summary));
-        mAdapter.addFragment(new DashboardGoalFragment(mSpendingsDataSummary), "Goals");
-        mAdapter.addFragment(new DashboardTransDetailFragment(mSpendingsDataSummary, currentUser), "Transaction Detail");
-        mAdapter.addFragment(new DashboardProfileFragment(currentUser),"Profile");
+        mAdapter.addFragment(new DashboardGoalFragment(mSpendingsDataSummary, mUser), "Goals");
+        mAdapter.addFragment(new DashboardTransDetailFragment(mSpendingsDataSummary, mUser), "Transaction Detail");
+        mAdapter.addFragment(new DashboardProfileFragment(mUser),"Profile");
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(2);
@@ -153,14 +153,22 @@ public class DashboardActivity extends AppCompatActivity
 
     public void updateUserDefaultGroup(int index){
         //update the user
-        String groupID = mUser.getGroupList().get(index).getGroupId();
-        mUser.setDefaultGroupId(groupID);
+        GroupId = mUser.getGroupList().get(index).getGroupId();
+        mUser.setDefaultGroupId(GroupId);
+
         //passUserGroupUpdate
         DashboardProfileFragment mProfile= (DashboardProfileFragment)mAdapter.getItem(3);
-        mProfile.setDefaultGroup(groupID);
+        mProfile.setDefaultGroup(GroupId);
 
         DashboardTransDetailFragment mTransFrag = (DashboardTransDetailFragment)mAdapter.getItem(2);
-        mTransFrag.setDefaultGroup(groupID);
+        mTransFrag.setDefaultGroup(GroupId);
+
+        DashboardGoalFragment mGoalFrag = (DashboardGoalFragment)mAdapter.getItem(1);
+        mGoalFrag.setDefaultGroup(GroupId);
+
+        loadCategoryList();
+        loadTransactionList();
+        loadGoalList();
 
 
     }

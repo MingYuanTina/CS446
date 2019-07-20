@@ -2,6 +2,7 @@ package cs446.budgetme.Adaptor;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,18 @@ import cs446.budgetme.Fragement.DashboardGoalFragment;
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.Model.Transaction;
+import cs446.budgetme.Model.User;
 import cs446.budgetme.R;
 import cs446.budgetme.Widgets.LineChartUtils;
 import cs446.budgetme.Fragement.DashboardGoalFragment.OnListFragmentInteractionListener;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.List;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link } and makes a call to the
@@ -35,12 +43,14 @@ public class DashboardGoalRecyclerViewAdapter extends RecyclerView.Adapter<Dashb
     private final List<Transaction> mTransactions;
     private final OnListFragmentInteractionListener mListener;
     private APIUtils apicall;
+    private User mUser;
 
-    public DashboardGoalRecyclerViewAdapter(List<Goal> goals, List<Transaction> transactions, OnListFragmentInteractionListener listener) {
+    public DashboardGoalRecyclerViewAdapter(List<Goal> goals, List<Transaction> transactions, OnListFragmentInteractionListener listener, User myUser) {
         mGoals = goals;
         mTransactions = transactions;
         mListener = listener;
         apicall = new APIUtils();
+        mUser = myUser;
     }
 
     @Override
@@ -83,9 +93,25 @@ public class DashboardGoalRecyclerViewAdapter extends RecyclerView.Adapter<Dashb
 
     }
     public void delete(int position) { //removes the row
-        apicall.deleteGoal(mGoals.get(position));
-        mListener.goalListChanged();
+        deleteGoal(mGoals.get(position));
+
     }
+
+    private void deleteGoal(Goal goal) {
+        apicall.getApiInterface().deleteGoal(mUser.getUserAuthToken(), mUser.getDefaultGroupId(), goal.getId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()) {
+                    mListener.goalListChanged();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+        });
+    }
+
 
     @Override
     public int getItemCount() {
@@ -116,5 +142,6 @@ public class DashboardGoalRecyclerViewAdapter extends RecyclerView.Adapter<Dashb
         public String toString() {
             return mGoal.getTitleString();
         }
+
     }
 }

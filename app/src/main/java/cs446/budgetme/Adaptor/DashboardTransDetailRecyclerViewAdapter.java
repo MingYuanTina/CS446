@@ -34,8 +34,8 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
     private final List<Transaction> mValues;
     private final OnListFragmentInteractionListener mListener;
     private APIUtils apicall;
-    private String USER_TOKEN= "5d30ff4e6397c4000427fabe";
-    private String groupID = "5d30ff4e6397c4000427fabd";
+    private String USER_TOKEN;
+    private String groupID;
 
     public DashboardTransDetailRecyclerViewAdapter(List<Transaction> items, OnListFragmentInteractionListener listener, User user) {
         mValues = items;

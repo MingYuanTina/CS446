@@ -59,7 +59,8 @@ public class User  implements Parcelable{
         defaultGroupId = in.readString();
 
         //TODO: need to change the groupList
-        in.readList(groupList, getClass().getClassLoader());
+        groupList= new ArrayList<Group>();
+        in.readTypedList(groupList, Group.CREATOR);
        // groupList = in.readParcelable(Group.class.getClassLoader());
         userAuthToken = in.readString();
     }

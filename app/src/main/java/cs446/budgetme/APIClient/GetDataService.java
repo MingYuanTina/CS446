@@ -53,8 +53,8 @@ public interface GetDataService {
 
     //----------------------USER--------------------------------------
 
-    @GET("/user/")
-    Call<User> getUser();
+    @GET("/user/{user_email}/{password}")
+    Call<User> getUser(@Path("user_email") String email,@Path("password") String password);
 
     @POST("/user")
     Call<ResponseBody> register();

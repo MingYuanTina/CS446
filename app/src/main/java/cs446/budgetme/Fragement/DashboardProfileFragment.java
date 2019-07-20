@@ -105,6 +105,7 @@ public class DashboardProfileFragment extends Fragment {
         arrayAdapter =  new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, userGroupList);
         userGroupListView = getView().findViewById(R.id.GroupList);
         updateGroupList(mUser.getGroupList());
+        userGroupListView.setSelection(0);
         userGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,long arg3) {
@@ -121,12 +122,14 @@ public class DashboardProfileFragment extends Fragment {
     }
     private void updateGroupList(ArrayList<Group> groups){
         userGroupList.clear();
-        for(Group g: groups){
-            userGroupList.add(g.getGroupName());
+        if(groups != null) {
+            for (Group g : groups) {
+                userGroupList.add(g.getGroupName());
+            }
+            userGroupListView.setAdapter(arrayAdapter);
+            arrayAdapter.notifyDataSetChanged();
+            userGroupListView.invalidate();
         }
-        userGroupListView.setAdapter(arrayAdapter);
-        arrayAdapter.notifyDataSetChanged();
-        userGroupListView.invalidate();
     }
 
     @Override

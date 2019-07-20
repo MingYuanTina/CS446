@@ -23,10 +23,17 @@ public class Group implements Parcelable {
         return groupName;
     }
 
+    public Group(String groupId, String groupName, ArrayList<String> userList){
+        this.groupId= groupId;
+        this.groupName= groupName;
+        this.userList=userList;
+    }
+
     private Group(Parcel in) {
         groupId = in.readString();
         groupName = in.readString();
         //TODO: need to change the groupList
+        userList = new ArrayList<>();
         in.readStringList(userList);
     }
 
