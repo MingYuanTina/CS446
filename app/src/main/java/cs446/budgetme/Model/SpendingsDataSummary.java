@@ -13,20 +13,29 @@ public class SpendingsDataSummary implements Subject {
     ArrayList<Observer> observerList;
 
     List<Transaction> mTransactions;
+    List<TransactionCategory> mTransactionCategories;
     Date mStartDate; // Set to null when no date range specified
     Date mEndDate;
-    HashSet<Integer> mChosenCategoriesIds;
+    HashSet<String> mChosenCategoriesIds;
 
-    List<Goal> mGoals; // this should not be a list, maybe a mapping from category to cost, or literally its own class
+    List<Goal> mGoals;
+
+    public SpendingsDataSummary() {
+        observerList = new ArrayList<>();
+        mTransactionCategories = new ArrayList<>();
+        mChosenCategoriesIds = new HashSet<>();
+        mTransactions = new ArrayList<>();
+        mGoals = new ArrayList<>();
+    }
 
     public SpendingsDataSummary(List<Transaction> transactions) {
-        observerList = new ArrayList<>();
-        mChosenCategoriesIds = new HashSet<>();
+        this();
         mTransactions = transactions;
     }
 
     public SpendingsDataSummary(List<Transaction> transactions, List<Goal> goals) {
-        this(transactions);
+        this();
+        mTransactions = transactions;
         mGoals = goals;
     }
 
@@ -158,5 +167,13 @@ public class SpendingsDataSummary implements Subject {
     public void setGoals(List<Goal> goals) {
         mGoals = goals;
         notifyObservers();
+    }
+
+    public void setTransactionCategories(List<TransactionCategory> transactionCategories) {
+        mTransactionCategories = transactionCategories;
+    }
+
+    public List<TransactionCategory> getTransactionCategories() {
+        return mTransactionCategories;
     }
 }

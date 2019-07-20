@@ -104,13 +104,13 @@ public class DashboardSummaryFragment extends Fragment {
                 mSpendingsDataSummary.setCategoryFilters(chosenCategories);
             }
         };
-        mTransactionCategoryFilterDialog = new MultipleChoiceWithSelectAllDialog<>(getContext(), TransactionCategory.getDefaults(), mTransactionCategoryCallback);
+        mTransactionCategoryFilterDialog = new MultipleChoiceWithSelectAllDialog<>(getContext(), mSpendingsDataSummary.getTransactionCategories(), mTransactionCategoryCallback);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mSpendingsDataSummary.register(new PieChartObserver((PieChart)getView().findViewById(R.id.summary_pie_chart), mSpendingsDataSummary));
-        mSpendingsDataSummary.register(new BarChartObserver((HorizontalBarChart)getView().findViewById(R.id.summary_goal_chart), mSpendingsDataSummary));
+        //mSpendingsDataSummary.register(new BarChartObserver((HorizontalBarChart)getView().findViewById(R.id.summary_goal_chart), mSpendingsDataSummary));
         mSpendingsDataSummary.register(new LineChartObserver((LineChart)getView().findViewById(R.id.summary_line_chart), mSpendingsDataSummary));
         mSpendingsDataSummary.notifyObservers();
     }

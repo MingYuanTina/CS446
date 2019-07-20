@@ -2,15 +2,18 @@ package cs446.budgetme;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,6 +24,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -47,11 +51,14 @@ public class AddTransactionActivity extends AppCompatActivity {
     private AutoCompleteTextView mDropdown;
     private EditText mNoteEdit;
     private Button mButton;
+    private Button mNewCategoryButton;
     private int mCategoryIndex;
     private Button importImage;
     private APIUtils apicall;
     private int GET_FROM_IMAGE = 3;
     private ArrayList<Transaction> currTrans;
+    private AlertDialog mNewCategoryDialog;
+    private List<TransactionCategory> mTransactionCategories = new ArrayList<>();
     final String USER_TOKEN= "5d30ff4e6397c4000427fabe";
     final String groupID = "5d30ff4e6397c4000427fabd";
     private static final String TAG = AddTransactionActivity.class.getName();
@@ -133,9 +140,8 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         // Initialize Category spinner
         mDropdown = findViewById(R.id.add_transaction_category);
-        final List<TransactionCategory> transactionCategories = TransactionCategory.getDefaults();
 
-        ArrayAdapter<TransactionCategory> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_menu_popup_item, transactionCategories);
+        ArrayAdapter<TransactionCategory> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_menu_popup_item, mTransactionCategories);
         mDropdown.setAdapter(adapter);
         mDropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -148,6 +154,38 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         mNoteEdit = findViewById(R.id.add_transaction_note);
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add a new category");
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_category, null);
+        final EditText newCategoryInput = viewInflated.findViewById(R.id.input_new_category);
+        builder.setView(viewInflated);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String categoryName = newCategoryInput.getText().toString();
+                if (categoryName.length() > 0) {
+                    postNewCategory(categoryName, dialog);
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        mNewCategoryDialog = builder.create();
+
+        mNewCategoryButton = findViewById(R.id.new_category_button);
+        mNewCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mNewCategoryDialog.show();
+            }
+        });
+
         mButton = findViewById(R.id.add_transaction_button);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,7 +195,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                     String cleanString = mCostEdit.getText().toString().replaceAll("[$,]", "");
                     double parsedCost = Double.parseDouble(cleanString);
                     Date date = mCalendar.getTime();
-                    TransactionCategory transactionCategory = transactionCategories.get(mCategoryIndex);
+                    TransactionCategory transactionCategory = mTransactionCategories.get(mCategoryIndex);
                     Transaction.TransactionBuilder builder = new Transaction.TransactionBuilder(parsedCost, date, transactionCategory);
 
                     // Optional Fields
@@ -188,9 +226,11 @@ public class AddTransactionActivity extends AppCompatActivity {
                 startActivityForResult(i,GET_FROM_IMAGE );
             }
         });
+
+        loadCategoryList();
     }
 
-    private void completePost(){
+    private void completePostTrans(){
         Intent i = new Intent();
 //                    i.putExtra("transaction", transaction);
         setResult(RESULT_OK, i);
@@ -252,7 +292,58 @@ public class AddTransactionActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {
-                    completePost();
+                    completePostTrans();
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+        });
+    }
+
+    public void loadCategoryList() {
+        Call<List<TransactionCategory>> call = apicall.getApiInterface().getCategoryList(USER_TOKEN, groupID);
+        call.enqueue(new Callback<List<TransactionCategory>>() {
+            @Override
+            public void onResponse(Call<List<TransactionCategory>> call, Response<List<TransactionCategory>> response) {
+                if (!response.isSuccessful()) {
+                    System.out.println("Code: " + response.code());
+                    return;
+                }
+                updateTransactionCategoryList(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<TransactionCategory>> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
+    }
+
+    public void updateTransactionCategoryList(List<TransactionCategory> transactionCategories) {
+        mTransactionCategories = transactionCategories;
+        ArrayAdapter<TransactionCategory> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_menu_popup_item, mTransactionCategories);
+        mDropdown.setAdapter(adapter);
+        mDropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View arg1, int position,
+                                    long arg3) {
+                mCategoryIndex = position;
+            }
+        });
+    }
+
+    private void postNewCategory(String categoryName, final DialogInterface dialog) {
+        JsonObject params = new JsonObject();
+        params.addProperty("categoryName", categoryName);
+        apicall.getApiInterface().addCategory(params, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if(response.isSuccessful()) {
+                    dialog.dismiss();
+                    loadCategoryList();
                 }
             }
             @Override

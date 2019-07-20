@@ -36,7 +36,7 @@ public class BarChartObserver implements Observer {
             goalValue[t.getCategoryId()]+=t.getCost();
         }*/
         for (Transaction t : mSpendingsDataSummary.getFilteredTransactions()) {
-            curExpenseValue[t.getCategoryId()]+=t.getCost();
+            //curExpenseValue[t.getCategoryId()]+=t.getCost(); FIX IF NEEDED
         }
 
         for (int i = 0; i < NUM_CATEGORY; i++) {

@@ -36,6 +36,7 @@
     <string name="label_reset">Reset</string>
     <string name="alert_start_date">Please enter a start date</string>
     <string name="alert_end_date">Please enter an end date</string>
+    <string name="label_new_category">New Category</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
