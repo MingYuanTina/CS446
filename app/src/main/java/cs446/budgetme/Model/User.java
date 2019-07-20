@@ -33,11 +33,15 @@ public class User  implements Parcelable{
         return groupList;
     }
 
+    public String getUserAuthToken(){return userAuthToken; }
     public void setGrouList(ArrayList<Group> groupList){
         this.groupList = groupList;
     }
     public String getDefaultGroupId(){
         return defaultGroupId;
+    }
+    public void setUserAuthToken(String userAuthToken){
+        this.userAuthToken = userAuthToken;
     }
 
     public void setDefaultGroupId(String id){
@@ -55,7 +59,8 @@ public class User  implements Parcelable{
         defaultGroupId = in.readString();
 
         //TODO: need to change the groupList
-        groupList = in.readParcelable(Group.class.getClassLoader());
+        in.readList(groupList, getClass().getClassLoader());
+       // groupList = in.readParcelable(Group.class.getClassLoader());
         userAuthToken = in.readString();
     }
 

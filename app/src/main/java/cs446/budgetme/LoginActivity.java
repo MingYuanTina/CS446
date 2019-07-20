@@ -62,11 +62,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.isSuccessful()) {
+                   //TODO: started Dashboard
                     startDashboardActivity(response.body());
                 }
                 else{
                     loginFailed();
+                    startDashboardActivity(response.body());
                 }
+
+
             }
             @Override
             public void onFailure(Call<User> call, Throwable t) {
@@ -79,7 +83,10 @@ public class LoginActivity extends AppCompatActivity {
     private void startDashboardActivity(User user) {
         Intent i = new Intent(this, DashboardActivity.class);
        // String username = name.getText().toString();
-        i.putExtra("user", user);
+        User muser = new User("USER 1");
+        muser.setUserAuthToken("5d30ff4e6397c4000427fabe");
+        muser.setDefaultGroupId("5d30ff4e6397c4000427fabd");
+        i.putExtra("user", muser);
         startActivity(i);
     }
 

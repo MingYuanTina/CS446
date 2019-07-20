@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -19,8 +18,6 @@ import java.util.List;
 
 import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Adaptor.DashboardTabAdapter;
-import cs446.budgetme.APIClient.GetDataService;
-import cs446.budgetme.APIClient.RetrofitClient;
 import cs446.budgetme.Fragement.DashboardGoalFragment;
 import cs446.budgetme.Fragement.DashboardSummaryFragment;
 import cs446.budgetme.Fragement.DashboardProfileFragment;
@@ -28,6 +25,7 @@ import cs446.budgetme.Fragement.DashboardTransDetailFragment;
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.Model.Transaction;
+import cs446.budgetme.Model.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,8 +40,8 @@ public class DashboardActivity extends AppCompatActivity
     private static final int REQUEST_CODE_ADD_TRANSACTION = 10000;
     private static final int REQUEST_CODE_GOAL_SETTING = 11000;
 
-    private final String USER_TOKEN= "5d30ff4e6397c4000427fabe";
-    private final String GroupId="5d30ff4e6397c4000427fabd";
+    private String USER_TOKEN= "5d30ff4e6397c4000427fabe";
+    private String GroupId="5d30ff4e6397c4000427fabd";
 
     private APIUtils apicall;
     private SpendingsDataSummary mSpendingsDataSummary = new SpendingsDataSummary(Transaction.getFakeData(), Goal.getFakeData());
@@ -58,6 +56,11 @@ public class DashboardActivity extends AppCompatActivity
         setContentView(R.layout.activity_dashboard);
         //get indent information
         Intent intent = getIntent();
+        User currentUser = (User)intent.getExtras().getParcelable("user");
+
+        //set up the group id and user token for all the api calls
+        GroupId= currentUser.getDefaultGroupId();
+        USER_TOKEN= currentUser.getUserAuthToken();
 
         //setup API client
         apicall = new APIUtils();
@@ -81,9 +84,7 @@ public class DashboardActivity extends AppCompatActivity
 
         //create a DashboardProfileFrag to update the user information
         Bundle bundle = new Bundle();
-        bundle.putString("username", intent.getStringExtra("username"));
-
-        DashboardProfileFragment mProfile = new DashboardProfileFragment();
+        DashboardProfileFragment mProfile = new DashboardProfileFragment(currentUser);
         mProfile.setArguments(bundle);
         //add the fragments
         mAdapter.addFragment(new DashboardSummaryFragment(mSpendingsDataSummary), getResources().getString(R.string.title_dashboard_tab_summary));
