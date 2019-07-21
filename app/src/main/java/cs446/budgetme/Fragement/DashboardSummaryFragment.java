@@ -43,7 +43,7 @@ import cs446.budgetme.Widgets.PieChartObserver;
  * Use the {@link DashboardSummaryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DashboardSummaryFragment extends Fragment implements Observer {
+public class DashboardSummaryFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -105,7 +105,6 @@ public class DashboardSummaryFragment extends Fragment implements Observer {
                 mSpendingsDataSummary.setCategoryFilters(chosenCategories);
             }
         };
-        mTransactionCategoryFilterDialog = new MultipleChoiceWithSelectAllDialog<>(getContext(), mSpendingsDataSummary.getTransactionCategories(), mTransactionCategoryCallback);
     }
 
     @Override
@@ -113,7 +112,6 @@ public class DashboardSummaryFragment extends Fragment implements Observer {
         mSpendingsDataSummary.register(new PieChartObserver((PieChart)getView().findViewById(R.id.summary_pie_chart), mSpendingsDataSummary));
         //mSpendingsDataSummary.register(new BarChartObserver((HorizontalBarChart)getView().findViewById(R.id.summary_goal_chart), mSpendingsDataSummary));
         mSpendingsDataSummary.register(new LineChartObserver((LineChart)getView().findViewById(R.id.summary_line_chart), mSpendingsDataSummary));
-        mSpendingsDataSummary.register(this);
         mSpendingsDataSummary.notifyObservers();
     }
 
@@ -190,6 +188,7 @@ public class DashboardSummaryFragment extends Fragment implements Observer {
     }
 
     private void handleTransactionCategoriesMenuItem() {
+        mTransactionCategoryFilterDialog = new MultipleChoiceWithSelectAllDialog<>(getContext(), mSpendingsDataSummary.getTransactionCategories(), mTransactionCategoryCallback);
         mTransactionCategoryFilterDialog.show();
     }
 
@@ -211,10 +210,5 @@ public class DashboardSummaryFragment extends Fragment implements Observer {
 
     public void onGoalAdded(Goal goal) {
         mSpendingsDataSummary.addGoal(goal);
-    }
-
-    @Override
-    public void update() {
-        mTransactionCategoryFilterDialog = new MultipleChoiceWithSelectAllDialog<>(getContext(), mSpendingsDataSummary.getTransactionCategories(), mTransactionCategoryCallback);
     }
 }

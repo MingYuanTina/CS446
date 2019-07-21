@@ -55,46 +55,10 @@ public class LineChartUtils {
     private static final long MILLISECONDS_10_WEEKS = 6048000000L;
     private static final long MILLISECONDS_10_MONTHS = 25920000000L;
 
-    public static void setDailyDataFromTransactions(LineChart lineChart, List<Transaction> transactions, DateValueFormatter dateValueFormatter, String title) {
+
+    public static Double setTransactionsByAppropriateInterval(LineChart lineChart, List<Transaction> transactions, DateValueFormatter dateValueFormatter, String title) {
         List<Entry> entries = new ArrayList<>();
-        if (!transactions.isEmpty()) {
-            TreeMap<Date, List<Transaction>> groupedByDay = Transaction.getTransactionsGroupedByDay(transactions);
-            Double runningTotal = new Double(0.0);
-
-            // Handle null case here.
-            Date firstEntryDate = groupedByDay.firstEntry().getKey();
-            Date lastEntry = groupedByDay.lastEntry().getKey();
-
-            int dayOffset = 0;
-            Calendar currentCalendar = Calendar.getInstance();
-            currentCalendar.setTime(firstEntryDate);
-            // DateUtils.setCalendarToBeginningOfDay(currentCalendar);
-
-            while (!currentCalendar.getTime().after(lastEntry)) {
-                if (groupedByDay.get(currentCalendar.getTime()) != null) {
-                    Double total = new Double(0.0);
-                    for (Transaction t : groupedByDay.get(currentCalendar.getTime())) {
-                        total += t.getCost();
-                    }
-                    runningTotal += total;
-                }
-                entries.add(new Entry(dayOffset, runningTotal.floatValue()));
-                currentCalendar.add(Calendar.DATE, 1);
-                dayOffset += 1;
-            }
-            lineChart.getXAxis().setLabelCount(dayOffset, true);
-            dateValueFormatter.setStartingDate(firstEntryDate);
-        }
-        LineDataSet set = new LineDataSet(entries, title);
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set); // add the data sets
-        lineChart.setData(new LineData(dataSets));
-        lineChart.invalidate();
-    }
-
-    public static void setTransactionsByAppropriateInterval(LineChart lineChart, List<Transaction> transactions, DateValueFormatter dateValueFormatter, String title) {
-        List<Entry> entries = new ArrayList<>();
+        Double runningTotal = new Double(0.0);
         if (!transactions.isEmpty()) {
             TreeMap<Date, List<Transaction>> groupedByDay = Transaction.getTransactionsGroupedByDay(transactions);
             // Handle null case here.
@@ -102,7 +66,6 @@ public class LineChartUtils {
             Date lastEntryDate = groupedByDay.lastEntry().getKey();
 
             long timeDifference = lastEntryDate.getTime() - firstEntryDate.getTime();
-            Double runningTotal = new Double(0.0);
 
             int index = 0;
             Calendar currentCalendar = Calendar.getInstance();
@@ -165,48 +128,13 @@ public class LineChartUtils {
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set); // add the data sets
         lineChart.setData(new LineData(dataSets));
+        lineChart.getAxisRight().setEnabled(false);
         lineChart.invalidate();
+
+        return runningTotal;
     }
 
-    public static void setWeeklyDataFromTransactions(LineChart lineChart, List<Transaction> transactions, DateValueFormatter dateValueFormatter, String title) {
-        List<Entry> entries = new ArrayList<>();
-        if (!transactions.isEmpty()) {
-            TreeMap<Date, List<Transaction>> groupedByDay = Transaction.getTransactionsGroupedByDay(transactions);
-            Double runningTotal = new Double(0.0);
-
-            // Handle null case here.
-            Date firstEntryDate = groupedByDay.firstEntry().getKey();
-            Date lastEntry = groupedByDay.lastEntry().getKey();
-
-            int dayOffset = 0;
-            Calendar currentCalendar = Calendar.getInstance();
-            currentCalendar.setTime(firstEntryDate);
-            // DateUtils.setCalendarToBeginningOfDay(currentCalendar);
-
-            while (!currentCalendar.getTime().after(lastEntry)) {
-                if (groupedByDay.get(currentCalendar.getTime()) != null) {
-                    Double total = new Double(0.0);
-                    for (Transaction t : groupedByDay.get(currentCalendar.getTime())) {
-                        total += t.getCost();
-                    }
-                    runningTotal += total;
-                }
-                entries.add(new Entry(dayOffset, runningTotal.floatValue()));
-                currentCalendar.add(Calendar.DATE, 1);
-                dayOffset += 1;
-            }
-            lineChart.getXAxis().setLabelCount(dayOffset, true);
-            dateValueFormatter.setStartingDate(firstEntryDate);
-        }
-        LineDataSet set = new LineDataSet(entries, title);
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set); // add the data sets
-        lineChart.setData(new LineData(dataSets));
-        lineChart.invalidate();
-    }
-
-    public static void setLimitLine(LineChart lineChart, Double limit) {
+    public static void setLimitLine(LineChart lineChart, Double limit, Double totalAmount) {
         LimitLine ll1 = new LimitLine(limit.floatValue(), "Limit");
         ll1.setLineWidth(4f);
         ll1.enableDashedLine(10f, 10f, 0f);
@@ -216,5 +144,9 @@ public class LineChartUtils {
         YAxis yAxis = lineChart.getAxisLeft();
         yAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
         yAxis.addLimitLine(ll1);
+
+        if (limit > totalAmount) {
+            yAxis.setAxisMaximum(limit.floatValue());
+        }
     }
 }
