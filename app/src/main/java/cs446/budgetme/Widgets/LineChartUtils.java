@@ -129,6 +129,7 @@ public class LineChartUtils {
         dataSets.add(set); // add the data sets
         lineChart.setData(new LineData(dataSets));
         lineChart.getAxisRight().setEnabled(false);
+        lineChart.getAxisLeft().setAxisMinimum(0);
         lineChart.invalidate();
 
         return runningTotal;
