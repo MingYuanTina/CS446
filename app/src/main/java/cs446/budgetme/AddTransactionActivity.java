@@ -164,7 +164,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add a new category");
-        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_category, null);
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_input, null);
         final EditText newCategoryInput = viewInflated.findViewById(R.id.input_new_category);
         builder.setView(viewInflated);
 

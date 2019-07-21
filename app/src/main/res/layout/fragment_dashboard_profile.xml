@@ -70,19 +70,19 @@
             android:layout_centerHorizontal="true"/>
 
         <Button
-            android:id="@+id/AddGroupButton"
+            android:id="@+id/CreateGroupButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/GroupList"
             android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
-            android:text="@string/layout_button_add_group" />
+            android:text="@string/layout_button_create_group" />
 
         <Button
             android:id="@+id/JoinGroupButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/AddGroupButton"
+            android:layout_below="@+id/CreateGroupButton"
             android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
             android:text="@string/layout_button_join_group" />

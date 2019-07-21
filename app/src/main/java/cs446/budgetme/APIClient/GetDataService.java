@@ -61,6 +61,7 @@ public interface GetDataService {
     Call<ResponseBody> registerAccount(@Body RegistrationActivity.RegisterRequest request);
 
     //----------------------GROUP----------------------------------------------
-
+    @POST("/group/{userToken}")
+    Call<JsonElement> joinGroup(@Body JsonObject group, @Path("user_token") String token);
 
 }

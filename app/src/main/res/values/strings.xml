@@ -13,7 +13,7 @@
     <string name="title_dashboard_tab_summary">Summary</string>
     <string name="title_dashboard_tab_profile">Profile</string>
     <string name="title_dashboard_tab_transaction">Transaction Detail</string>
-    <string name="layout_button_add_group">Create Group</string>
+    <string name="layout_button_create_group">Create Group</string>
     <string name="layout_button_join_group">Join Group</string>
     <string name="layout_image_user_avatar">UserAvatar</string>
     <string name="layout_text_username">User Name</string>

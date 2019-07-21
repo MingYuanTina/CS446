@@ -1,32 +1,38 @@
 package cs446.budgetme.Fragement;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Date;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+
+import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.DashboardActivity;
 import cs446.budgetme.Model.Group;
-import cs446.budgetme.Model.Transaction;
-import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.Model.User;
 import cs446.budgetme.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -44,9 +50,12 @@ public class DashboardProfileFragment extends Fragment {
     private TextView usernameText;
     private ArrayAdapter<String> arrayAdapter;
     private Button goalButton;
-    private Button joinGroup;
-    private Button addGroup;
+    private Button joinGroupButton;
+    private Button createGroupButton;
     private User mUser;
+    private AlertDialog mJoinGroupDialog;
+    private APIUtils apicall = new APIUtils();
+    private static final String TAG = DashboardProfileFragment.class.getName();
 
 
     private ArrayList<String> userGroupList;
@@ -89,10 +98,39 @@ public class DashboardProfileFragment extends Fragment {
         usernameText.setText(mUser.getName());
 
         // userAvatar = getView().findViewById(R.id.UserAvatar);
-        addGroup = getView().findViewById(R.id.AddGroupButton);
-        joinGroup = getView().findViewById(R.id.JoinGroupButton);
+        createGroupButton = getView().findViewById(R.id.CreateGroupButton);
+        joinGroupButton = getView().findViewById(R.id.JoinGroupButton);
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Join a new group. Enter its ID");
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_new_input, null);
+        final EditText newCategoryInput = viewInflated.findViewById(R.id.input_new_category);
+        builder.setView(viewInflated);
 
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String groupId = newCategoryInput.getText().toString();
+                if (groupId.length() > 0) {
+                    postJoinGroup(groupId, dialog);
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        mJoinGroupDialog = builder.create();
+
+        joinGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mJoinGroupDialog.show();
+            }
+        });
 
 
         goalButton = getView().findViewById(R.id.CreateGoal);
@@ -118,6 +156,24 @@ public class DashboardProfileFragment extends Fragment {
                 view.setSelected(true);
                 //when group is selected then refresh all the user value
                 ((DashboardActivity)getActivity()).updateUserDefaultGroup(position);
+            }
+        });
+    }
+
+    private void postJoinGroup(String groupId, final DialogInterface dialog) {
+        JsonObject params = new JsonObject();
+        params.addProperty("groupName", groupId);
+        apicall.getApiInterface().joinGroup(params, mUser.getUserAuthToken()).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if(response.isSuccessful()) {
+                    dialog.dismiss();
+                    //updateGroupList(); TODO REPLACE WITH API CALL
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API.");
             }
         });
     }
