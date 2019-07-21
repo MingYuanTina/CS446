@@ -52,7 +52,6 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
     private List<TransactionCategory> availableCategories = new ArrayList<>();
     private ArrayList<Boolean> mCheckedItems;
     private MultipleChoiceWithSelectAllDialog<TransactionCategory> mDialog;
-    private APIUtils apicall;
     private String USER_TOKEN;
     private String groupID;
     private static final String TAG = GoalSettingActivity.class.getName();
@@ -72,8 +71,6 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
         //set up the group id and user token for all the api calls
         groupID= mUser.getDefaultGroupId();
         USER_TOKEN= mUser.getUserAuthToken();
-        //setup API client
-        apicall = new APIUtils();
 
         //get all the view components
         mLimitEdit = findViewById(R.id.goal_setting_limit);
@@ -205,7 +202,7 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
 
 
     public void postGoal(Goal goal) {
-        apicall.getApiInterface().addGoal(goal, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+        APIUtils.getInstance().getApiInterface().addGoal(goal, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {
@@ -240,7 +237,7 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
     }
 
     public void loadCategoryList() {
-        Call<List<TransactionCategory>> call = apicall.getApiInterface().getCategoryList(USER_TOKEN, groupID);
+        Call<List<TransactionCategory>> call = APIUtils.getInstance().getApiInterface().getCategoryList(USER_TOKEN, groupID);
         call.enqueue(new Callback<List<TransactionCategory>>() {
             @Override
             public void onResponse(Call<List<TransactionCategory>> call, Response<List<TransactionCategory>> response) {

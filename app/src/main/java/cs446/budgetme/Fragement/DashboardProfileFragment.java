@@ -54,7 +54,6 @@ public class DashboardProfileFragment extends Fragment {
     private Button createGroupButton;
     private User mUser;
     private AlertDialog mJoinGroupDialog;
-    private APIUtils apicall = new APIUtils();
     private static final String TAG = DashboardProfileFragment.class.getName();
 
 
@@ -163,7 +162,7 @@ public class DashboardProfileFragment extends Fragment {
     private void postJoinGroup(String groupId, final DialogInterface dialog) {
         JsonObject params = new JsonObject();
         params.addProperty("groupName", groupId);
-        apicall.getApiInterface().joinGroup(params, mUser.getUserAuthToken()).enqueue(new Callback<JsonElement>() {
+        APIUtils.getInstance().getApiInterface().joinGroup(params, mUser.getUserAuthToken()).enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {

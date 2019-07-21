@@ -85,8 +85,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     private void postUser(RegisterRequest request){
-        APIUtils apicall = new APIUtils();
-        apicall.getApiInterface().registerAccount(request).enqueue(new Callback<ResponseBody>() {
+        APIUtils.getInstance().getApiInterface().registerAccount(request).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {

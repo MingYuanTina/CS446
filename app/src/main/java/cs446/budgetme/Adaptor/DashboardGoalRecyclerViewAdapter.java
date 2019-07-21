@@ -42,14 +42,12 @@ public class DashboardGoalRecyclerViewAdapter extends RecyclerView.Adapter<Dashb
     private final List<Goal> mGoals;
     private final List<Transaction> mTransactions;
     private final OnListFragmentInteractionListener mListener;
-    private APIUtils apicall;
     private User mUser;
 
     public DashboardGoalRecyclerViewAdapter(List<Goal> goals, List<Transaction> transactions, OnListFragmentInteractionListener listener, User myUser) {
         mGoals = goals;
         mTransactions = transactions;
         mListener = listener;
-        apicall = new APIUtils();
         mUser = myUser;
     }
 
@@ -98,7 +96,7 @@ public class DashboardGoalRecyclerViewAdapter extends RecyclerView.Adapter<Dashb
     }
 
     private void deleteGoal(Goal goal) {
-        apicall.getApiInterface().deleteGoal(mUser.getUserAuthToken(), mUser.getDefaultGroupId(), goal.getId()).enqueue(new Callback<ResponseBody>() {
+        APIUtils.getInstance().getApiInterface().deleteGoal(mUser.getUserAuthToken(), mUser.getDefaultGroupId(), goal.getId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {

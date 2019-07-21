@@ -55,7 +55,6 @@ public class AddTransactionActivity extends AppCompatActivity {
     private Button mNewCategoryButton;
     private int mCategoryIndex;
     private Button importImage;
-    private APIUtils apicall;
     private int GET_FROM_IMAGE = 3;
     private ArrayList<Transaction> currTrans;
     private AlertDialog mNewCategoryDialog;
@@ -83,8 +82,6 @@ public class AddTransactionActivity extends AppCompatActivity {
         //set up the group id and user token for all the api calls
         groupID= mUser.getDefaultGroupId();
         USER_TOKEN= mUser.getUserAuthToken();
-        //setup API client
-        apicall = new APIUtils();
 
         // Initialize Cost EditText
         mCostEdit = findViewById(R.id.add_transaction_cost);
@@ -296,7 +293,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     public void postTrans(Transaction tran) {
 
-        apicall.getApiInterface().addTransaction(tran, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+        APIUtils.getInstance().getApiInterface().addTransaction(tran, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {
@@ -311,7 +308,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     public void loadCategoryList() {
-        Call<List<TransactionCategory>> call = apicall.getApiInterface().getCategoryList(USER_TOKEN, groupID);
+        Call<List<TransactionCategory>> call = APIUtils.getInstance().getApiInterface().getCategoryList(USER_TOKEN, groupID);
         call.enqueue(new Callback<List<TransactionCategory>>() {
             @Override
             public void onResponse(Call<List<TransactionCategory>> call, Response<List<TransactionCategory>> response) {
@@ -346,7 +343,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void postNewCategory(String categoryName, final DialogInterface dialog) {
         JsonObject params = new JsonObject();
         params.addProperty("categoryName", categoryName);
-        apicall.getApiInterface().addCategory(params, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+        APIUtils.getInstance().getApiInterface().addCategory(params, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {

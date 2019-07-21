@@ -33,14 +33,12 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
 
     private final List<Transaction> mValues;
     private final OnListFragmentInteractionListener mListener;
-    private APIUtils apicall;
     private String USER_TOKEN;
     private String groupID;
 
     public DashboardTransDetailRecyclerViewAdapter(List<Transaction> items, OnListFragmentInteractionListener listener, User user) {
         mValues = items;
         mListener = listener;
-        apicall = new APIUtils();
         USER_TOKEN = user.getUserAuthToken();
         groupID = user.getDefaultGroupId();
     }
@@ -79,7 +77,7 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
 
     public void deleteTrans(Transaction tran) {
 
-        apicall.getApiInterface().deleteTransaction(USER_TOKEN, tran.getId(), groupID).enqueue(new Callback<ResponseBody>() {
+        APIUtils.getInstance().getApiInterface().deleteTransaction(USER_TOKEN, tran.getId(), groupID).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {

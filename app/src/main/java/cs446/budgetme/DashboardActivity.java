@@ -53,7 +53,6 @@ public class DashboardActivity extends AppCompatActivity
     private String USER_TOKEN;
     private String GroupId;
 
-    private APIUtils apicall;
     private SpendingsDataSummary mSpendingsDataSummary = new SpendingsDataSummary();
     //need current transaction list to check if client Transaction List is the same as database
     private ArrayList<Transaction> currTrans;
@@ -77,8 +76,6 @@ public class DashboardActivity extends AppCompatActivity
         GroupId= mUser.getDefaultGroupId();
         USER_TOKEN= mUser.getUserAuthToken();
 
-        //setup API client
-        apicall = new APIUtils();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -118,7 +115,7 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     public void loadCategoryList() {
-        Call<List<TransactionCategory>> call = apicall.getApiInterface().getCategoryList(USER_TOKEN,GroupId );
+        Call<List<TransactionCategory>> call = APIUtils.getInstance().getApiInterface().getCategoryList(USER_TOKEN,GroupId );
         call.enqueue(new Callback<List<TransactionCategory>>() {
             @Override
             public void onResponse(Call<List<TransactionCategory>> call, Response<List<TransactionCategory>> response) {
@@ -141,7 +138,7 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     public void loadTransactionList(){
-        Call<List<Transaction>> call = apicall.getApiInterface().getTransactionList(USER_TOKEN,GroupId );
+        Call<List<Transaction>> call = APIUtils.getInstance().getApiInterface().getTransactionList(USER_TOKEN,GroupId );
         call.enqueue(new Callback<List<Transaction>>() {
             @Override
             public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
@@ -188,7 +185,7 @@ public class DashboardActivity extends AppCompatActivity
 
     }
     public void loadGoalList(){
-        Call<List<Goal>> call = apicall.getApiInterface().getGoalList(USER_TOKEN,GroupId );
+        Call<List<Goal>> call = APIUtils.getInstance().getApiInterface().getGoalList(USER_TOKEN,GroupId );
         call.enqueue(new Callback<List<Goal>>() {
             @Override
             public void onResponse(Call<List<Goal>> call, Response<List<Goal>> response) {

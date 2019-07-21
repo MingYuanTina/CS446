@@ -2,6 +2,7 @@ package cs446.budgetme;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     protected EditText name;
     protected EditText password;
     private static final String TAG = LoginActivity.class.getName();
+    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +47,8 @@ public class LoginActivity extends AppCompatActivity {
 
         name = findViewById(R.id.username_input);
         password = findViewById(R.id.editText3);
+
+        mProgressDialog = new ProgressDialog(this);
 
         name.addTextChangedListener(new TextWatcher() {
             @Override
@@ -65,7 +69,21 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendAuthen(name.getText().toString(), password.getText().toString());
+                mProgressDialog.setMessage("Logging in...");
+                mProgressDialog.show();
+                APIUtils.getInstance().sendAuthen(name.getText().toString(), password.getText().toString(), new APIUtils.APIUtilsCallback<User>() {
+                    @Override
+                    public void onResponseSuccess(User user) {
+                        mProgressDialog.dismiss();
+                        startDashboardActivity(user);
+                    }
+
+                    @Override
+                    public void onResponseFailure() {
+                        mProgressDialog.dismiss();
+                        loginFailed();
+                    }
+                });
             }
         });
 
@@ -80,29 +98,6 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void sendAuthen(String email, String password){
-        //TODO: need to hash passoword
-        APIUtils apicall = new APIUtils();
-        String hashedP = hashPass(password);
-        if(hashedP != "") password = hashedP;
-        apicall.getApiInterface().getUser(email, password).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if(response.isSuccessful()) {
-                    startDashboardActivity(response.body());
-                }
-                else{
-                    loginFailed();
-                }
-            }
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e(TAG, "Unable to submit post to API.");
-            }
-        });
-
-    }
-
     private void startDashboardActivity(User user) {
         Intent i = new Intent(this, DashboardActivity.class);
        // String username = name.getText().toString();
@@ -111,19 +106,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    private String hashPass(String pass){
-        try {
-            MessageDigest md = MessageDigest.getInstance( "SHA-256" );
-            // Change this to UTF-16 if needed
-            md.update( pass.getBytes( StandardCharsets.UTF_8 ) );
-            byte[] digest = md.digest();
-            String hex = String.format( "%064x", new BigInteger( 1, digest ) );
-            return hex;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
     private void loginFailed(){
         Context context = getApplicationContext();
         CharSequence text = "Password Incorrect, Please Try Again";
