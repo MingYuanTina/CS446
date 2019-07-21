@@ -15,6 +15,8 @@ public class TransactionCategory implements Parcelable {
     @SerializedName("categoryId")
     private String mId;
 
+    private String groupId;
+
     private TransactionCategory(String name, String id) {
         mName = name;
         mId = id;
