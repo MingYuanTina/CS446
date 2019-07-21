@@ -23,6 +23,7 @@ import java.util.List;
 
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.MultipleChoiceWithSelectAllDialogCallback;
+import cs446.budgetme.Model.Observer;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.Model.TransactionCategory;
@@ -104,7 +105,6 @@ public class DashboardSummaryFragment extends Fragment {
                 mSpendingsDataSummary.setCategoryFilters(chosenCategories);
             }
         };
-        mTransactionCategoryFilterDialog = new MultipleChoiceWithSelectAllDialog<>(getContext(), mSpendingsDataSummary.getTransactionCategories(), mTransactionCategoryCallback);
     }
 
     @Override
@@ -188,6 +188,7 @@ public class DashboardSummaryFragment extends Fragment {
     }
 
     private void handleTransactionCategoriesMenuItem() {
+        mTransactionCategoryFilterDialog = new MultipleChoiceWithSelectAllDialog<>(getContext(), mSpendingsDataSummary.getTransactionCategories(), mTransactionCategoryCallback);
         mTransactionCategoryFilterDialog.show();
     }
 

@@ -1,7 +1,11 @@
 package cs446.budgetme;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -9,12 +13,17 @@ import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.os.Handler;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Adaptor.DashboardTabAdapter;
@@ -50,6 +59,10 @@ public class DashboardActivity extends AppCompatActivity
     private ArrayList<Transaction> currTrans;
     private ArrayList<Goal> currGoals;
     private User mUser;
+
+    private static final String GOAL_NOTIFICATION_CHANNEL = "GOAL_NOTIFICATION_CHANNEL";
+
+    private boolean firstLoad = true;
 
 
     @Override
@@ -166,6 +179,8 @@ public class DashboardActivity extends AppCompatActivity
         DashboardGoalFragment mGoalFrag = (DashboardGoalFragment)mAdapter.getItem(1);
         mGoalFrag.setDefaultGroup(GroupId);
 
+        firstLoad = true;
+
         loadCategoryList();
         loadTransactionList();
         loadGoalList();
@@ -194,6 +209,53 @@ public class DashboardActivity extends AppCompatActivity
     private void updateGoals(List<Goal> goals) {
         mSpendingsDataSummary.setGoals(goals);
         currGoals = (ArrayList) goals;
+        checkForGoalsExceeded();
+    }
+
+    private void checkForGoalsExceeded() {
+        if (!firstLoad) return;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mSpendingsDataSummary.getTransactions().isEmpty()) {
+                    checkForGoalsExceeded();
+                } else {
+                    firstLoad = false;
+                    createNotificationChannel();
+                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+                    int i = 0;
+                    for (Goal goal : mSpendingsDataSummary.getGoals()) {
+                        Double amountRemaining = goal.amountRemaining(mSpendingsDataSummary.getTransactions());
+                        if (amountRemaining <= 0) {
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), GOAL_NOTIFICATION_CHANNEL);
+                            builder.setSmallIcon(R.drawable.ic_alert_red_24dp).setContentTitle("Goal limit exceeded!")
+                                    .setContentText("You have exceeded goal \"" + goal.getTitleString() + "\" by " + amountRemaining.toString() + ".")
+                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                            Date now = new Date();
+
+                            notificationManager.notify(i++, builder.build());
+
+                        }
+                    }
+                }
+            }
+        }, 2000);
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.goal_alert_channel_name);
+            String description = getString(R.string.goal_alert_channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(GOAL_NOTIFICATION_CHANNEL, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @Override
@@ -240,6 +302,7 @@ public class DashboardActivity extends AppCompatActivity
         if (requestCode == REQUEST_CODE_ADD_TRANSACTION) {
             if (resultCode == RESULT_OK) {
                 //load the new data from server
+                loadCategoryList();
                 loadTransactionList();
              //   Transaction transaction = (Transaction)data.getExtras().getParcelable("transaction");
             //    mSpendingsDataSummary.addTransaction(transaction);

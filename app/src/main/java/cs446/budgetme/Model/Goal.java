@@ -136,7 +136,7 @@ public class Goal implements Parcelable {
     public boolean affectedBy(Transaction transaction) {
         if (mCategories.isEmpty()) return true;
         for (TransactionCategory category : mCategories) {
-            if (transaction.getCategoryId() == category.getId()) {
+            if (transaction.getCategoryId().equals(category.getId())) {
                 return true;
             }
         }
@@ -176,5 +176,16 @@ public class Goal implements Parcelable {
             DateFormat outputFormatter = new SimpleDateFormat("MM/dd/yyyy");
             return categoriesString + ", " + mLimit + ", " + outputFormatter.format(mStartDate) + " to " + outputFormatter.format(mEndDate);
         }
+    }
+
+    public Double amountRemaining(List<Transaction> transactions) {
+        Double remainingAmount = new Double(this.getLimit());
+
+        for (Transaction transaction: transactions) {
+            if (affectedBy(transaction)) {
+                remainingAmount -= transaction.getCost();
+            }
+        }
+        return remainingAmount;
     }
 }
