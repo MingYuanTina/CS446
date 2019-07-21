@@ -23,6 +23,7 @@ import java.util.List;
 
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.MultipleChoiceWithSelectAllDialogCallback;
+import cs446.budgetme.Model.Observer;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.SpendingsDataSummary;
 import cs446.budgetme.Model.TransactionCategory;
@@ -42,7 +43,7 @@ import cs446.budgetme.Widgets.PieChartObserver;
  * Use the {@link DashboardSummaryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DashboardSummaryFragment extends Fragment {
+public class DashboardSummaryFragment extends Fragment implements Observer {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -112,6 +113,7 @@ public class DashboardSummaryFragment extends Fragment {
         mSpendingsDataSummary.register(new PieChartObserver((PieChart)getView().findViewById(R.id.summary_pie_chart), mSpendingsDataSummary));
         //mSpendingsDataSummary.register(new BarChartObserver((HorizontalBarChart)getView().findViewById(R.id.summary_goal_chart), mSpendingsDataSummary));
         mSpendingsDataSummary.register(new LineChartObserver((LineChart)getView().findViewById(R.id.summary_line_chart), mSpendingsDataSummary));
+        mSpendingsDataSummary.register(this);
         mSpendingsDataSummary.notifyObservers();
     }
 
@@ -209,5 +211,10 @@ public class DashboardSummaryFragment extends Fragment {
 
     public void onGoalAdded(Goal goal) {
         mSpendingsDataSummary.addGoal(goal);
+    }
+
+    @Override
+    public void update() {
+        mTransactionCategoryFilterDialog = new MultipleChoiceWithSelectAllDialog<>(getContext(), mSpendingsDataSummary.getTransactionCategories(), mTransactionCategoryCallback);
     }
 }

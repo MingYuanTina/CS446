@@ -240,6 +240,7 @@ public class DashboardActivity extends AppCompatActivity
         if (requestCode == REQUEST_CODE_ADD_TRANSACTION) {
             if (resultCode == RESULT_OK) {
                 //load the new data from server
+                loadCategoryList();
                 loadTransactionList();
              //   Transaction transaction = (Transaction)data.getExtras().getParcelable("transaction");
             //    mSpendingsDataSummary.addTransaction(transaction);
