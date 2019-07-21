@@ -77,7 +77,7 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
 
     public void deleteTrans(Transaction tran) {
 
-        APIUtils.getInstance().getApiInterface().deleteTransaction(USER_TOKEN, tran.getId(), groupID).enqueue(new Callback<ResponseBody>() {
+        APIUtils.getInstance().getApiInterface().deleteTransaction(USER_TOKEN, groupID, tran.getId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()) {

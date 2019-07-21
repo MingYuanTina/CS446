@@ -30,8 +30,8 @@ public interface GetDataService {
     @POST("/trans/{user_token}/{group_id}")
     Call<JsonElement> addTransaction(@Body Transaction trans, @Path("user_token") String token, @Path("group_id") String groupId );
 
-    @DELETE("/trans/{user_token}/{transaction_token}/{group_id}")
-    Call<ResponseBody> deleteTransaction(@Path("user_token") String token, @Path("group_id") String groupId,  @Path("group_id") String goalId );
+    @DELETE("/trans/{user_token}/{group_id}/{transId}")
+    Call<ResponseBody> deleteTransaction(@Path("user_token") String token, @Path("group_id") String group_id, @Path("transId") String transId );
 
     //-------------------------GOAL-----------------------------------------
     @GET("/goal/{user_token}/{group_id}")
@@ -66,7 +66,7 @@ public interface GetDataService {
     Call<JsonElement> createGroup(@Body APIUtils.CreateGroupRequest request, @Path("user_token") String token);
 
     @POST("/group/{user_token}")
-    Call<JsonElement> joinGroup(@Body JsonObject group, @Path("user_token") String token);
+    Call<Void> joinGroup(@Body JsonObject object, @Path("user_token") String token);
 
     @GET("/group/{user_token}")
     Call<List<Group>> getGroupList(@Path("user_token") String token);

@@ -211,18 +211,18 @@ public class APIUtils {
         }
     }
 
-    public void postJoinGroup(String groupName, String USER_TOKEN, final APIUtilsCallback<JsonElement> callback) {
+    public void postJoinGroup(String groupName, String USER_TOKEN, final APIUtilsCallback<Void> callback) {
         JsonObject params = new JsonObject();
         params.addProperty("groupName", groupName);
-        getApiInterface().joinGroup(params, USER_TOKEN).enqueue(new Callback<JsonElement>() {
+        getApiInterface().joinGroup(params, USER_TOKEN).enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if(response.isSuccessful()) {
                     callback.onResponseSuccess(response.body());
                 }
             }
             @Override
-            public void onFailure(Call<JsonElement> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 Log.e(TAG, "Unable to submit post to API for join group.");
             }
         });

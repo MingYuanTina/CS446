@@ -184,9 +184,9 @@ public class DashboardProfileFragment extends Fragment {
                 if (groupName.length() > 0) {
                     mJoinGroupProgressDialog.setMessage("Joining group...");
                     mJoinGroupProgressDialog.show();
-                    APIUtils.getInstance().postJoinGroup(groupName, mUser.getUserAuthToken(), new APIUtils.APIUtilsCallback<JsonElement>() {
+                    APIUtils.getInstance().postJoinGroup(groupName, mUser.getUserAuthToken(), new APIUtils.APIUtilsCallback<Void>() {
                         @Override
-                        public void onResponseSuccess(JsonElement jsonElement) {
+                        public void onResponseSuccess(Void v) {
                             mJoinGroupProgressDialog.dismiss();
                             APIUtils.getInstance().loadGroupList(mUser.getUserAuthToken(), mLoadGroupCallback);
                             // APIUtils.getInstance().loadCategoryList(USER_TOKEN, groupID, mLoadCategoryCallback); TODO CHANGE TO LOAD GROUP LIST
