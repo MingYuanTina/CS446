@@ -1,5 +1,6 @@
 package cs446.budgetme.Fragement;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -24,6 +25,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.DashboardActivity;
@@ -54,7 +57,11 @@ public class DashboardProfileFragment extends Fragment {
     private Button createGroupButton;
     private User mUser;
     private AlertDialog mJoinGroupDialog;
+    private AlertDialog mCreateGroupDialog;
     private static final String TAG = DashboardProfileFragment.class.getName();
+    private ProgressDialog mJoinGroupProgressDialog;
+    private ProgressDialog mCreateGroupProgressDialog;
+    private APIUtils.APIUtilsCallback<List<Group>> mLoadGroupCallback;
 
 
     private ArrayList<String> userGroupList;
@@ -80,6 +87,20 @@ public class DashboardProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         userGroupList = new ArrayList<>();
 
+        mJoinGroupProgressDialog = new ProgressDialog(getContext());
+        mCreateGroupProgressDialog = new ProgressDialog(getContext());
+
+        mLoadGroupCallback = new APIUtils.APIUtilsCallback<List<Group>>() {
+            @Override
+            public void onResponseSuccess(List<Group> groups) {
+                updateGroupList(groups);
+                // TODO: save default group?
+            }
+
+            @Override
+            public void onResponseFailure() { }
+        };
+
     }
 
     @Override
@@ -100,29 +121,8 @@ public class DashboardProfileFragment extends Fragment {
         createGroupButton = getView().findViewById(R.id.CreateGroupButton);
         joinGroupButton = getView().findViewById(R.id.JoinGroupButton);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Join a new group. Enter its ID");
-        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_new_input, null);
-        final EditText newCategoryInput = viewInflated.findViewById(R.id.input_new_category);
-        builder.setView(viewInflated);
-
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String groupId = newCategoryInput.getText().toString();
-                if (groupId.length() > 0) {
-                    postJoinGroup(groupId, dialog);
-                }
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        mJoinGroupDialog = builder.create();
+        initializeJoinGroupDialog();
+        initializeCreateGroupDialog();
 
         joinGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +130,12 @@ public class DashboardProfileFragment extends Fragment {
                 mJoinGroupDialog.show();
             }
         });
-
+        createGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCreateGroupDialog.show();
+            }
+        });
 
         goalButton = getView().findViewById(R.id.CreateGoal);
         goalButton.setOnClickListener(new View.OnClickListener() {
@@ -159,6 +164,93 @@ public class DashboardProfileFragment extends Fragment {
         });
     }
 
+    private void initializeJoinGroupDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Join a new group. Enter its name.");
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_new_input, null);
+        final EditText joinGroupInput = viewInflated.findViewById(R.id.input_new_entry);
+        joinGroupInput.setHint(R.string.label_group_name);
+        builder.setView(viewInflated);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String groupName = joinGroupInput.getText().toString();
+                if (groupName.length() > 0) {
+                    mJoinGroupProgressDialog.setMessage("Joining group...");
+                    mJoinGroupProgressDialog.show();
+                    APIUtils.getInstance().postJoinGroup(groupName, mUser.getUserAuthToken(), new APIUtils.APIUtilsCallback<JsonElement>() {
+                        @Override
+                        public void onResponseSuccess(JsonElement jsonElement) {
+                            mJoinGroupProgressDialog.dismiss();
+                            APIUtils.getInstance().loadGroupList(mUser.getUserAuthToken(), mLoadGroupCallback);
+                            // APIUtils.getInstance().loadCategoryList(USER_TOKEN, groupID, mLoadCategoryCallback); TODO CHANGE TO LOAD GROUP LIST
+                        }
+
+                        @Override
+                        public void onResponseFailure() {
+                            mJoinGroupProgressDialog.dismiss();
+                        }
+                    });
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        mJoinGroupDialog = builder.create();
+    }
+
+    private void initializeCreateGroupDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Create a new group. Enter its name.");
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_create_group, null);
+        final EditText createGroupInput = viewInflated.findViewById(R.id.input_group_name);
+        final EditText userInputList = viewInflated.findViewById(R.id.input_user_list);
+        builder.setView(viewInflated);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String groupName = createGroupInput.getText().toString();
+                if (groupName.length() > 0) {
+                    String[] usernames = userInputList.getText().toString().split("\n");
+                    List<String> userList = new ArrayList<>();
+                    userList.add(mUser.getName());
+                    for (String username : usernames) {
+                        userList.add(username);
+                    }
+                    mCreateGroupProgressDialog.setMessage("Creating group...");
+                    mCreateGroupProgressDialog.show();
+                    APIUtils.getInstance().postCreateGroup(groupName, userList, mUser.getUserAuthToken(), new APIUtils.APIUtilsCallback<JsonElement>() {
+                        @Override
+                        public void onResponseSuccess(JsonElement jsonElement) {
+                            mCreateGroupProgressDialog.dismiss();
+                            APIUtils.getInstance().loadGroupList(mUser.getUserAuthToken(), mLoadGroupCallback);
+                            // APIUtils.getInstance().loadCategoryList(USER_TOKEN, groupID, mLoadCategoryCallback); TODO CHANGE TO LOAD GROUP LIST
+                        }
+
+                        @Override
+                        public void onResponseFailure() {
+                            mCreateGroupProgressDialog.dismiss();
+                        }
+                    });
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        mCreateGroupDialog = builder.create();
+    }
+
     private void postJoinGroup(String groupId, final DialogInterface dialog) {
         JsonObject params = new JsonObject();
         params.addProperty("groupName", groupId);
@@ -184,7 +276,7 @@ public class DashboardProfileFragment extends Fragment {
         mUser.setDefaultGroupId(id);
         updateGroupList(mUser.getGroupList());
     }
-    private void updateGroupList(ArrayList<Group> groups){
+    private void updateGroupList(List<Group> groups){
         userGroupList.clear();
         if(groups != null) {
             for (Group g : groups) {

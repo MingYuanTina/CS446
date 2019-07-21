@@ -43,6 +43,8 @@
     <string name="label_new_category">New Category</string>
     <string name="goal_alert_channel_name">Goal Alert Channel</string>
     <string name="goal_alert_channel_description">Delivers alerts for exceeding goal limits</string>
+    <string name="label_group_name">Group Name</string>
+    <string name="label_other_users">Other Users</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

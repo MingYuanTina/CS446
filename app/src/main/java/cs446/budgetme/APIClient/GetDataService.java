@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 import cs446.budgetme.Model.Goal;
+import cs446.budgetme.Model.Group;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.Model.User;
@@ -61,7 +62,13 @@ public interface GetDataService {
     Call<ResponseBody> registerAccount(@Body APIUtils.RegisterRequest request);
 
     //----------------------GROUP----------------------------------------------
-    @POST("/group/{userToken}")
+    @POST("/group/{user_token}")
+    Call<JsonElement> createGroup(@Body APIUtils.CreateGroupRequest request, @Path("user_token") String token);
+
+    @POST("/group/{user_token}")
     Call<JsonElement> joinGroup(@Body JsonObject group, @Path("user_token") String token);
+
+    @GET("/group/{user_token}")
+    Call<List<Group>> getGroupList(@Path("user_token") String token);
 
 }

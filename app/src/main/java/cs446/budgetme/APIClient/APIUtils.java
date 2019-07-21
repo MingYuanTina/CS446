@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import cs446.budgetme.Model.Goal;
+import cs446.budgetme.Model.Group;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.Model.User;
@@ -118,7 +119,7 @@ public class APIUtils {
 
     public void postTransaction(Transaction tran, String USER_TOKEN, String groupID, final APIUtilsCallback<JsonElement> callback) {
 
-        APIUtils.getInstance().getApiInterface().addTransaction(tran, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+        getApiInterface().addTransaction(tran, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {
@@ -133,7 +134,7 @@ public class APIUtils {
     }
 
     public void loadCategoryList(String USER_TOKEN, String groupID, final APIUtilsCallback<List<TransactionCategory>> callback) {
-        Call<List<TransactionCategory>> call = APIUtils.getInstance().getApiInterface().getCategoryList(USER_TOKEN, groupID);
+        Call<List<TransactionCategory>> call = getApiInterface().getCategoryList(USER_TOKEN, groupID);
         call.enqueue(new Callback<List<TransactionCategory>>() {
             @Override
             public void onResponse(Call<List<TransactionCategory>> call, Response<List<TransactionCategory>> response) {
@@ -155,7 +156,7 @@ public class APIUtils {
     public void postNewCategory(String categoryName, String USER_TOKEN, String groupID, final APIUtilsCallback<JsonElement> callback) {
         JsonObject params = new JsonObject();
         params.addProperty("categoryName", categoryName);
-        APIUtils.getInstance().getApiInterface().addCategory(params, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+        getApiInterface().addCategory(params, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {
@@ -170,7 +171,7 @@ public class APIUtils {
     }
 
     public void postGoal(Goal goal, String USER_TOKEN, String groupID, final APIUtilsCallback<JsonElement> callback) {
-        APIUtils.getInstance().getApiInterface().addGoal(goal, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+        getApiInterface().addGoal(goal, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()) {
@@ -180,6 +181,69 @@ public class APIUtils {
             @Override
             public void onFailure(Call<JsonElement> call, Throwable t) {
                 Log.e(TAG, "Unable to submit post to API for goal.");
+            }
+        });
+    }
+
+    public void postCreateGroup(String groupName, List<String> usernames, String USER_TOKEN, final APIUtilsCallback<JsonElement> callback) {
+        CreateGroupRequest createGroupRequest = new CreateGroupRequest(groupName, usernames);
+        getApiInterface().createGroup(createGroupRequest, USER_TOKEN).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if(response.isSuccessful()) {
+                    callback.onResponseSuccess(response.body());
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+        });
+    }
+
+    public class CreateGroupRequest{
+        private String groupName;
+        private List<String> userList;
+
+        public CreateGroupRequest(String groupName, List<String> userList){
+            this.groupName= groupName;
+            this.userList= userList;
+        }
+    }
+
+    public void postJoinGroup(String groupName, String USER_TOKEN, final APIUtilsCallback<JsonElement> callback) {
+        JsonObject params = new JsonObject();
+        params.addProperty("groupName", groupName);
+        getApiInterface().joinGroup(params, USER_TOKEN).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if(response.isSuccessful()) {
+                    callback.onResponseSuccess(response.body());
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+        });
+    }
+
+    public void loadGroupList(String USER_TOKEN, final APIUtilsCallback<List<Group>> callback) {
+        Call<List<Group>> call = getApiInterface().getGroupList(USER_TOKEN);
+        call.enqueue(new Callback<List<Group>>() {
+            @Override
+            public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
+                if (response.isSuccessful()) {
+                    callback.onResponseSuccess(response.body());
+                } else {
+                    System.out.println("Code: " + response.code());
+                    callback.onResponseFailure();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Group>> call, Throwable t) {
+                System.out.println(t.getMessage());
             }
         });
     }
