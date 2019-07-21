@@ -179,6 +179,8 @@ public class DashboardActivity extends AppCompatActivity
         DashboardGoalFragment mGoalFrag = (DashboardGoalFragment)mAdapter.getItem(1);
         mGoalFrag.setDefaultGroup(GroupId);
 
+        firstLoad = true;
+
         loadCategoryList();
         loadTransactionList();
         loadGoalList();
