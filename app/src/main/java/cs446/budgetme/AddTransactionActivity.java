@@ -24,6 +24,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -179,7 +180,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add a new category");
         View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_input, null);
-        final EditText newCategoryInput = viewInflated.findViewById(R.id.input_new_entry);
+        final TextInputEditText newCategoryInput = viewInflated.findViewById(R.id.input_new_entry);
         newCategoryInput.setHint(R.string.label_new_category);
         builder.setView(viewInflated);
 

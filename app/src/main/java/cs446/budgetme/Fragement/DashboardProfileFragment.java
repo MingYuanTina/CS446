@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -93,6 +95,7 @@ public class DashboardProfileFragment extends Fragment {
         mLoadGroupCallback = new APIUtils.APIUtilsCallback<List<Group>>() {
             @Override
             public void onResponseSuccess(List<Group> groups) {
+                mUser.setGroupList(groups);
                 updateGroupList(groups);
                 // TODO: save default group?
             }
@@ -168,8 +171,10 @@ public class DashboardProfileFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Join a new group. Enter its name.");
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_new_input, null);
-        final EditText joinGroupInput = viewInflated.findViewById(R.id.input_new_entry);
+        final TextInputEditText joinGroupInput = viewInflated.findViewById(R.id.input_new_entry);
+        final TextInputLayout textInputLayout = viewInflated.findViewById(R.id.input_new_entry_layout);
         joinGroupInput.setHint(R.string.label_group_name);
+        textInputLayout.setHint(getResources().getString(R.string.label_group_name));
         builder.setView(viewInflated);
 
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -251,27 +256,6 @@ public class DashboardProfileFragment extends Fragment {
         mCreateGroupDialog = builder.create();
     }
 
-    private void postJoinGroup(String groupId, final DialogInterface dialog) {
-        JsonObject params = new JsonObject();
-        params.addProperty("groupName", groupId);
-        APIUtils.getInstance().getApiInterface().joinGroup(params, mUser.getUserAuthToken()).enqueue(new Callback<JsonElement>() {
-            @Override
-            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                if(response.isSuccessful()) {
-                    dialog.dismiss();
-                    //updateGroupList(); TODO REPLACE WITH API CALL
-                }
-            }
-            @Override
-            public void onFailure(Call<JsonElement> call, Throwable t) {
-                Log.e(TAG, "Unable to submit post to API.");
-            }
-        });
-    }
-
-    private void createGroup(){
-
-    }
     public void setDefaultGroup(String id){
         mUser.setDefaultGroupId(id);
         updateGroupList(mUser.getGroupList());
@@ -282,6 +266,7 @@ public class DashboardProfileFragment extends Fragment {
             for (Group g : groups) {
                 userGroupList.add(g.getGroupName());
             }
+            //arrayAdapter =  new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, userGroupList);
             userGroupListView.setAdapter(arrayAdapter);
             arrayAdapter.notifyDataSetChanged();
             userGroupListView.invalidate();

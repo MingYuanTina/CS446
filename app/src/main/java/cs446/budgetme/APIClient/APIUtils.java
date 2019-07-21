@@ -223,7 +223,7 @@ public class APIUtils {
             }
             @Override
             public void onFailure(Call<JsonElement> call, Throwable t) {
-                Log.e(TAG, "Unable to submit post to API.");
+                Log.e(TAG, "Unable to submit post to API for join group.");
             }
         });
     }

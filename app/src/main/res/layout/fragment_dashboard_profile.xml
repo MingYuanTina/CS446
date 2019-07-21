@@ -55,26 +55,17 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/GroupList_layout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="281dp"
-        android:background="#F4FAF3"
-        android:paddingBottom="24dp">
-
-        <ListView
-            android:id="@+id/GroupList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_key"
-            android:layout_centerHorizontal="true"/>
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="16dp">
 
         <Button
             android:id="@+id/CreateGroupButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/GroupList"
-            android:layout_marginTop="30dp"
+            android:layout_marginRight="16dp"
             android:layout_centerHorizontal="true"
             android:text="@string/layout_button_create_group" />
 
@@ -82,12 +73,17 @@
             android:id="@+id/JoinGroupButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/CreateGroupButton"
-            android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
             android:text="@string/layout_button_join_group" />
 
-    </RelativeLayout>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/GroupList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_key"
+        android:layout_centerHorizontal="true"/>
 
 
 </LinearLayout>

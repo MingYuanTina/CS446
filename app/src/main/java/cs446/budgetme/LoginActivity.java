@@ -8,25 +8,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Model.Group;
 import cs446.budgetme.Model.User;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -124,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
         userinGroup.add("weq");
         mygrouList.add(new Group("5d30ff4e6397c4000427fabd", "personal", userinGroup));
         mygrouList.add(new Group("232","332",userinGroup));
-        muser.setGrouList(mygrouList);
+        muser.setGroupList(mygrouList);
         return muser;
     }
 }

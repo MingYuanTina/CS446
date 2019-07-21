@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class User  implements Parcelable{
 
@@ -15,7 +16,7 @@ public class User  implements Parcelable{
     @SerializedName("defaultGroupId")
     private String defaultGroupId; //current group that the user is in
     @SerializedName("groupList")
-    private ArrayList<Group> groupList;
+    private List<Group> groupList;
 
     @SerializedName("userAuthToken")
     private String userAuthToken;
@@ -29,12 +30,12 @@ public class User  implements Parcelable{
         return mName;
     }
 
-    public ArrayList<Group> getGroupList(){
+    public List<Group> getGroupList(){
         return groupList;
     }
 
     public String getUserAuthToken(){return userAuthToken; }
-    public void setGrouList(ArrayList<Group> groupList){
+    public void setGroupList(List<Group> groupList){
         this.groupList = groupList;
     }
     public String getDefaultGroupId(){
