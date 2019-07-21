@@ -9,6 +9,7 @@ import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.Model.User;
+import cs446.budgetme.RegistrationActivity;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -57,7 +58,7 @@ public interface GetDataService {
     Call<User> getUser(@Path("user_email") String email,@Path("password") String password);
 
     @POST("/user")
-    Call<ResponseBody> register();
+    Call<ResponseBody> registerAccount(@Body RegistrationActivity.RegisterRequest request);
 
     //----------------------GROUP----------------------------------------------
 

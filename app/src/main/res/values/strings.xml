@@ -18,8 +18,10 @@
     <string name="layout_text_username">User Name</string>
     <string name="layout_text_total_amount">$$</string>
     <string name="login">Login</string>
+    <string name="register">Register</string>
     <string name="password_text">Password</string>
     <string name="username_text">Username</string>
+    <string name="label_email">Email Account</string>
     <string name="username_input"></string>
     <string name="label_create_goal">Create Goal</string>
     <string name="label_start_date">Start Date</string>
