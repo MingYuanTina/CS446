@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
     private String groupID;
     private static final String TAG = GoalSettingActivity.class.getName();
     private User mUser;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,8 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
         //set up the group id and user token for all the api calls
         groupID= mUser.getDefaultGroupId();
         USER_TOKEN= mUser.getUserAuthToken();
+
+        mProgressDialog = new ProgressDialog(this);
 
         //get all the view components
         mLimitEdit = findViewById(R.id.goal_setting_limit);
@@ -187,7 +191,20 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
 
                     builder.setNote("");
                     Goal goal = builder.build();
-                    postGoal(goal);
+                    mProgressDialog.setMessage("Adding new goal...");
+                    mProgressDialog.show();
+                    APIUtils.getInstance().postGoal(goal, USER_TOKEN, groupID, new APIUtils.APIUtilsCallback<JsonElement>() {
+                        @Override
+                        public void onResponseSuccess(JsonElement jsonElement) {
+                            mProgressDialog.dismiss();
+                            completeGoalPost();
+                        }
+
+                        @Override
+                        public void onResponseFailure() {
+                            mProgressDialog.dismiss();
+                        }
+                    });
 
                 } catch (IllegalStateException e) {
 
@@ -197,26 +214,18 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
             }
         });
 
-        loadCategoryList();
-    }
-
-
-    public void postGoal(Goal goal) {
-        APIUtils.getInstance().getApiInterface().addGoal(goal, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+        APIUtils.getInstance().loadCategoryList(USER_TOKEN, groupID, new APIUtils.APIUtilsCallback<List<TransactionCategory>>() {
             @Override
-            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                if(response.isSuccessful()) {
-                    completePost();
-                }
+            public void onResponseSuccess(List<TransactionCategory> transactionCategories) {
+                updateTransactionCategoryList(transactionCategories);
             }
+
             @Override
-            public void onFailure(Call<JsonElement> call, Throwable t) {
-                Log.e(TAG, "Unable to submit post to API.");
-            }
+            public void onResponseFailure() {}
         });
     }
 
-    private void completePost(){
+    private void completeGoalPost(){
         Intent i = new Intent();
         setResult(RESULT_OK, i);
         finish();
@@ -234,25 +243,6 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
             }
             mCategoriesEdit.setText(TextUtils.join(", ", text));
         }
-    }
-
-    public void loadCategoryList() {
-        Call<List<TransactionCategory>> call = APIUtils.getInstance().getApiInterface().getCategoryList(USER_TOKEN, groupID);
-        call.enqueue(new Callback<List<TransactionCategory>>() {
-            @Override
-            public void onResponse(Call<List<TransactionCategory>> call, Response<List<TransactionCategory>> response) {
-                if (!response.isSuccessful()) {
-                    System.out.println("Code: " + response.code());
-                    return;
-                }
-                updateTransactionCategoryList(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<List<TransactionCategory>> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        });
     }
 
     public void updateTransactionCategoryList(List<TransactionCategory> transactionCategories) {

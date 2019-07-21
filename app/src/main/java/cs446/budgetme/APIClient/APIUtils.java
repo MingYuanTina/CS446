@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.Model.User;
@@ -164,6 +165,21 @@ public class APIUtils {
             @Override
             public void onFailure(Call<JsonElement> call, Throwable t) {
                 Log.e(TAG, "Unable to submit post to API for new category.");
+            }
+        });
+    }
+
+    public void postGoal(Goal goal, String USER_TOKEN, String groupID, final APIUtilsCallback<JsonElement> callback) {
+        APIUtils.getInstance().getApiInterface().addGoal(goal, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                if(response.isSuccessful()) {
+                    callback.onResponseSuccess(response.body());
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API for goal.");
             }
         });
     }
