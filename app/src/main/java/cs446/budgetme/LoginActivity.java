@@ -92,9 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                     startDashboardActivity(response.body());
                 }
                 else{
-                    //TODO: remove startdashboard
                     loginFailed();
-                    startDashboardActivity(response.body());
                 }
             }
             @Override
@@ -108,8 +106,8 @@ public class LoginActivity extends AppCompatActivity {
     private void startDashboardActivity(User user) {
         Intent i = new Intent(this, DashboardActivity.class);
        // String username = name.getText().toString();
-        User muser = createFakeUser();
-        i.putExtra("user", muser);
+      //  User muser = createFakeUser();
+        i.putExtra("user", user);
         startActivity(i);
     }
 
@@ -128,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void loginFailed(){
         Context context = getApplicationContext();
-        CharSequence text = "Cannot Login Please Try Again";
+        CharSequence text = "Password Incorrect, Please Try Again";
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
         toast.setGravity(Gravity.CENTER_VERTICAL,0,0);

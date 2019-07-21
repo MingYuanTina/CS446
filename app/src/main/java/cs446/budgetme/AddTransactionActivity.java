@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
+import cs446.budgetme.Model.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -59,8 +60,10 @@ public class AddTransactionActivity extends AppCompatActivity {
     private ArrayList<Transaction> currTrans;
     private AlertDialog mNewCategoryDialog;
     private List<TransactionCategory> mTransactionCategories = new ArrayList<>();
-    final String USER_TOKEN= "5d30ff4e6397c4000427fabe";
-    final String groupID = "5d30ff4e6397c4000427fabd";
+    private String USER_TOKEN;
+    private String groupID;
+    private User mUser;
+
     private static final String TAG = AddTransactionActivity.class.getName();
 
     @Override
@@ -75,6 +78,11 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         //TODO: check if need to update the list
         currTrans = intent.getParcelableArrayListExtra("transactionList");
+        mUser = intent.getExtras().getParcelable("user");
+
+        //set up the group id and user token for all the api calls
+        groupID= mUser.getDefaultGroupId();
+        USER_TOKEN= mUser.getUserAuthToken();
         //setup API client
         apicall = new APIUtils();
 

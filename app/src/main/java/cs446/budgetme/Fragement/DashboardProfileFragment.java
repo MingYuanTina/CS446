@@ -44,6 +44,8 @@ public class DashboardProfileFragment extends Fragment {
     private TextView usernameText;
     private ArrayAdapter<String> arrayAdapter;
     private Button goalButton;
+    private Button joinGroup;
+    private Button addGroup;
     private User mUser;
 
 
@@ -87,7 +89,11 @@ public class DashboardProfileFragment extends Fragment {
         usernameText.setText(mUser.getName());
 
         // userAvatar = getView().findViewById(R.id.UserAvatar);
-        // addGroupButton = getView().findViewById(R.id.AddGroupButton);
+        addGroup = getView().findViewById(R.id.AddGroupButton);
+        joinGroup = getView().findViewById(R.id.JoinGroupButton);
+
+
+
 
         goalButton = getView().findViewById(R.id.CreateGoal);
         goalButton.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +122,9 @@ public class DashboardProfileFragment extends Fragment {
         });
     }
 
+    private void createGroup(){
+
+    }
     public void setDefaultGroup(String id){
         mUser.setDefaultGroupId(id);
         updateGroupList(mUser.getGroupList());

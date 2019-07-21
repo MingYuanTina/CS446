@@ -282,12 +282,14 @@ public class DashboardActivity extends AppCompatActivity
     //addtransaction activity needs the current transationList to see whether the database list is the same as current.
     private void startAddTransaction() {
         Intent i = new Intent(this, AddTransactionActivity.class);
+        i.putExtra("user", mUser);
         i.putParcelableArrayListExtra("transactionList",currTrans );
         startActivityForResult(i, REQUEST_CODE_ADD_TRANSACTION);
     }
 
     public void startGoalSetting(){
         Intent i = new Intent(this, GoalSettingActivity.class);
+        i.putExtra("user", mUser);
         i.putParcelableArrayListExtra("goalList",currTrans );
         startActivityForResult(i, REQUEST_CODE_GOAL_SETTING);
     }

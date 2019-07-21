@@ -31,6 +31,7 @@ import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Model.Goal;
 import cs446.budgetme.Model.MultipleChoiceWithSelectAllDialogCallback;
 import cs446.budgetme.Model.TransactionCategory;
+import cs446.budgetme.Model.User;
 import cs446.budgetme.Widgets.MultipleChoiceWithSelectAllDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,9 +53,10 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
     private ArrayList<Boolean> mCheckedItems;
     private MultipleChoiceWithSelectAllDialog<TransactionCategory> mDialog;
     private APIUtils apicall;
-    final String USER_TOKEN= "5d30ff4e6397c4000427fabe";
-    final String groupID = "5d30ff4e6397c4000427fabd";
+    private String USER_TOKEN;
+    private String groupID;
     private static final String TAG = GoalSettingActivity.class.getName();
+    private User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,12 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
         Toolbar toolbar = findViewById(R.id.toolbar_goal);
         setSupportActionBar(toolbar);
 
+        Intent intent = getIntent();
+        mUser = intent.getExtras().getParcelable("user");
+
+        //set up the group id and user token for all the api calls
+        groupID= mUser.getDefaultGroupId();
+        USER_TOKEN= mUser.getUserAuthToken();
         //setup API client
         apicall = new APIUtils();
 

@@ -13,7 +13,8 @@
     <string name="title_dashboard_tab_summary">Summary</string>
     <string name="title_dashboard_tab_profile">Profile</string>
     <string name="title_dashboard_tab_transaction">Transaction Detail</string>
-    <string name="layout_button_add_group">Add Group</string>
+    <string name="layout_button_add_group">Create Group</string>
+    <string name="layout_button_join_group">Join Group</string>
     <string name="layout_image_user_avatar">UserAvatar</string>
     <string name="layout_text_username">User Name</string>
     <string name="layout_text_total_amount">$$</string>
@@ -22,6 +23,7 @@
     <string name="password_text">Password</string>
     <string name="username_text">Username</string>
     <string name="label_email">Email Account</string>
+    <string name="email">Email</string>
     <string name="username_input"></string>
     <string name="label_create_goal">Create Goal</string>
     <string name="label_start_date">Start Date</string>
