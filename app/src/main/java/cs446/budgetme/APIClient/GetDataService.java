@@ -58,7 +58,7 @@ public interface GetDataService {
     Call<User> getUser(@Path("user_email") String email,@Path("password") String password);
 
     @POST("/user")
-    Call<ResponseBody> registerAccount(@Body RegistrationActivity.RegisterRequest request);
+    Call<ResponseBody> registerAccount(@Body APIUtils.RegisterRequest request);
 
     //----------------------GROUP----------------------------------------------
     @POST("/group/{userToken}")

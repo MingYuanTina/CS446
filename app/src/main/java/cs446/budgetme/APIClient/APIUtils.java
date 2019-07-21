@@ -8,6 +8,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import cs446.budgetme.Model.User;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,6 +74,39 @@ public class APIUtils {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public void postRegisterUser(String username, String email, String password, final APIUtilsCallback<ResponseBody> callback){
+        String hashedP = hashPass(password);
+        if(hashedP != "") password = hashedP;
+        RegisterRequest request = new RegisterRequest(username,email,password);
+        getApiInterface().registerAccount(request).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()) {
+                    callback.onResponseSuccess(response.body());
+                }
+                else{
+                    callback.onResponseFailure();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API for register user.");
+            }
+        });
+    }
+
+    public class RegisterRequest{
+        private String username;
+        private String email;
+        private String password;
+
+        public RegisterRequest(String username, String email, String password){
+            this.username= username;
+            this.email= email;
+            this.password= password;
+        }
     }
 
 

@@ -3,6 +3,7 @@ package cs446.budgetme;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class RegistrationActivity extends AppCompatActivity {
     protected EditText emailAccount;
     protected Button register;
     private static final String TAG = RegistrationActivity.class.getName();
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -43,6 +45,8 @@ public class RegistrationActivity extends AppCompatActivity {
         username = findViewById(R.id.user_name);
         register = findViewById(R.id.register);
         register.setEnabled(false);
+
+        mProgressDialog = new ProgressDialog(this);
         username.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable arg0) {
@@ -73,37 +77,28 @@ public class RegistrationActivity extends AppCompatActivity {
                     toast.setGravity(Gravity.CENTER_VERTICAL,0,0);
                     toast.show();
                 }else{
-                    String hashedP = hashPass(p);
-                    if(hashedP != "") p = hashedP;
-                    RegisterRequest mRegist = new RegisterRequest(u,e,p);
-                    postUser(mRegist);
+                    mProgressDialog.setMessage("Registering...");
+                    mProgressDialog.show();
+                    APIUtils.getInstance().postRegisterUser(u, e, p, new APIUtils.APIUtilsCallback<ResponseBody>() {
+                        @Override
+                        public void onResponseSuccess(ResponseBody responseBody) {
+                            mProgressDialog.dismiss();
+                            startLogin();
+                        }
+
+                        @Override
+                        public void onResponseFailure() {
+                            mProgressDialog.dismiss();
+                            registerFailed();
+                        }
+                    });
                 }
 
             }
         });
     }
 
-
-    private void postUser(RegisterRequest request){
-        APIUtils.getInstance().getApiInterface().registerAccount(request).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()) {
-                    startLogin();
-                }
-                else{
-                    RegisterFailed();
-                    startLogin();
-                }
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e(TAG, "Unable to submit post to API.");
-            }
-        });
-    }
-
-    private void RegisterFailed(){
+    private void registerFailed(){
         Context context = getApplicationContext();
         CharSequence text = "Cannot Register Email Already Exist";
         int duration = Toast.LENGTH_SHORT;
@@ -114,33 +109,5 @@ public class RegistrationActivity extends AppCompatActivity {
     private void startLogin() {
         Intent i = new Intent(this, LoginActivity.class);
         startActivity(i);
-    }
-
-    private String hashPass(String pass){
-        try {
-        MessageDigest md = MessageDigest.getInstance( "SHA-256" );
-        // Change this to UTF-16 if needed
-        md.update( pass.getBytes( StandardCharsets.UTF_8 ) );
-        byte[] digest = md.digest();
-        String hex = String.format( "%064x", new BigInteger( 1, digest ) );
-        return hex;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public class RegisterRequest{
-        private String username;
-        private String email;
-        private String password;
-
-        public RegisterRequest(String username, String email, String password){
-            this.username= username;
-            this.email= email;
-            this.password= password;
-        }
-
-
     }
 }
