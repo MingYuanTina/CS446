@@ -1,6 +1,7 @@
 package cs446.budgetme;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -62,6 +63,9 @@ public class AddTransactionActivity extends AppCompatActivity {
     private String USER_TOKEN;
     private String groupID;
     private User mUser;
+    private APIUtils.APIUtilsCallback<List<TransactionCategory>> mLoadCategoryCallback;
+    private ProgressDialog mNewCategoryProgressDialog;
+    private ProgressDialog mAddTransactionProgressDialog;
 
     private static final String TAG = AddTransactionActivity.class.getName();
 
@@ -71,6 +75,19 @@ public class AddTransactionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_transaction);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mNewCategoryProgressDialog = new ProgressDialog(this);
+        mAddTransactionProgressDialog = new ProgressDialog(this);
+
+        mLoadCategoryCallback = new APIUtils.APIUtilsCallback<List<TransactionCategory>>() {
+            @Override
+            public void onResponseSuccess(List<TransactionCategory> transactionCategories) {
+                updateTransactionCategoryList(transactionCategories);
+            }
+
+            @Override
+            public void onResponseFailure() { }
+        };
 
         //set the current transation list
         Intent intent = getIntent();
@@ -167,10 +184,24 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(final DialogInterface dialog, int which) {
                 String categoryName = newCategoryInput.getText().toString();
                 if (categoryName.length() > 0) {
-                    postNewCategory(categoryName, dialog);
+                    mNewCategoryProgressDialog.setMessage("Adding new category...");
+                    mNewCategoryProgressDialog.show();
+                    APIUtils.getInstance().postNewCategory(categoryName, USER_TOKEN, groupID, new APIUtils.APIUtilsCallback<JsonElement>() {
+                        @Override
+                        public void onResponseSuccess(JsonElement jsonElement) {
+                            mNewCategoryProgressDialog.dismiss();
+                            dialog.dismiss();
+                            APIUtils.getInstance().loadCategoryList(USER_TOKEN, groupID, mLoadCategoryCallback);
+                        }
+
+                        @Override
+                        public void onResponseFailure() {
+                            mNewCategoryProgressDialog.dismiss();
+                        }
+                    });
                 }
             }
         });
@@ -211,7 +242,20 @@ public class AddTransactionActivity extends AppCompatActivity {
                     }
 
                     Transaction transaction = builder.build();
-                    postTrans(transaction);
+                    mAddTransactionProgressDialog.setMessage("Adding transaction...");
+                    mAddTransactionProgressDialog.show();
+                    APIUtils.getInstance().postTransaction(transaction, USER_TOKEN, groupID, new APIUtils.APIUtilsCallback<JsonElement>() {
+                        @Override
+                        public void onResponseSuccess(JsonElement jsonElement) {
+                            mAddTransactionProgressDialog.dismiss();
+                            completePostTransaction();
+                        }
+
+                        @Override
+                        public void onResponseFailure() {
+                            mAddTransactionProgressDialog.dismiss();
+                        }
+                    });
 
                 } catch (IllegalStateException e) {
                     Toast.makeText(AddTransactionActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -232,12 +276,11 @@ public class AddTransactionActivity extends AppCompatActivity {
             }
         });
 
-        loadCategoryList();
+        APIUtils.getInstance().loadCategoryList(USER_TOKEN, groupID, mLoadCategoryCallback);
     }
 
-    private void completePostTrans(){
+    private void completePostTransaction(){
         Intent i = new Intent();
-//                    i.putExtra("transaction", transaction);
         setResult(RESULT_OK, i);
         finish();
     }
@@ -291,41 +334,6 @@ public class AddTransactionActivity extends AppCompatActivity {
         mDateEdit.setText(sdf.format(mCalendar.getTime()));
     }
 
-    public void postTrans(Transaction tran) {
-
-        APIUtils.getInstance().getApiInterface().addTransaction(tran, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
-            @Override
-            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                if(response.isSuccessful()) {
-                    completePostTrans();
-                }
-            }
-            @Override
-            public void onFailure(Call<JsonElement> call, Throwable t) {
-                Log.e(TAG, "Unable to submit post to API.");
-            }
-        });
-    }
-
-    public void loadCategoryList() {
-        Call<List<TransactionCategory>> call = APIUtils.getInstance().getApiInterface().getCategoryList(USER_TOKEN, groupID);
-        call.enqueue(new Callback<List<TransactionCategory>>() {
-            @Override
-            public void onResponse(Call<List<TransactionCategory>> call, Response<List<TransactionCategory>> response) {
-                if (!response.isSuccessful()) {
-                    System.out.println("Code: " + response.code());
-                    return;
-                }
-                updateTransactionCategoryList(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<List<TransactionCategory>> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        });
-    }
-
     public void updateTransactionCategoryList(List<TransactionCategory> transactionCategories) {
         mTransactionCategories = transactionCategories;
         ArrayAdapter<TransactionCategory> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_menu_popup_item, mTransactionCategories);
@@ -336,24 +344,6 @@ public class AddTransactionActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View arg1, int position,
                                     long arg3) {
                 mCategoryIndex = position;
-            }
-        });
-    }
-
-    private void postNewCategory(String categoryName, final DialogInterface dialog) {
-        JsonObject params = new JsonObject();
-        params.addProperty("categoryName", categoryName);
-        APIUtils.getInstance().getApiInterface().addCategory(params, USER_TOKEN, groupID).enqueue(new Callback<JsonElement>() {
-            @Override
-            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                if(response.isSuccessful()) {
-                    dialog.dismiss();
-                    loadCategoryList();
-                }
-            }
-            @Override
-            public void onFailure(Call<JsonElement> call, Throwable t) {
-                Log.e(TAG, "Unable to submit post to API.");
             }
         });
     }

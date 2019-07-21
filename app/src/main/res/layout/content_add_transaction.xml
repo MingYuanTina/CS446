@@ -109,8 +109,9 @@
         android:text="@string/label_new_category"
         android:textColor="#FFFFFF"
         android:textAllCaps="false"
+        android:padding="8dp"
         app:layout_constraintTop_toBottomOf="@id/import_from_image_button"
-        app:layout_constraintRight_toRightOf="@id/import_from_image_button"/>
+        app:layout_constraintLeft_toLeftOf="@id/import_from_image_button"/>
 
     <Button
         android:id="@+id/import_from_image_button"
