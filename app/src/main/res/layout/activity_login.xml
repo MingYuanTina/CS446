@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context="cs446.budgetme.LoginActivity">
 
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@mipmap/logo"
+        android:layout_marginTop="32dp"
+        app:layout_constraintBottom_toTopOf="@id/username_input"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <Button
         android:id="@+id/login"
         android:layout_width="128dp"
