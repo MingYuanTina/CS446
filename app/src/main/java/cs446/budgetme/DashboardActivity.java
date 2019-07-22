@@ -105,7 +105,7 @@ public class DashboardActivity extends AppCompatActivity
         //add the fragments
         mAdapter.addFragment(new DashboardSummaryFragment(mSpendingsDataSummary), getResources().getString(R.string.title_dashboard_tab_summary));
         mAdapter.addFragment(new DashboardGoalFragment(mSpendingsDataSummary, mUser), "Goals");
-        mAdapter.addFragment(new DashboardTransDetailFragment(mSpendingsDataSummary, mUser), "Transaction Detail");
+        mAdapter.addFragment(new DashboardTransDetailFragment(mSpendingsDataSummary, mUser), "Details");
         mAdapter.addFragment(new DashboardProfileFragment(mUser),"Profile");
 
         mViewPager.setAdapter(mAdapter);
