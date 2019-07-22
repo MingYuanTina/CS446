@@ -2,6 +2,7 @@ package cs446.budgetme.Adaptor;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import cs446.budgetme.APIClient.APIUtils;
+import cs446.budgetme.AddTransactionActivity;
 import cs446.budgetme.Fragement.DashboardTransDetailFragment.OnListFragmentInteractionListener;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.User;
@@ -69,6 +71,32 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
         });
 
     }
+
+    public void edit(int position) {
+        editTrans(mValues.get(position));
+    }
+
+    public void editTrans(final Transaction tran) {
+        APIUtils.getInstance().getApiInterface().preTransaction(tran, USER_TOKEN, groupID, tran.getId()).enqueue(new Callback<Transaction>() {
+            @Override
+            public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+                if(response.isSuccessful()) {
+                    if (response.body().getId() == null) {
+                        mListener.editTransaction(tran);
+                    } else {
+                        mListener.transListNeedsSync();
+                    }
+                } else {
+
+                }
+            }
+            @Override
+            public void onFailure(Call<Transaction> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+        });
+    }
+
     public void delete(int position) { //removes the row
         //first send delete request to server
         //setup API client
@@ -102,6 +130,7 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
         public final TextView mCategoryView;
         public final TextView mAmountView;
         public Transaction mItem;
+        public ImageButton mEditButton;
         public ImageButton mDeleteButton;
 
         public ViewHolder(View view) {
@@ -110,7 +139,15 @@ public class DashboardTransDetailRecyclerViewAdapter extends RecyclerView.Adapte
             mDateView = (TextView) view.findViewById(R.id.textDate);
             mCategoryView = (TextView) view.findViewById(R.id.transCategory);
             mAmountView = (TextView) view.findViewById(R.id.transAmount);
+            mEditButton = view.findViewById(R.id.editButton);
             mDeleteButton = view.findViewById(R.id.deleteButton);
+
+            mEditButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    edit(getAdapterPosition());
+                }
+            });
 
             mDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override

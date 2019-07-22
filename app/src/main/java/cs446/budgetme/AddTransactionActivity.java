@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -42,9 +40,6 @@ import cs446.budgetme.APIClient.APIUtils;
 import cs446.budgetme.Model.Transaction;
 import cs446.budgetme.Model.TransactionCategory;
 import cs446.budgetme.Model.User;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class AddTransactionActivity extends AppCompatActivity {
     private String mCurrentCost = "";
@@ -67,6 +62,8 @@ public class AddTransactionActivity extends AppCompatActivity {
     private APIUtils.APIUtilsCallback<List<TransactionCategory>> mLoadCategoryCallback;
     private ProgressDialog mNewCategoryProgressDialog;
     private ProgressDialog mAddTransactionProgressDialog;
+    private Transaction editTransaction;
+    private boolean alreadySetTransactionDetails = false;
 
     private static final String TAG = AddTransactionActivity.class.getName();
 
@@ -84,6 +81,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             @Override
             public void onResponseSuccess(List<TransactionCategory> transactionCategories) {
                 updateTransactionCategoryList(transactionCategories);
+                setEditTransaction();
             }
 
             @Override
@@ -96,6 +94,13 @@ public class AddTransactionActivity extends AppCompatActivity {
         //TODO: check if need to update the list
         currTrans = intent.getParcelableArrayListExtra("transactionList");
         mUser = intent.getExtras().getParcelable("user");
+
+        if (intent.hasExtra("editTransaction")) {
+            editTransaction = intent.getExtras().getParcelable("editTransaction");
+            setTitle("Edit Transaction");
+        } else {
+            setTitle("Add New Transaction");
+        }
 
         //set up the group id and user token for all the api calls
         groupID= mUser.getDefaultGroupId();
@@ -147,7 +152,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                 mCalendar.set(Calendar.YEAR, year);
                 mCalendar.set(Calendar.MONTH, monthOfYear);
                 mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
+                updateDateLabel();
             }
 
         };
@@ -244,6 +249,9 @@ public class AddTransactionActivity extends AppCompatActivity {
                     }
 
                     Transaction transaction = builder.build();
+                    if (editTransaction != null) {
+                        transaction.setId(editTransaction.getId());
+                    }
                     mAddTransactionProgressDialog.setMessage("Adding transaction...");
                     mAddTransactionProgressDialog.show();
                     APIUtils.getInstance().postTransaction(transaction, USER_TOKEN, groupID, new APIUtils.APIUtilsCallback<JsonElement>() {
@@ -329,7 +337,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         return m.find();
     }
 
-    private void updateLabel() {
+    private void updateDateLabel() {
         String myFormat = "MM/dd/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
@@ -348,5 +356,30 @@ public class AddTransactionActivity extends AppCompatActivity {
                 mCategoryIndex = position;
             }
         });
+    }
+
+    private void setEditTransaction() {
+        if (editTransaction != null && !alreadySetTransactionDetails) {
+            alreadySetTransactionDetails = true;
+            mCurrentCost = NumberFormat.getCurrencyInstance().format((editTransaction.getCost()));;
+            mCostEdit.setText(mCurrentCost);
+
+            Calendar c = Calendar.getInstance();
+            c.setTime(editTransaction.getDate());
+            mCalendar.set(Calendar.YEAR, editTransaction.getDate().getYear());
+            mCalendar.set(Calendar.MONTH, editTransaction.getDate().getMonth());
+            mCalendar.set(Calendar.DAY_OF_MONTH, editTransaction.getDate().getDate());
+            updateDateLabel();
+
+            for (int i = 0; i<mTransactionCategories.size(); i++) {
+                if (mTransactionCategories.get(i).getId().equals(editTransaction.getCategoryId())) {
+                    mCategoryIndex = i;
+                    break;
+                }
+            }
+            mDropdown.setText(mTransactionCategories.get(mCategoryIndex).toString());
+
+            mNoteEdit.setText(editTransaction.getNote());
+        }
     }
 }

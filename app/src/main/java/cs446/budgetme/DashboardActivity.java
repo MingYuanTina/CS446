@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Handler;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,7 +80,9 @@ public class DashboardActivity extends AppCompatActivity
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        //toolbar.setTitle(mUser.getName() + "'s Dashboard");
         setSupportActionBar(toolbar);
+        setTitle(mUser.getName() + "'s Dashboard");
         //toolbar.setNavigationIcon(R.drawable.ic_filter_list_white_24dp);
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -165,6 +169,8 @@ public class DashboardActivity extends AppCompatActivity
         //update the user
         GroupId = mUser.getGroupList().get(index).getGroupId();
         mUser.setDefaultGroupId(GroupId);
+        setTitle(mUser.getGroupList().get(index).getGroupName() + "'s Dashboard");
+
 
         //passUserGroupUpdate
         DashboardProfileFragment mProfile= (DashboardProfileFragment)mAdapter.getItem(3);
@@ -268,7 +274,22 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     @Override
+    public void transListNeedsSync() {
+        Toast.makeText(this, "The transaction you tried to edit was changed. Syncing list.", Toast.LENGTH_LONG).show();
+        transListChanged();
+    }
+
+    @Override
     public void onListFragmentInteraction(Goal goal) {}
+
+    @Override
+    public void editTransaction(Transaction transaction) {
+        Intent i = new Intent(this, AddTransactionActivity.class);
+        i.putExtra("user", mUser);
+        i.putExtra("editTransaction", transaction);
+        i.putParcelableArrayListExtra("transactionList",currTrans );
+        startActivityForResult(i, REQUEST_CODE_ADD_TRANSACTION);
+    }
 
     @Override
     public void goalListChanged() {

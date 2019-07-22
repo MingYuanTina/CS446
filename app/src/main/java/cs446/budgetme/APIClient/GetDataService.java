@@ -30,6 +30,9 @@ public interface GetDataService {
     @POST("/trans/{user_token}/{group_id}")
     Call<JsonElement> addTransaction(@Body Transaction trans, @Path("user_token") String token, @Path("group_id") String groupId );
 
+    @POST("/pretrans/{user_token}/{group_id}/{trans_id}")
+    Call<Transaction> preTransaction(@Body Transaction trans, @Path("user_token") String token, @Path("group_id") String groupId, @Path("trans_id") String transId);
+
     @DELETE("/trans/{user_token}/{group_id}/{transId}")
     Call<ResponseBody> deleteTransaction(@Path("user_token") String token, @Path("group_id") String group_id, @Path("transId") String transId );
 

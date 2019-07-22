@@ -66,6 +66,7 @@ public class GoalSettingActivity extends AppCompatActivity implements MultipleCh
 
         Toolbar toolbar = findViewById(R.id.toolbar_goal);
         setSupportActionBar(toolbar);
+        setTitle("Create a new Goal");
 
         Intent intent = getIntent();
         mUser = intent.getExtras().getParcelable("user");

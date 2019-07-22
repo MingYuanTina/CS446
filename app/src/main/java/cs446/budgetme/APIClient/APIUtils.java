@@ -133,6 +133,21 @@ public class APIUtils {
         });
     }
 
+    public void preTransaction(Transaction tran, String USER_TOKEN, String groupID, final APIUtilsCallback<Transaction> callback) {
+        getApiInterface().preTransaction(tran, USER_TOKEN, groupID, tran.getId()).enqueue(new Callback<Transaction>() {
+            @Override
+            public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+                if(response.isSuccessful()) {
+                    callback.onResponseSuccess(response.body());
+                }
+            }
+            @Override
+            public void onFailure(Call<Transaction> call, Throwable t) {
+                Log.e(TAG, "Unable to submit post to API for pre-transaction.");
+            }
+        });
+    }
+
     public void loadCategoryList(String USER_TOKEN, String groupID, final APIUtilsCallback<List<TransactionCategory>> callback) {
         Call<List<TransactionCategory>> call = getApiInterface().getCategoryList(USER_TOKEN, groupID);
         call.enqueue(new Callback<List<TransactionCategory>>() {

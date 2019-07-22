@@ -95,10 +95,18 @@ public class Transaction implements Parcelable {
         return mId;
     }
 
+    public String getNote() {
+        return mNote;
+    }
+
     public String getStringDate(){
         DateFormat outputFormatter = new SimpleDateFormat("MM/dd/yyyy");
         String dateWithoutTime = outputFormatter.format(mDate);
         return dateWithoutTime;
+    }
+
+    public void setId(String id) {
+        mId = id;
     }
 
     /*public static List<Transaction> getFakeData() {
